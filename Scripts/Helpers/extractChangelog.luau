@@ -2,20 +2,23 @@
 
 extractChangelog
 
-Extracts the changelog section for a specific version from CHANGELOG.md.
+Extracts the changelog section for a specific version from CHANGELOG.md. Optionally accepts
+a path to the changelog file.
 
 --]]
 
 local fs = require("@lune/fs")
 
-local function extractChangelog(version: string): string?
+local function extractChangelog(version: string, changelogPath: string?): string?
     assert(type(version) == "string", "version must be a string")
 
-    if not fs.isFile("CHANGELOG.md") then
+    local filePath = changelogPath or "CHANGELOG.md"
+
+    if not fs.isFile(filePath) then
         return nil
     end
 
-    local content = fs.readFile("CHANGELOG.md")
+    local content = fs.readFile(filePath)
 
     -- Find the start of the version section
     local versionHeader = "## " .. version:gsub("%.", "%%.")

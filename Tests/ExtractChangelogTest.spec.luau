@@ -7,28 +7,32 @@ Tests for the extractChangelog helper function.
 --]]
 
 local fs = require("@lune/fs")
+local process = require("@lune/process")
 
 local extractChangelog = require("../Scripts/Helpers/extractChangelog")
 
 return function()
     describe("extractChangelog", function()
-        local originalChangelog: string?
+        local tempDir: string
 
         beforeAll(function()
-            if fs.isFile("CHANGELOG.md") then
-                originalChangelog = fs.readFile("CHANGELOG.md")
-            end
+            -- Create a unique temp directory for this test suite
+            local timestamp = tostring(os.time()) .. tostring(math.random(1000, 9999))
+            tempDir = `/tmp/luau-cicd-test-{timestamp}`
+            fs.writeDir(tempDir)
         end)
 
         afterAll(function()
-            if originalChangelog then
-                fs.writeFile("CHANGELOG.md", originalChangelog)
+            -- Clean up temp directory
+            if tempDir and fs.isDir(tempDir) then
+                process.exec("rm", { "-rf", tempDir })
             end
         end)
 
         it("should extract changelog section for existing version", function()
+            local changelogPath = `{tempDir}/CHANGELOG.md`
             fs.writeFile(
-                "CHANGELOG.md",
+                changelogPath,
                 [[# Changelog
 
 ## 1.0.0
@@ -46,15 +50,16 @@ return function()
 ]]
             )
 
-            local section = extractChangelog("1.0.0")
+            local section = extractChangelog("1.0.0", changelogPath)
             expect(section).to.be.ok()
             expect(string.find(section :: string, "Feature one")).to.be.ok()
             expect(string.find(section :: string, "Feature two")).to.be.ok()
         end)
 
         it("should return nil for non-existent version", function()
+            local changelogPath = `{tempDir}/CHANGELOG2.md`
             fs.writeFile(
-                "CHANGELOG.md",
+                changelogPath,
                 [[# Changelog
 
 ## 1.0.0
@@ -65,13 +70,14 @@ return function()
 ]]
             )
 
-            local section = extractChangelog("2.0.0")
+            local section = extractChangelog("2.0.0", changelogPath)
             expect(section).to.equal(nil)
         end)
 
         it("should extract last version in changelog", function()
+            local changelogPath = `{tempDir}/CHANGELOG3.md`
             fs.writeFile(
-                "CHANGELOG.md",
+                changelogPath,
                 [[# Changelog
 
 ## 1.0.0
@@ -82,7 +88,7 @@ return function()
 ]]
             )
 
-            local section = extractChangelog("1.0.0")
+            local section = extractChangelog("1.0.0", changelogPath)
             expect(section).to.be.ok()
             expect(string.find(section :: string, "Last version content")).to.be.ok()
         end)
