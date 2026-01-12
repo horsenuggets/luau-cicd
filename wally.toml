@@ -1,0 +1,11 @@
+[package]
+name = "horsenuggets/luau-cicd"
+description = "A collection of Luau scripts for CI/CD tasks."
+version = "0.0.1"
+license = "MIT"
+realm = "shared"
+registry = "https://github.com/UpliftGames/wally-index"
+repository = "https://github.com/horsenuggets/luau-cicd"
+
+[dev-dependencies]
+testable = "horsenuggets/testable@0.0.5"
