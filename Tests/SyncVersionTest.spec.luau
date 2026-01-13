@@ -8,6 +8,8 @@ Tests for the SyncVersion script.
 
 local TestEnvironment = require("./Helpers/TestEnvironment")
 
+local dedent = TestEnvironment.dedent
+
 return function()
     describe("SyncVersion", function()
         local env: TestEnvironment.Environment
@@ -24,11 +26,11 @@ return function()
             env.writeFile("VERSION", "1.2.3\n")
             env.writeFile(
                 "wally.toml",
-                [[
-[package]
-name = "test/package"
-version = "0.0.0"
-]]
+                dedent([[
+                    [package]
+                    name = "test/package"
+                    version = "0.0.0"
+                ]])
             )
 
             local result = env.runScript("SyncVersion")
@@ -42,11 +44,11 @@ version = "0.0.0"
             env.writeFile("VERSION", "  2.0.0  \n")
             env.writeFile(
                 "wally.toml",
-                [[
-[package]
-name = "test/package"
-version = "1.0.0"
-]]
+                dedent([[
+                    [package]
+                    name = "test/package"
+                    version = "1.0.0"
+                ]])
             )
 
             local result = env.runScript("SyncVersion")
@@ -60,16 +62,16 @@ version = "1.0.0"
             env.writeFile("VERSION", "3.0.0\n")
             env.writeFile(
                 "wally.toml",
-                [[
-[package]
-name = "test/package"
-description = "A test package"
-version = "1.0.0"
-license = "MIT"
+                dedent([[
+                    [package]
+                    name = "test/package"
+                    description = "A test package"
+                    version = "1.0.0"
+                    license = "MIT"
 
-[dependencies]
-something = "author/something@1.0.0"
-]]
+                    [dependencies]
+                    something = "author/something@1.0.0"
+                ]])
             )
 
             local result = env.runScript("SyncVersion")
@@ -87,14 +89,14 @@ something = "author/something@1.0.0"
             env.writeFile("VERSION", "5.0.0\n")
             env.writeFile(
                 "wally.toml",
-                [[
-[package]
-name = "test/package"
-version = "1.0.0"
+                dedent([[
+                    [package]
+                    name = "test/package"
+                    version = "1.0.0"
 
-[dependencies]
-dep = "author/dep@2.0.0"
-]]
+                    [dependencies]
+                    dep = "author/dep@2.0.0"
+                ]])
             )
 
             local result = env.runScript("SyncVersion")

@@ -9,7 +9,10 @@ Tests for the extractChangelog helper function.
 local fs = require("@lune/fs")
 local process = require("@lune/process")
 
+local TestEnvironment = require("./Helpers/TestEnvironment")
 local extractChangelog = require("../Scripts/Helpers/extractChangelog")
+
+local dedent = TestEnvironment.dedent
 
 return function()
     describe("extractChangelog", function()
@@ -33,21 +36,22 @@ return function()
             local changelogPath = `{tempDir}/CHANGELOG.md`
             fs.writeFile(
                 changelogPath,
-                [[# Changelog
+                dedent([[
+                    # Changelog
 
-## 1.0.0
+                    ## 1.0.0
 
-### Added
+                    ### Added
 
-- Feature one
-- Feature two
+                    - Feature one
+                    - Feature two
 
-## 0.9.0
+                    ## 0.9.0
 
-### Fixed
+                    ### Fixed
 
-- Bug fix
-]]
+                    - Bug fix
+                ]])
             )
 
             local section = extractChangelog("1.0.0", changelogPath)
@@ -60,14 +64,15 @@ return function()
             local changelogPath = `{tempDir}/CHANGELOG2.md`
             fs.writeFile(
                 changelogPath,
-                [[# Changelog
+                dedent([[
+                    # Changelog
 
-## 1.0.0
+                    ## 1.0.0
 
-### Added
+                    ### Added
 
-- Something
-]]
+                    - Something
+                ]])
             )
 
             local section = extractChangelog("2.0.0", changelogPath)
@@ -78,14 +83,15 @@ return function()
             local changelogPath = `{tempDir}/CHANGELOG3.md`
             fs.writeFile(
                 changelogPath,
-                [[# Changelog
+                dedent([[
+                    # Changelog
 
-## 1.0.0
+                    ## 1.0.0
 
-### Added
+                    ### Added
 
-- Last version content
-]]
+                    - Last version content
+                ]])
             )
 
             local section = extractChangelog("1.0.0", changelogPath)

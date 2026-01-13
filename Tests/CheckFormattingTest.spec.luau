@@ -8,6 +8,8 @@ Tests for the CheckFormatting script.
 
 local TestEnvironment = require("./Helpers/TestEnvironment")
 
+local dedent = TestEnvironment.dedent
+
 return function()
     describe("CheckFormatting", function()
         local env: TestEnvironment.Environment
@@ -17,14 +19,14 @@ return function()
             -- Create a stylua.toml so stylua knows to format
             env.writeFile(
                 "stylua.toml",
-                [[
-syntax = "Luau"
-column_width = 120
-line_endings = "Unix"
-indent_type = "Spaces"
-indent_width = 4
-quote_style = "AutoPreferDouble"
-]]
+                dedent([[
+                    syntax = "Luau"
+                    column_width = 120
+                    line_endings = "Unix"
+                    indent_type = "Spaces"
+                    indent_width = 4
+                    quote_style = "AutoPreferDouble"
+                ]])
             )
         end)
 
@@ -35,13 +37,13 @@ quote_style = "AutoPreferDouble"
         it("should pass when all files are formatted", function()
             env.writeFile(
                 "test.luau",
-                [[
-local function hello()
-    print("Hello, world!")
-end
+                dedent([[
+                    local function hello()
+                        print("Hello, world!")
+                    end
 
-return hello
-]]
+                    return hello
+                ]])
             )
 
             local result = env.runScript("CheckFormatting")
@@ -54,13 +56,13 @@ return hello
             -- Write poorly formatted code (inconsistent spacing)
             env.writeFile(
                 "test.luau",
-                [[
-local function hello()
-print("Hello, world!")
-    end
+                dedent([[
+                    local function hello()
+                    print("Hello, world!")
+                        end
 
-return hello
-]]
+                    return hello
+                ]])
             )
 
             local result = env.runScript("CheckFormatting")
@@ -72,17 +74,17 @@ return hello
         it("should check multiple files", function()
             env.writeFile(
                 "file1.luau",
-                [[
-local a = 1
-return a
-]]
+                dedent([[
+                    local a = 1
+                    return a
+                ]])
             )
             env.writeFile(
                 "file2.luau",
-                [[
-local b = 2
-return b
-]]
+                dedent([[
+                    local b = 2
+                    return b
+                ]])
             )
 
             local result = env.runScript("CheckFormatting")
@@ -93,22 +95,22 @@ return b
         it("should fail if any file is unformatted", function()
             env.writeFile(
                 "good.luau",
-                [[
-local a = 1
-return a
-]]
+                dedent([[
+                    local a = 1
+                    return a
+                ]])
             )
             -- Bad formatting - wrong indentation
             env.writeFile(
                 "bad.luau",
-                [[
-local function test()
-if true then
-print("bad")
-end
-end
-return test
-]]
+                dedent([[
+                    local function test()
+                    if true then
+                    print("bad")
+                    end
+                    end
+                    return test
+                ]])
             )
 
             local result = env.runScript("CheckFormatting")
@@ -120,10 +122,10 @@ return test
             env.writeDir("subdir")
             env.writeFile(
                 "subdir/nested.luau",
-                [[
-local nested = true
-return nested
-]]
+                dedent([[
+                    local nested = true
+                    return nested
+                ]])
             )
 
             local result = env.runScript("CheckFormatting")

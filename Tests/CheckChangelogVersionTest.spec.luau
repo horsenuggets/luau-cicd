@@ -8,6 +8,8 @@ Tests for the CheckChangelogVersion script.
 
 local TestEnvironment = require("./Helpers/TestEnvironment")
 
+local dedent = TestEnvironment.dedent
+
 return function()
     describe("CheckChangelogVersion", function()
         local env: TestEnvironment.Environment
@@ -24,15 +26,15 @@ return function()
             env.writeFile("VERSION", "1.0.0\n")
             env.writeFile(
                 "CHANGELOG.md",
-                [[
-# Changelog
+                dedent([[
+                    # Changelog
 
-## 1.0.0
+                    ## 1.0.0
 
-### Added
+                    ### Added
 
-- Initial release
-]]
+                    - Initial release
+                ]])
             )
 
             local result = env.runScript("CheckChangelogVersion")
@@ -44,15 +46,15 @@ return function()
         it("should fail when VERSION file is missing", function()
             env.writeFile(
                 "CHANGELOG.md",
-                [[
-# Changelog
+                dedent([[
+                    # Changelog
 
-## 1.0.0
+                    ## 1.0.0
 
-### Added
+                    ### Added
 
-- Something
-]]
+                    - Something
+                ]])
             )
 
             local result = env.runScript("CheckChangelogVersion")
@@ -74,15 +76,15 @@ return function()
             env.writeFile("VERSION", "2.0.0\n")
             env.writeFile(
                 "CHANGELOG.md",
-                [[
-# Changelog
+                dedent([[
+                    # Changelog
 
-## 1.0.0
+                    ## 1.0.0
 
-### Added
+                    ### Added
 
-- Initial release
-]]
+                    - Initial release
+                ]])
             )
 
             local result = env.runScript("CheckChangelogVersion")
@@ -95,17 +97,17 @@ return function()
             env.writeFile("VERSION", "1.0.0\n")
             env.writeFile(
                 "CHANGELOG.md",
-                [[
-# Changelog
+                dedent([[
+                    # Changelog
 
-## 1.0.0
+                    ## 1.0.0
 
-## 0.9.0
+                    ## 0.9.0
 
-### Added
+                    ### Added
 
-- Something
-]]
+                    - Something
+                ]])
             )
 
             local result = env.runScript("CheckChangelogVersion")
@@ -118,21 +120,21 @@ return function()
             env.writeFile("VERSION", "2.0.0\n")
             env.writeFile(
                 "CHANGELOG.md",
-                [[
-# Changelog
+                dedent([[
+                    # Changelog
 
-## 2.0.0
+                    ## 2.0.0
 
-### Changed
+                    ### Changed
 
-- Major update
+                    - Major update
 
-## 1.0.0
+                    ## 1.0.0
 
-### Added
+                    ### Added
 
-- Initial release
-]]
+                    - Initial release
+                ]])
             )
 
             local result = env.runScript("CheckChangelogVersion")

@@ -8,6 +8,8 @@ Tests for the BumpVersion script.
 
 local TestEnvironment = require("./Helpers/TestEnvironment")
 
+local dedent = TestEnvironment.dedent
+
 return function()
     describe("BumpVersion", function()
         local env: TestEnvironment.Environment
@@ -27,11 +29,11 @@ return function()
             env.writeFile("VERSION", "1.0.0\n")
             env.writeFile(
                 "wally.toml",
-                [[
-[package]
-name = "test/package"
-version = "1.0.0"
-]]
+                dedent([[
+                    [package]
+                    name = "test/package"
+                    version = "1.0.0"
+                ]])
             )
 
             local result = env.runScript("BumpVersion", { "patch" })
@@ -46,11 +48,11 @@ version = "1.0.0"
             env.writeFile("VERSION", "1.2.3\n")
             env.writeFile(
                 "wally.toml",
-                [[
-[package]
-name = "test/package"
-version = "1.2.3"
-]]
+                dedent([[
+                    [package]
+                    name = "test/package"
+                    version = "1.2.3"
+                ]])
             )
 
             local result = env.runScript("BumpVersion", { "minor" })
@@ -64,11 +66,11 @@ version = "1.2.3"
             env.writeFile("VERSION", "1.2.3\n")
             env.writeFile(
                 "wally.toml",
-                [[
-[package]
-name = "test/package"
-version = "1.2.3"
-]]
+                dedent([[
+                    [package]
+                    name = "test/package"
+                    version = "1.2.3"
+                ]])
             )
 
             local result = env.runScript("BumpVersion", { "major" })
@@ -82,11 +84,11 @@ version = "1.2.3"
             env.writeFile("VERSION", "1.0.0\n")
             env.writeFile(
                 "wally.toml",
-                [[
-[package]
-name = "test/package"
-version = "1.0.0"
-]]
+                dedent([[
+                    [package]
+                    name = "test/package"
+                    version = "1.0.0"
+                ]])
             )
 
             local result = env.runScript("BumpVersion", {})
@@ -99,11 +101,11 @@ version = "1.0.0"
             env.writeFile("VERSION", "1.0.0\n")
             env.writeFile(
                 "wally.toml",
-                [[
-[package]
-name = "test/package"
-version = "1.0.0"
-]]
+                dedent([[
+                    [package]
+                    name = "test/package"
+                    version = "1.0.0"
+                ]])
             )
 
             local result = env.runScript("BumpVersion", { "invalid" })
@@ -116,11 +118,11 @@ version = "1.0.0"
             env.writeFile("VERSION", "1.0.0\n")
             env.writeFile(
                 "wally.toml",
-                [[
-[package]
-name = "test/package"
-version = "1.0.0"
-]]
+                dedent([[
+                    [package]
+                    name = "test/package"
+                    version = "1.0.0"
+                ]])
             )
 
             local result = env.runScript("BumpVersion", { "PATCH" })
@@ -134,11 +136,11 @@ version = "1.0.0"
             env.writeFile("VERSION", "not-a-version\n")
             env.writeFile(
                 "wally.toml",
-                [[
-[package]
-name = "test/package"
-version = "1.0.0"
-]]
+                dedent([[
+                    [package]
+                    name = "test/package"
+                    version = "1.0.0"
+                ]])
             )
 
             local result = env.runScript("BumpVersion", { "patch" })

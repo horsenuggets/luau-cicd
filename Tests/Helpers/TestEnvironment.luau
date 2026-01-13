@@ -11,6 +11,38 @@ local process = require("@lune/process")
 
 local TestEnvironment = {}
 
+local function dedent(str: string): string
+    -- Remove leading newline if present
+    local content = string.match(str, "^\n(.*)$") or str
+
+    -- Find minimum indentation (ignoring empty lines)
+    local minIndent = math.huge
+    for line in string.gmatch(content, "[^\n]+") do
+        local indent = string.match(line, "^(%s*)")
+        if indent and #line > #indent then
+            minIndent = math.min(minIndent, #indent)
+        end
+    end
+
+    if minIndent == math.huge then
+        minIndent = 0
+    end
+
+    -- Remove that amount of indentation from each line
+    local lines = {}
+    for line in string.gmatch(content .. "\n", "([^\n]*)\n") do
+        if #line > 0 then
+            table.insert(lines, string.sub(line, minIndent + 1))
+        else
+            table.insert(lines, line)
+        end
+    end
+
+    return table.concat(lines, "\n")
+end
+
+TestEnvironment.dedent = dedent
+
 export type ExecResult = {
     ok: boolean,
     code: number,

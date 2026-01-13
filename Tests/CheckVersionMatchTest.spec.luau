@@ -8,6 +8,8 @@ Tests for the CheckVersionMatch script.
 
 local TestEnvironment = require("./Helpers/TestEnvironment")
 
+local dedent = TestEnvironment.dedent
+
 return function()
     describe("CheckVersionMatch", function()
         local env: TestEnvironment.Environment
@@ -24,11 +26,11 @@ return function()
             env.writeFile("VERSION", "1.2.3\n")
             env.writeFile(
                 "wally.toml",
-                [[
-[package]
-name = "test/package"
-version = "1.2.3"
-]]
+                dedent([[
+                    [package]
+                    name = "test/package"
+                    version = "1.2.3"
+                ]])
             )
 
             local result = env.runScript("CheckVersionMatch")
@@ -41,11 +43,11 @@ version = "1.2.3"
             env.writeFile("VERSION", "2.0.0\n")
             env.writeFile(
                 "wally.toml",
-                [[
-[package]
-name = "test/package"
-version = "1.0.0"
-]]
+                dedent([[
+                    [package]
+                    name = "test/package"
+                    version = "1.0.0"
+                ]])
             )
 
             local result = env.runScript("CheckVersionMatch")
@@ -58,11 +60,11 @@ version = "1.0.0"
             env.writeFile("VERSION", "  1.0.0  \n")
             env.writeFile(
                 "wally.toml",
-                [[
-[package]
-name = "test/package"
-version = "1.0.0"
-]]
+                dedent([[
+                    [package]
+                    name = "test/package"
+                    version = "1.0.0"
+                ]])
             )
 
             local result = env.runScript("CheckVersionMatch")
@@ -74,10 +76,10 @@ version = "1.0.0"
             env.writeFile("VERSION", "1.0.0\n")
             env.writeFile(
                 "wally.toml",
-                [[
-[package]
-name = "test/package"
-]]
+                dedent([[
+                    [package]
+                    name = "test/package"
+                ]])
             )
 
             local result = env.runScript("CheckVersionMatch")
@@ -90,11 +92,11 @@ name = "test/package"
             env.writeFile("VERSION", "1.0.0\n")
             env.writeFile(
                 "wally.toml",
-                [[
-[package]
-name = "test/package"
-version="1.0.0"
-]]
+                dedent([[
+                    [package]
+                    name = "test/package"
+                    version="1.0.0"
+                ]])
             )
 
             local result = env.runScript("CheckVersionMatch")
