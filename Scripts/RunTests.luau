@@ -16,6 +16,7 @@ Testable.configure({
 
 local TESTS = {
     { Name = "BumpVersionTest", Func = require("../Tests/BumpVersionTest.spec") },
+    { Name = "CheckChangelogFormatTest", Func = require("../Tests/CheckChangelogFormatTest.spec") },
     { Name = "CheckChangelogVersionTest", Func = require("../Tests/CheckChangelogVersionTest.spec") },
     { Name = "CheckFormattingTest", Func = require("../Tests/CheckFormattingTest.spec") },
     { Name = "CheckVersionMatchTest", Func = require("../Tests/CheckVersionMatchTest.spec") },
