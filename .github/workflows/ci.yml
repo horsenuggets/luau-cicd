@@ -76,7 +76,7 @@ jobs:
         run: lune setup --no-update-luaurc
 
       - name: Run static analysis
-        run: luau-lsp analyze --platform standard .
+        run: luau-lsp analyze --platform standard --ignore "DevPackages/**" --ignore "Packages/**" .
 
   changelog:
     name: Check changelog format
