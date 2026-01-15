@@ -27,11 +27,11 @@ return function()
                 env.writeFile(
                     "CHANGELOG.md",
                     dedent([[
-						# Changelog
+                        # Changelog
 
-						## 1.0.0
-						- Initial release
-					]])
+                        ## 1.0.0
+                        - Initial release
+                    ]])
                 )
 
                 local result = env.runScript("CheckChangelogFormat")
@@ -44,15 +44,15 @@ return function()
                 env.writeFile(
                     "CHANGELOG.md",
                     dedent([[
-						# Changelog
+                        # Changelog
 
-						## 2.0.0
-						- New feature
-						- Updated behavior
+                        ## 2.0.0
+                        - New feature
+                        - Updated behavior
 
-						## 1.0.0
-						- Initial release
-					]])
+                        ## 1.0.0
+                        - Initial release
+                    ]])
                 )
 
                 local result = env.runScript("CheckChangelogFormat")
@@ -64,13 +64,13 @@ return function()
                 env.writeFile(
                     "CHANGELOG.md",
                     dedent([[
-						# Changelog
+                        # Changelog
 
-						## 1.0.0
-						- Added a thing
-						- Changed a thing
-						- Fixed a thing
-					]])
+                        ## 1.0.0
+                        - Added a thing
+                        - Changed a thing
+                        - Fixed a thing
+                    ]])
                 )
 
                 local result = env.runScript("CheckChangelogFormat")
@@ -93,11 +93,11 @@ return function()
                 env.writeFile(
                     "CHANGELOG.md",
                     dedent([[
-						# Changes
+                        # Changes
 
-						## 1.0.0
-						- Something
-					]])
+                        ## 1.0.0
+                        - Something
+                    ]])
                 )
 
                 local result = env.runScript("CheckChangelogFormat")
@@ -121,11 +121,11 @@ return function()
                 env.writeFile(
                     "CHANGELOG.md",
                     dedent([[
-						# Changelog
+                        # Changelog
 
-						## v1.0.0
-						- Something
-					]])
+                        ## v1.0.0
+                        - Something
+                    ]])
                 )
 
                 local result = env.runScript("CheckChangelogFormat")
@@ -138,9 +138,9 @@ return function()
                 env.writeFile(
                     "CHANGELOG.md",
                     dedent([[
-						# Changelog
+                        # Changelog
 
-					]])
+                    ]])
                 )
 
                 local result = env.runScript("CheckChangelogFormat")
@@ -155,13 +155,13 @@ return function()
                 env.writeFile(
                     "CHANGELOG.md",
                     dedent([[
-						# Changelog
+                        # Changelog
 
-						## 1.0.0
+                        ## 1.0.0
 
-						### Added
-						- Something
-					]])
+                        ### Added
+                        - Something
+                    ]])
                 )
 
                 local result = env.runScript("CheckChangelogFormat")
@@ -177,11 +177,11 @@ return function()
                 env.writeFile(
                     "CHANGELOG.md",
                     dedent([[
-						# Changelog
+                        # Changelog
 
-						## 1.0.0
-						-Something
-					]])
+                        ## 1.0.0
+                        -Something
+                    ]])
                 )
 
                 local result = env.runScript("CheckChangelogFormat")
@@ -203,10 +203,10 @@ return function()
                 env.writeFile(
                     "CHANGELOG.md",
                     dedent([[
-						# Changelog
+                        # Changelog
 
-						- Something without version
-					]])
+                        - Something without version
+                    ]])
                 )
 
                 local result = env.runScript("CheckChangelogFormat")
