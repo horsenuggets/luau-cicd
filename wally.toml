@@ -8,4 +8,4 @@ registry = "https://github.com/UpliftGames/wally-index"
 repository = "https://github.com/horsenuggets/luau-cicd"
 
 [dev-dependencies]
-testable = "horsenuggets/testable@0.0.5"
+testable = "horsenuggets/testable@0.1.0"
