@@ -2,8 +2,8 @@
 
 extractChangelog
 
-Extracts the changelog section for a specific version from CHANGELOG.md. Optionally accepts
-a path to the changelog file.
+Extracts the changelog section for a specific version from CHANGELOG.md. Optionally
+accepts a path to the changelog file.
 
 --]]
 
