@@ -8,7 +8,7 @@ Executes all test suites and exits with appropriate status code.
 
 --]]
 
-local Testable = require("@devpackages/testable")
+local Testable = require("@devpackages/Testable")
 local process = require("@lune/process")
 
 -- Disable parallel execution for integration tests that manage file system state
