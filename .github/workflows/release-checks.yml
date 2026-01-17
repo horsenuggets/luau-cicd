@@ -117,6 +117,31 @@ jobs:
       - name: Check JSON format
         run: lune run ./Scripts/CheckJsonFormat.luau
 
+  wally-auth:
+    name: Verify Wally auth
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check WALLY_AUTH secret
+        env:
+          WALLY_AUTH: ${{ secrets.WALLY_AUTH }}
+        run: |
+          # Only check if this is a Wally package (has wally.toml)
+          if [ ! -f "wally.toml" ]; then
+            echo "No wally.toml found, skipping WALLY_AUTH check."
+            exit 0
+          fi
+
+          if [ -z "$WALLY_AUTH" ]; then
+            echo "::error::WALLY_AUTH secret is not configured. This is required for publishing to Wally."
+            echo "::error::Add the secret using: gh secret set WALLY_AUTH < ~/.wally/auth.toml"
+            exit 1
+          fi
+
+          echo "WALLY_AUTH secret is configured."
+
   version:
     name: Validate version
     runs-on: ubuntu-latest
