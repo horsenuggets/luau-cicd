@@ -128,9 +128,15 @@ jobs:
         env:
           WALLY_AUTH: ${{ secrets.WALLY_AUTH }}
         run: |
-          # Only check if this is a Wally package (has wally.toml)
+          # Skip if no wally.toml exists
           if [ ! -f "wally.toml" ]; then
             echo "No wally.toml found, skipping WALLY_AUTH check."
+            exit 0
+          fi
+
+          # Skip if this is a private package (won't be published to Wally)
+          if grep -q '^private = true' wally.toml; then
+            echo "Private package detected, skipping WALLY_AUTH check."
             exit 0
           fi
 
