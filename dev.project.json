@@ -1,0 +1,12 @@
+{
+    "name": "luau-cicd",
+    "tree": {
+        "$path": "Scripts",
+        "DevPackages": {
+            "$path": "DevPackages"
+        },
+        "Packages": {
+            "$path": "Packages"
+        }
+    }
+}
