@@ -127,14 +127,27 @@ local function runStaticAnalysis()
         print(`Restored shebangs to {shebangCount} file(s).`)
     end
 
-    if result.ok then
-        print("Static analysis passed!")
-        process.exit(0)
-    else
+    -- Check for any issues in output (warnings or errors)
+    -- luau-lsp outputs issues in the format: file(line,col): Type: message
+    local hasIssues = false
+    local issuePattern = "%):%s+%w+:"
+
+    if string.find(result.stdout, issuePattern) then
+        hasIssues = true
+    end
+
+    if not result.ok then
         print("Static analysis failed.")
         print(result.stdout)
         print(result.stderr)
         process.exit(1)
+    elseif hasIssues then
+        print("Static analysis found warnings:")
+        print(result.stdout)
+        process.exit(1)
+    else
+        print("Static analysis passed!")
+        process.exit(0)
     end
 end
 
