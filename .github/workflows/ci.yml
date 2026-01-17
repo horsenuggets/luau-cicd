@@ -143,6 +143,27 @@ jobs:
       - name: Check .luaurc format
         run: lune run ./Scripts/CheckLuaurcFormat.luau
 
+  json-format:
+    name: Check JSON format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install Prettier
+        run: npm install -g prettier
+
+      - name: Setup Rokit
+        uses: CompeyDev/setup-rokit@v0.1.2
+
+      - name: Check JSON format
+        run: lune run ./Scripts/CheckJsonFormat.luau
+
   no-tabs:
     name: Check for tabs
     runs-on: ubuntu-latest
