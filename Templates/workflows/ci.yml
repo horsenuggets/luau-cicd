@@ -83,3 +83,18 @@ jobs:
 
       - name: Run static analysis
         run: lune run ./Submodules/luau-cicd/Scripts/RunStaticAnalysis.luau
+
+  version-match:
+    name: Check version match
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Setup Rokit
+        uses: CompeyDev/setup-rokit@v0.1.2
+
+      - name: Check version match
+        run: lune run ./Submodules/luau-cicd/Scripts/CheckVersionMatch.luau
