@@ -1,6 +1,6 @@
 --[[
 
-CheckLuaurcFormatTest
+CheckLuaurcFormatTest.spec
 
 Tests for the CheckLuaurcFormat script.
 

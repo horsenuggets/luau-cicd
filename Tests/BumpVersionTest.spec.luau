@@ -1,6 +1,6 @@
 --[[
 
-BumpVersionTest
+BumpVersionTest.spec
 
 Tests for the BumpVersion script.
 

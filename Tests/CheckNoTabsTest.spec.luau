@@ -1,6 +1,6 @@
 --[[
 
-CheckNoTabsTest
+CheckNoTabsTest.spec
 
 Tests for the CheckNoTabs script.
 

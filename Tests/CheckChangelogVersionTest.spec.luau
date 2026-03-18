@@ -1,6 +1,6 @@
 --[[
 
-CheckChangelogVersionTest
+CheckChangelogVersionTest.spec
 
 Tests for the CheckChangelogVersion script.
 

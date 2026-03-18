@@ -1,6 +1,6 @@
 --[[
 
-CheckWallyFormatTest
+CheckWallyFormatTest.spec
 
 Tests for the CheckWallyFormat script.
 
