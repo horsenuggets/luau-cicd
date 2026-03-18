@@ -1,6 +1,6 @@
 --[[
 
-CheckFileHeadersTest
+CheckFileHeadersTest.spec
 
 Tests for the CheckFileHeaders script.
 
@@ -154,12 +154,12 @@ return {}
                 expect(result.ok).to.equal(true)
             end)
 
-            it("should strip .spec suffix for test files", function()
+            it("should keep sub-extension for spec files", function()
                 env.writeFile(
                     "MyTest.spec.luau",
                     [=[--[[
 
-MyTest
+MyTest.spec
 
 Tests for MyTest.
 

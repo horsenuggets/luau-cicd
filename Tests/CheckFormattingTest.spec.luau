@@ -1,6 +1,6 @@
 --[[
 
-CheckFormattingTest
+CheckFormattingTest.spec
 
 Tests for the CheckFormatting script.
 

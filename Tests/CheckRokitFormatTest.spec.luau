@@ -1,6 +1,6 @@
 --[[
 
-CheckRokitFormatTest
+CheckRokitFormatTest.spec
 
 Tests for the CheckRokitFormat script.
 

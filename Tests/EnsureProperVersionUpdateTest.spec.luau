@@ -1,6 +1,6 @@
 --[[
 
-EnsureProperVersionUpdateTest
+EnsureProperVersionUpdateTest.spec
 
 Tests for the EnsureProperVersionUpdate script.
 

@@ -1,6 +1,6 @@
 --[[
 
-CheckChangelogFormatTest
+CheckChangelogFormatTest.spec
 
 Tests for the CheckChangelogFormat script.
 
