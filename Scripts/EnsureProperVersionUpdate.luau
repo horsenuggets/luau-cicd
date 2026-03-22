@@ -5,7 +5,7 @@
 EnsureProperVersionUpdate
 
 Validates that the VERSION file contains a proper semantic version and that it has been
-bumped correctly since the last release tag. Compares against the most recent git tag
+bumped correctly since the last release tag. Compares against the most recent Git tag
 (excluding 0.0.0) to determine if a valid version bump has occurred.
 
 --]]
@@ -39,7 +39,7 @@ local function ensureProperVersionUpdate()
     local tagResult = process.exec("git", { "tag", "--sort=-version:refname" })
 
     if not tagResult.ok then
-        print("Could not retrieve git tags.")
+        print("Could not retrieve Git tags.")
         print("Version format is valid.")
         return
     end
