@@ -107,6 +107,7 @@ export type Platform = {
     targets: { string },
     sourcemap: string?,
     rojoProject: string?,
+    ignorePatterns: { string }?,
 }
 
 export type LintConfig = {
@@ -132,8 +133,16 @@ function Lint.run(config: LintConfig?)
             generateSourcemap(entry.rojoProject, sourcemap)
         end
 
+        local entryIgnoreArgs = ignoreArgs
+        if entry.ignorePatterns then
+            entryIgnoreArgs = buildIgnoreArgs(cfg.ignorePatterns)
+            for _, pattern in entry.ignorePatterns :: { string } do
+                table.insert(entryIgnoreArgs, `--ignore={pattern}`)
+            end
+        end
+
         local label = table.concat(entry.targets, ", ")
-        if not analyze(label, entry.platform, entry.targets, sourcemap, ignoreArgs) then
+        if not analyze(label, entry.platform, entry.targets, sourcemap, entryIgnoreArgs) then
             allPassed = false
         end
     end
