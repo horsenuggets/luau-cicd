@@ -1,6 +1,6 @@
 --[[
 
-ParseVersionTest
+ParseVersionTest.spec
 
 Tests for the parseVersion helper function.
 

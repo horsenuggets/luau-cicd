@@ -42,14 +42,12 @@ end
 
 local function getExpectedName(filepath: string): string
     local filename = string.match(filepath, "([^/]+)%.luau$")
-    if filename == "init" then
-        -- For init.luau, use the parent folder name
-        local parentFolder = string.match(filepath, "([^/]+)/init%.luau$")
+    if filename == "init" or string.match(filename or "", "^init%.") then
+        -- For init.luau (and Rojo variants like init.server.luau,
+        -- init.client.luau, init.plugin.luau), use the parent folder
+        -- name
+        local parentFolder = string.match(filepath, "([^/]+)/init[^/]*%.luau$")
         return parentFolder or "init"
-    end
-    -- Strip .spec suffix for test files
-    if string.match(filename or "", "%.spec$") then
-        filename = string.match(filename, "(.+)%.spec$")
     end
     return filename or ""
 end

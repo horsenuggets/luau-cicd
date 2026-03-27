@@ -1,6 +1,6 @@
 --[[
 
-CheckVersionMatchTest
+CheckVersionMatchTest.spec
 
 Tests for the CheckVersionMatch script.
 

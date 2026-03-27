@@ -1,6 +1,6 @@
 --[[
 
-ExtractChangelogTest
+ExtractChangelogTest.spec
 
 Tests for the extractChangelog helper function.
 

@@ -1,6 +1,6 @@
 --[[
 
-SyncVersionTest
+SyncVersionTest.spec
 
 Tests for the SyncVersion script.
 
