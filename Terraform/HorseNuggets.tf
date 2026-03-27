@@ -2,49 +2,49 @@
 # These all use the standard CI checks from luau-cicd.
 
 module "assetfile" {
-  source         = "./modules/luau-repo"
+  source         = "./Modules/LuauRepo"
   repository     = "assetfile"
   main_checks    = var.standard_main_checks
   release_checks = var.standard_release_checks
 }
 
 module "chalk-luau" {
-  source         = "./modules/luau-repo"
+  source         = "./Modules/LuauRepo"
   repository     = "chalk-luau"
   main_checks    = var.standard_main_checks
   release_checks = var.standard_release_checks
 }
 
 module "commandline-luau" {
-  source         = "./modules/luau-repo"
+  source         = "./Modules/LuauRepo"
   repository     = "commandline-luau"
   main_checks    = var.standard_main_checks
   release_checks = var.standard_release_checks
 }
 
 module "discord-luau-fork" {
-  source         = "./modules/luau-repo"
+  source         = "./Modules/LuauRepo"
   repository     = "discord-luau-fork"
   main_checks    = var.standard_main_checks
   release_checks = var.standard_release_checks
 }
 
 module "dotenv-luau" {
-  source         = "./modules/luau-repo"
+  source         = "./Modules/LuauRepo"
   repository     = "dotenv-luau"
   main_checks    = var.standard_main_checks
   release_checks = var.standard_release_checks
 }
 
 module "hashlib" {
-  source         = "./modules/luau-repo"
+  source         = "./Modules/LuauRepo"
   repository     = "hashlib"
   main_checks    = var.standard_main_checks
   release_checks = var.standard_release_checks
 }
 
 module "luau-cicd" {
-  source             = "./modules/luau-repo"
+  source             = "./Modules/LuauRepo"
   repository         = "luau-cicd"
   main_checks        = var.standard_main_checks
   release_checks     = var.standard_release_checks
@@ -52,35 +52,35 @@ module "luau-cicd" {
 }
 
 module "luau-futures" {
-  source         = "./modules/luau-repo"
+  source         = "./Modules/LuauRepo"
   repository     = "luau-futures"
   main_checks    = var.standard_main_checks
   release_checks = var.standard_release_checks
 }
 
 module "luau-gl" {
-  source         = "./modules/luau-repo"
+  source         = "./Modules/LuauRepo"
   repository     = "luau-gl"
   main_checks    = var.standard_main_checks
   release_checks = var.standard_release_checks
 }
 
 module "luau-markdown-renderer" {
-  source         = "./modules/luau-repo"
+  source         = "./Modules/LuauRepo"
   repository     = "luau-markdown-renderer"
   main_checks    = var.standard_main_checks
   release_checks = var.standard_release_checks
 }
 
 module "lune-pm" {
-  source         = "./modules/luau-repo"
+  source         = "./Modules/LuauRepo"
   repository     = "lune-pm"
   main_checks    = var.standard_main_checks
   release_checks = var.standard_release_checks
 }
 
 module "testable" {
-  source         = "./modules/luau-repo"
+  source         = "./Modules/LuauRepo"
   repository     = "testable"
   main_checks    = var.standard_main_checks
   release_checks = var.standard_release_checks
@@ -89,7 +89,7 @@ module "testable" {
 # Custom repos with additional checks
 
 module "luauproject-cli" {
-  source         = "./modules/luau-repo"
+  source         = "./Modules/LuauRepo"
   repository     = "luauproject-cli"
   main_checks    = var.standard_main_checks
   release_checks = var.standard_release_checks

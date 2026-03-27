@@ -2,7 +2,7 @@
 # These all use the standard CI checks from luau-cicd.
 
 module "bloxdrive" {
-  source = "./modules/luau-repo"
+  source = "./Modules/LuauRepo"
   providers = {
     github = github.jedfgames
   }
@@ -12,7 +12,7 @@ module "bloxdrive" {
 }
 
 module "slopkit" {
-  source = "./modules/luau-repo"
+  source = "./Modules/LuauRepo"
   providers = {
     github = github.jedfgames
   }
@@ -22,7 +22,7 @@ module "slopkit" {
 }
 
 module "tower-defense-maker" {
-  source = "./modules/luau-repo"
+  source = "./Modules/LuauRepo"
   providers = {
     github = github.jedfgames
   }
@@ -32,7 +32,7 @@ module "tower-defense-maker" {
 }
 
 module "tower-of-falling-brainrots" {
-  source = "./modules/luau-repo"
+  source = "./Modules/LuauRepo"
   providers = {
     github = github.jedfgames
   }
