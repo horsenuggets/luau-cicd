@@ -58,7 +58,7 @@ local function checkLuaurcFormat()
     -- Check for @self alias
     if data.aliases then
         for key, _ in data.aliases do
-            local lowerKey = string.lower(key)
+            local lowerKey = string.lower(tostring(key))
             if lowerKey == "self" or lowerKey == "@self" then
                 table.insert(
                     errors,
