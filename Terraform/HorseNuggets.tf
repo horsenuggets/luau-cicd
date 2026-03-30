@@ -1,12 +1,9 @@
 # Standard Luau packages (horsenuggets)
 # These all use the standard CI checks from luau-cicd.
 
-module "assetfile" {
-  source         = "./Modules/LuauRepo"
-  repository     = "assetfile"
-  main_checks    = var.standard_main_checks
-  release_checks = var.standard_release_checks
-}
+# assetfile, lune-pm, luauproject-cli, and rbxstudio-cli are
+# managed per-repo via their own Terraform/Main.tf using the
+# shared CommandlineCli module.
 
 module "chalk-luau" {
   source         = "./Modules/LuauRepo"
@@ -72,13 +69,6 @@ module "luau-markdown-renderer" {
   release_checks = var.standard_release_checks
 }
 
-module "lune-pm" {
-  source         = "./Modules/LuauRepo"
-  repository     = "lune-pm"
-  main_checks    = var.standard_main_checks
-  release_checks = var.standard_release_checks
-}
-
 module "testable" {
   source         = "./Modules/LuauRepo"
   repository     = "testable"
@@ -86,21 +76,3 @@ module "testable" {
   release_checks = var.standard_release_checks
 }
 
-# Custom repos with additional checks
-
-module "luauproject-cli" {
-  source         = "./Modules/LuauRepo"
-  repository     = "luauproject-cli"
-  main_checks    = var.standard_main_checks
-  release_checks = var.standard_release_checks_no_wally
-  extra_main_checks = [
-    "Test install on linux",
-    "Test install on macos",
-    "Test install on windows",
-  ]
-  extra_release_checks = [
-    "Test install on linux",
-    "Test install on macos",
-    "Test install on windows",
-  ]
-}
