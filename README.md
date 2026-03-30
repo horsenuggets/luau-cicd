@@ -10,9 +10,9 @@ Add this repository as a Git submodule:
 git submodule add git@github.com:horsenuggets/luau-cicd.git Submodules/luau-cicd
 ```
 
-Then run scripts using Lune:
+Then run scripts directly:
 
 ```bash
-lune run Submodules/luau-cicd/Scripts/CheckFormatting
-lune run Submodules/luau-cicd/Scripts/BumpVersion patch
+./Submodules/luau-cicd/Scripts/CheckFormatting.luau
+./Submodules/luau-cicd/Scripts/BumpVersion.luau patch
 ```

@@ -8,8 +8,9 @@ Validates that all Luau files have properly formatted header comments. Supports 
 directives (like --!strict, --!native) or shebangs at the top of the file, followed by a
 blank line, then the header comment block.
 
-Usage: lune run CheckFileHeaders [directory]
-  directory: Optional path to the directory to check. Defaults to current directory.
+[Usage] ./Scripts/CheckFileHeaders.luau [directory]
+> directory - Optional path to the directory to check. Defaults to current
+> directory.
 
 --]]
 

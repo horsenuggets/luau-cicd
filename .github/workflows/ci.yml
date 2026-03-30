@@ -41,7 +41,7 @@ jobs:
         uses: CompeyDev/setup-rokit@v0.1.2
 
       - name: Check formatting
-        run: lune run ./Scripts/CheckFormatting.luau
+        run: ./Scripts/CheckFormatting.luau
 
   test:
     name: Run tests
@@ -57,7 +57,7 @@ jobs:
         run: wally install
 
       - name: Run tests
-        run: lune run ./Scripts/RunTests.luau
+        run: ./Scripts/RunTests.luau
 
   analyze:
     name: Static analysis
@@ -76,7 +76,7 @@ jobs:
         run: lune setup --no-update-luaurc
 
       - name: Run static analysis
-        run: lune run ./Scripts/RunStaticAnalysis.luau lune
+        run: ./Scripts/RunStaticAnalysis.luau lune
 
   changelog:
     name: Check changelog format
@@ -89,7 +89,7 @@ jobs:
         uses: CompeyDev/setup-rokit@v0.1.2
 
       - name: Check changelog format
-        run: lune run ./Scripts/CheckChangelogFormat.luau
+        run: ./Scripts/CheckChangelogFormat.luau
 
   rokit-format:
     name: Check rokit.toml format
@@ -102,7 +102,7 @@ jobs:
         uses: CompeyDev/setup-rokit@v0.1.2
 
       - name: Check rokit.toml format
-        run: lune run ./Scripts/CheckRokitFormat.luau
+        run: ./Scripts/CheckRokitFormat.luau
 
   wally-format:
     name: Check wally.toml format
@@ -115,7 +115,7 @@ jobs:
         uses: CompeyDev/setup-rokit@v0.1.2
 
       - name: Check wally.toml format
-        run: lune run ./Scripts/CheckWallyFormat.luau
+        run: ./Scripts/CheckWallyFormat.luau
 
   file-headers:
     name: Check file headers
@@ -128,7 +128,7 @@ jobs:
         uses: CompeyDev/setup-rokit@v0.1.2
 
       - name: Check file headers
-        run: lune run ./Scripts/CheckFileHeaders.luau
+        run: ./Scripts/CheckFileHeaders.luau
 
   luaurc-format:
     name: Check .luaurc format
@@ -141,7 +141,7 @@ jobs:
         uses: CompeyDev/setup-rokit@v0.1.2
 
       - name: Check .luaurc format
-        run: lune run ./Scripts/CheckLuaurcFormat.luau
+        run: ./Scripts/CheckLuaurcFormat.luau
 
   json-format:
     name: Check JSON format
@@ -162,7 +162,20 @@ jobs:
         uses: CompeyDev/setup-rokit@v0.1.2
 
       - name: Check JSON format
-        run: lune run ./Scripts/CheckJsonFormat.luau
+        run: ./Scripts/CheckJsonFormat.luau
+
+  script-executability:
+    name: Check script executability
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Rokit
+        uses: CompeyDev/setup-rokit@v0.1.2
+
+      - name: Check script executability
+        run: ./Scripts/CheckScriptExecutability.luau
 
   no-tabs:
     name: Check for tabs
@@ -175,4 +188,4 @@ jobs:
         uses: CompeyDev/setup-rokit@v0.1.2
 
       - name: Check for tabs
-        run: lune run ./Scripts/CheckNoTabs.luau
+        run: ./Scripts/CheckNoTabs.luau

@@ -6,8 +6,9 @@ CheckNoTabs
 
 Validates that no Luau files contain tab characters. All indentation must use spaces.
 
-Usage: lune run CheckNoTabs [directory]
-  directory: Optional path to the directory to check. Defaults to current directory.
+[Usage] ./Scripts/CheckNoTabs.luau [directory]
+> directory - Optional path to the directory to check. Defaults to current
+> directory.
 
 --]]
 

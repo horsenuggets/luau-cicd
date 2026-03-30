@@ -8,7 +8,7 @@ Runs luau-lsp static analysis. Accepts an optional platform argument
 (defaults to "standard"). The horsenuggets/luau-lsp fork handles
 shebangs natively, so no stripping is needed.
 
-[Usage] lune run ./Scripts/RunStaticAnalysis.luau [platform]
+[Usage] ./Scripts/RunStaticAnalysis.luau [platform]
 
 --]]
 

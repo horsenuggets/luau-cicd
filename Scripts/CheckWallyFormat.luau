@@ -7,8 +7,8 @@ CheckWallyFormat
 Validates that wally.toml follows the project format guidelines. Specifically checks that
 all repository strings (package name and dependency values) are lowercase.
 
-Usage: lune run CheckWallyFormat [filename]
-  filename: Optional path to the file to check. Defaults to "wally.toml".
+[Usage] ./Scripts/CheckWallyFormat.luau [filename]
+> filename - Optional path to the file to check. Defaults to "wally.toml".
 
 --]]
 
