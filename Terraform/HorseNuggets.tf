@@ -92,7 +92,7 @@ module "luauproject-cli" {
   source         = "./Modules/LuauRepo"
   repository     = "luauproject-cli"
   main_checks    = var.standard_main_checks
-  release_checks = var.standard_release_checks
+  release_checks = var.standard_release_checks_no_wally
   extra_main_checks = [
     "Test install on linux",
     "Test install on macos",
