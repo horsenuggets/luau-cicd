@@ -34,3 +34,18 @@ variable "standard_release_checks" {
     "Verify Wally auth",
   ]
 }
+
+# Release checks for private packages that don't publish to Wally
+variable "standard_release_checks_no_wally" {
+  description = "Required checks for PRs to release (no Wally auth)"
+  type        = list(string)
+  default = [
+    "Check formatting",
+    "Check JSON format",
+    "Run tests",
+    "Static analysis",
+    "Validate PR title",
+    "Validate version",
+    "Verify diff matches main",
+  ]
+}
