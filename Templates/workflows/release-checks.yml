@@ -6,6 +6,21 @@ on:
       - release
 
 jobs:
+  script-executability:
+    name: Check script executability
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Setup Rokit
+        uses: CompeyDev/setup-rokit@v0.1.2
+
+      - name: Check script executability
+        run: ./Submodules/luau-cicd/Scripts/CheckScriptExecutability.luau
+
   wally-auth:
     name: Verify Wally auth
     runs-on: ubuntu-latest
@@ -75,7 +90,7 @@ jobs:
         uses: CompeyDev/setup-rokit@v0.1.2
 
       - name: Check formatting
-        run: lune run ./Submodules/luau-cicd/Scripts/CheckFormatting.luau
+        run: ./Submodules/luau-cicd/Scripts/CheckFormatting.luau
 
   test:
     name: Run tests
@@ -93,7 +108,7 @@ jobs:
         run: wally install
 
       - name: Run tests
-        run: lune run ./Scripts/RunTests.luau
+        run: ./Scripts/RunTests.luau
 
   analyze:
     name: Static analysis
@@ -114,7 +129,7 @@ jobs:
         run: lune setup --no-update-luaurc
 
       - name: Run static analysis
-        run: lune run ./Submodules/luau-cicd/Scripts/RunStaticAnalysis.luau lune
+        run: ./Submodules/luau-cicd/Scripts/RunStaticAnalysis.luau lune
 
   json-format:
     name: Check JSON format
@@ -137,7 +152,7 @@ jobs:
         uses: CompeyDev/setup-rokit@v0.1.2
 
       - name: Check JSON format
-        run: lune run ./Submodules/luau-cicd/Scripts/CheckJsonFormat.luau
+        run: ./Submodules/luau-cicd/Scripts/CheckJsonFormat.luau
 
   version:
     name: Validate version
@@ -153,16 +168,16 @@ jobs:
         uses: CompeyDev/setup-rokit@v0.1.2
 
       - name: Check version update
-        run: lune run ./Submodules/luau-cicd/Scripts/EnsureProperVersionUpdate.luau
+        run: ./Submodules/luau-cicd/Scripts/EnsureProperVersionUpdate.luau
 
       - name: Check version match
-        run: lune run ./Submodules/luau-cicd/Scripts/CheckVersionMatch.luau
+        run: ./Submodules/luau-cicd/Scripts/CheckVersionMatch.luau
 
       - name: Check changelog entry
-        run: lune run ./Submodules/luau-cicd/Scripts/CheckChangelogVersion.luau
+        run: ./Submodules/luau-cicd/Scripts/CheckChangelogVersion.luau
 
       - name: Check changelog format
-        run: lune run ./Submodules/luau-cicd/Scripts/CheckChangelogFormat.luau
+        run: ./Submodules/luau-cicd/Scripts/CheckChangelogFormat.luau
 
       - name: Verify PR title matches VERSION
         run: |
