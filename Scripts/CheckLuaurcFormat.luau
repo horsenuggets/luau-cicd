@@ -8,9 +8,9 @@ Validates that .luaurc follows the project format guidelines. Checks that:
 - "@self" is never added as an alias since it is already built-in
 - If lune is in rokit.toml, the lune alias version must match
 
-Usage: lune run CheckLuaurcFormat [luaurc-file] [rokit-file]
-  luaurc-file: Optional path to the .luaurc file. Defaults to ".luaurc".
-  rokit-file: Optional path to the rokit.toml file. Defaults to "rokit.toml".
+[Usage] ./Scripts/CheckLuaurcFormat.luau [luaurc-file] [rokit-file]
+> luaurc-file - Optional path to the .luaurc file. Defaults to ".luaurc".
+> rokit-file - Optional path to the rokit.toml file. Defaults to "rokit.toml".
 
 --]]
 

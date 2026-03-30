@@ -7,7 +7,7 @@ BumpVersion
 Bumps the version in VERSION file and syncs it to wally.toml. Pass "major", "minor", or
 "patch" as an argument to bump the corresponding version component.
 
-[Usage] lune run Scripts/BumpVersion <major|minor|patch>
+[Usage] ./Scripts/BumpVersion.luau <major|minor|patch>
 
 --]]
 
@@ -19,7 +19,7 @@ local parseVersion = require("./Helpers/parseVersion")
 local function bumpVersion()
     local args = process.args
     if #args < 1 then
-        print("[Usage] lune run Scripts/BumpVersion <major|minor|patch>")
+        print("[Usage] ./Scripts/BumpVersion.luau <major|minor|patch>")
         process.exit(1)
     end
 

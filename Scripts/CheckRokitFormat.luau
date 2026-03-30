@@ -7,8 +7,8 @@ CheckRokitFormat
 Validates that rokit.toml follows the project format guidelines. Specifically checks that
 all tool repository strings are lowercase.
 
-Usage: lune run CheckRokitFormat [filename]
-  filename: Optional path to the file to check. Defaults to "rokit.toml".
+[Usage] ./Scripts/CheckRokitFormat.luau [filename]
+> filename - Optional path to the file to check. Defaults to "rokit.toml".
 
 --]]
 
