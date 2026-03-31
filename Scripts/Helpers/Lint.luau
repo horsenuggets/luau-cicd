@@ -24,6 +24,39 @@ local DEFAULT_IGNORE_PATTERNS = {
     ".*/**",
 }
 
+local function getProjectName(): string
+    local cwd = process.cwd
+    local name = string.match(cwd, "([^/]+)/?$")
+    return name or "."
+end
+
+local function formatTarget(target: string): string
+    if target == "." or target == "/" then
+        return getProjectName()
+    end
+
+    local clean = string.gsub(target, "/+$", "")
+    if string.sub(clean, 1, 1) ~= "/" then
+        clean = `/{clean}`
+    end
+    return clean
+end
+
+local function normalizeTarget(target: string): string
+    if target == "/" then
+        return "."
+    end
+    return (string.gsub(target, "^/", ""))
+end
+
+local function formatLabel(targets: { string }): string
+    local parts = {}
+    for _, target in targets do
+        table.insert(parts, formatTarget(target))
+    end
+    return table.concat(parts, ", ")
+end
+
 local function printOutput(result: process.ExecResult)
     if result.stdout ~= "" then
         print(result.stdout)
@@ -89,7 +122,7 @@ local function analyze(
     end
 
     for _, target in targets do
-        table.insert(args, target)
+        table.insert(args, normalizeTarget(target))
     end
 
     local result = process.exec("luau-lsp", args)
@@ -103,46 +136,46 @@ local function analyze(
 end
 
 export type Platform = {
-    platform: string,
-    targets: { string },
-    sourcemap: string?,
-    rojoProject: string?,
-    ignorePatterns: { string }?,
+    Platform: string,
+    Targets: { string },
+    Sourcemap: string?,
+    RojoProject: string?,
+    IgnorePatterns: { string }?,
 }
 
 export type LintConfig = {
-    platforms: { Platform }?,
-    ignorePatterns: { string }?,
+    Platforms: { Platform }?,
+    IgnorePatterns: { string }?,
 }
 
 function Lint.run(config: LintConfig?)
     local cfg = config or {}
-    local ignoreArgs = buildIgnoreArgs(cfg.ignorePatterns)
+    local ignoreArgs = buildIgnoreArgs(cfg.IgnorePatterns)
 
-    local platforms: { Platform } = cfg.platforms or {
-        { platform = "lune", targets = { "." } },
+    local platforms: { Platform } = cfg.Platforms or {
+        { Platform = "lune", Targets = { "." } },
     }
 
     local allPassed = true
 
     for _, entry in platforms do
-        local sourcemap = entry.sourcemap
+        local sourcemap = entry.Sourcemap
 
-        if not sourcemap and entry.rojoProject then
+        if not sourcemap and entry.RojoProject then
             sourcemap = "sourcemap.json"
-            generateSourcemap(entry.rojoProject, sourcemap)
+            generateSourcemap(entry.RojoProject, sourcemap)
         end
 
         local entryIgnoreArgs = ignoreArgs
-        if entry.ignorePatterns then
-            entryIgnoreArgs = buildIgnoreArgs(cfg.ignorePatterns)
-            for _, pattern in entry.ignorePatterns :: { string } do
+        if entry.IgnorePatterns then
+            entryIgnoreArgs = buildIgnoreArgs(cfg.IgnorePatterns)
+            for _, pattern in entry.IgnorePatterns :: { string } do
                 table.insert(entryIgnoreArgs, `--ignore={pattern}`)
             end
         end
 
-        local label = table.concat(entry.targets, ", ")
-        if not analyze(label, entry.platform, entry.targets, sourcemap, entryIgnoreArgs) then
+        local label = formatLabel(entry.Targets)
+        if not analyze(label, entry.Platform, entry.Targets, sourcemap, entryIgnoreArgs) then
             allPassed = false
         end
     end
