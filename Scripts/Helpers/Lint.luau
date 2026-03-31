@@ -20,6 +20,7 @@ local Lint = {}
 local DEFAULT_IGNORE_PATTERNS = {
     "DevPackages/**",
     "Packages/**",
+    "ServerPackages/**",
     "Submodules/**",
     ".*/**",
 }
