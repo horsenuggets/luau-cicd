@@ -22,6 +22,7 @@
 *.bak
 *.gen.*
 *.lock
+!.assetfile.lock
 /*sourcemap.json
 
 # Legacy
@@ -30,7 +31,7 @@ aftman.toml
 # Project
 /TODO.md
 
-# Terraform
-.terraform/
+# Repo-specific
 *.tfstate
 *.tfstate.backup
+.terraform/
