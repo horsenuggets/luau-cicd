@@ -76,3 +76,7 @@ module "testable" {
   release_checks = var.standard_release_checks
 }
 
+# Forked toolchain repos (lune, wally, rojo, luau-lsp) are
+# managed per-repo via their own Terraform/Main.tf using the
+# shared LuauRepo module directly.
+
