@@ -43,9 +43,10 @@ local function syncVersion()
     if fs.isFile("README.md") then
         local readmeContent = fs.readFile("README.md")
 
-        -- Pattern to match packagename@version (e.g., horsenuggets/dotenv-luau@0.0.2)
+        -- Pattern to match packagename@version (e.g., horsenuggets/dotenv-luau@0.0.2
+        -- or horsenuggets/t@3.1.1-horse.0.3)
         local escapedPackageName = string.gsub(packageName, "([%-%.%+%[%]%(%)%$%^%%%?%*])", "%%%1")
-        local pattern = `({escapedPackageName}@)[%d]+%.[%d]+%.[%d]+`
+        local pattern = `({escapedPackageName}@)[%d][%w%.%-]*`
 
         local updatedReadme, count = string.gsub(readmeContent, pattern, `%1{version}`)
 

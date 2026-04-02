@@ -172,6 +172,60 @@ return function()
             expect(count).to.equal(2)
         end)
 
+        it("should sync fork version to README.md", function()
+            env.writeFile("VERSION", "3.1.1-horse.0.4\n")
+            env.writeFile(
+                "wally.toml",
+                dedent([[
+                    [package]
+                    name = "author/my-package"
+                    version = "3.1.1-horse.0.3"
+                ]])
+            )
+            env.writeFile(
+                "README.md",
+                dedent([[
+                    # my-package
+
+                    Install: `author/my-package@3.1.1-horse.0.3`
+                ]])
+            )
+
+            local result = env.runScript("SyncVersion")
+
+            expect(result.ok).to.equal(true)
+            local wallyContent = env.readFile("wally.toml")
+            expect(string.find(wallyContent, 'version = "3.1.1%-horse.0.4"')).to.be.ok()
+            local readmeContent = env.readFile("README.md")
+            expect(string.find(readmeContent, "author/my%-package@3%.1%.1%-horse%.0%.4")).to.be.ok()
+        end)
+
+        it("should sync prerelease version to README.md", function()
+            env.writeFile("VERSION", "2.0.0-beta.6\n")
+            env.writeFile(
+                "wally.toml",
+                dedent([[
+                    [package]
+                    name = "author/my-package"
+                    version = "2.0.0-beta.5"
+                ]])
+            )
+            env.writeFile(
+                "README.md",
+                dedent([[
+                    # my-package
+
+                    Install: `author/my-package@2.0.0-beta.5`
+                ]])
+            )
+
+            local result = env.runScript("SyncVersion")
+
+            expect(result.ok).to.equal(true)
+            local readmeContent = env.readFile("README.md")
+            expect(string.find(readmeContent, "author/my%-package@2%.0%.0%-beta%.6")).to.be.ok()
+        end)
+
         it("should not modify README.md if no package dependency string exists", function()
             env.writeFile("VERSION", "2.0.0\n")
             env.writeFile(
