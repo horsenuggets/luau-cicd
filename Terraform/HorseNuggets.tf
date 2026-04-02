@@ -69,6 +69,35 @@ module "luau-markdown-renderer" {
   release_checks = var.standard_release_checks
 }
 
+module "t" {
+  source     = "./Modules/LuauRepo"
+  repository = "t"
+
+  # t doesn't have tests or static analysis yet (legacy tests need migration),
+  # so we use the standard checks minus those two, plus Check version match.
+  main_checks = [
+    "Check .luaurc format",
+    "Check changelog format",
+    "Check file headers",
+    "Check for tabs",
+    "Check formatting",
+    "Check JSON format",
+    "Check rokit.toml format",
+    "Check version match",
+    "Check wally.toml format",
+    "Validate branch name",
+  ]
+
+  release_checks = [
+    "Check formatting",
+    "Check JSON format",
+    "Validate PR title",
+    "Validate version",
+    "Verify diff matches main",
+    "Verify Wally auth",
+  ]
+}
+
 module "testable" {
   source         = "./Modules/LuauRepo"
   repository     = "testable"
