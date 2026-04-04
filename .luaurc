@@ -1,7 +1,7 @@
 {
     "aliases": {
-        "devpackages": "DevPackages/",
-        "lune": "~/.lune/.typedefs/0.10.4-horse.14.2/"
+        "devpackages": "./DevPackages/",
+        "lune": "~/.lune/.typedefs/0.10.4-horse.14.5/"
     },
     "globals": [
         "afterAll",
@@ -9,7 +9,6 @@
         "beforeAll",
         "beforeEach",
         "describe",
-        "elapsedTime",
         "expect",
         "fail",
         "fdescribe",

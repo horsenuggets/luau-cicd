@@ -179,6 +179,80 @@ return function()
             expect(result.ok).to.equal(true)
         end)
 
+        it("should pass when README.md version matches with fork suffix", function()
+            env.writeFile("VERSION", "3.1.1-horse.0.3\n")
+            env.writeFile(
+                "wally.toml",
+                dedent([[
+                    [package]
+                    name = "author/my-package"
+                    version = "3.1.1-horse.0.3"
+                ]])
+            )
+            env.writeFile(
+                "README.md",
+                dedent([[
+                    # my-package
+
+                    Install with: `author/my-package@3.1.1-horse.0.3`
+                ]])
+            )
+
+            local result = env.runScript("CheckVersionMatch")
+
+            expect(result.ok).to.equal(true)
+            expect(string.find(result.stdout, 'All versions match "3.1.1%-horse.0.3"')).to.be.ok()
+        end)
+
+        it("should fail when README.md fork version does not match", function()
+            env.writeFile("VERSION", "3.1.1-horse.0.4\n")
+            env.writeFile(
+                "wally.toml",
+                dedent([[
+                    [package]
+                    name = "author/my-package"
+                    version = "3.1.1-horse.0.4"
+                ]])
+            )
+            env.writeFile(
+                "README.md",
+                dedent([[
+                    # my-package
+
+                    Install with: `author/my-package@3.1.1-horse.0.3`
+                ]])
+            )
+
+            local result = env.runScript("CheckVersionMatch")
+
+            expect(result.ok).to.equal(false)
+            expect(string.find(result.stdout, "Version mismatch")).to.be.ok()
+        end)
+
+        it("should pass when README.md version matches with prerelease suffix", function()
+            env.writeFile("VERSION", "2.0.0-beta.5\n")
+            env.writeFile(
+                "wally.toml",
+                dedent([[
+                    [package]
+                    name = "author/my-package"
+                    version = "2.0.0-beta.5"
+                ]])
+            )
+            env.writeFile(
+                "README.md",
+                dedent([[
+                    # my-package
+
+                    Install with: `author/my-package@2.0.0-beta.5`
+                ]])
+            )
+
+            local result = env.runScript("CheckVersionMatch")
+
+            expect(result.ok).to.equal(true)
+        end)
+
         it("should pass when README.md does not exist", function()
             env.writeFile("VERSION", "1.0.0\n")
             env.writeFile(
