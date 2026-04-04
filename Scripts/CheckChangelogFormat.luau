@@ -60,8 +60,8 @@ local function checkChangelogFormat()
         local line = lines[i]
         local prevLine = lines[i - 1]
 
-        -- Check for version header (## X.Y.Z)
-        local version = string.match(line, "^## (%d+%.%d+%.%d+)$")
+        -- Check for version header (## X.Y.Z or ## X.Y.Z-suffix)
+        local version = string.match(line, "^## (%d+%.%d+%.%d+[%w%.%-]*)$")
         if version then
             hasVersions = true
             -- Version header must be preceded by a blank line (except at start)
@@ -95,7 +95,10 @@ local function checkChangelogFormat()
             if string.match(line, "^#[^#]") then
                 table.insert(errors, `Line {i}: Invalid header format. Use "# Changelog" only at the top.`)
             elseif string.match(line, "^## ") then
-                table.insert(errors, `Line {i}: Version header must be exactly "## X.Y.Z" format (e.g., "## 1.0.0").`)
+                table.insert(
+                    errors,
+                    `Line {i}: Version header must be "## X.Y.Z" or "## X.Y.Z-suffix" format (e.g., "## 1.0.0").`
+                )
             elseif string.match(line, "^### ") then
                 table.insert(
                     errors,
@@ -112,7 +115,7 @@ local function checkChangelogFormat()
     end
 
     if not hasVersions then
-        table.insert(errors, "CHANGELOG.md must contain at least one version section (## X.Y.Z).")
+        table.insert(errors, "CHANGELOG.md must contain at least one version section.")
     end
 
     -- Report results
