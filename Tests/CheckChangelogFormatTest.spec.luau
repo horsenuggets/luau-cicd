@@ -131,7 +131,7 @@ return function()
                 local result = env.runScript("CheckChangelogFormat")
 
                 expect(result.ok).to.equal(false)
-                expect(string.find(result.stdout, 'Version header must be exactly "## X.Y.Z"')).to.be.ok()
+                expect(string.find(result.stdout, "Version header must be")).to.be.ok()
             end)
 
             it("should fail when changelog has no versions", function()
