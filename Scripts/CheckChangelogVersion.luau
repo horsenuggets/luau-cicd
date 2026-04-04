@@ -32,7 +32,7 @@ local function checkChangelogVersion()
     local changelog = fs.readFile("CHANGELOG.md")
 
     -- Check if version header exists
-    local pattern = "## " .. version:gsub("%.", "%%.")
+    local pattern = "## " .. version:gsub("%.", "%%."):gsub("%-", "%%%-")
     if not string.find(changelog, pattern) then
         print(`CHANGELOG.md does not contain an entry for version "{version}".`)
         print("Please add a changelog section before releasing.")
@@ -40,12 +40,12 @@ local function checkChangelogVersion()
     end
 
     -- Check that the version section has content
-    local sectionPattern = "## " .. version:gsub("%.", "%%.") .. "\n(.-)\n## "
+    local sectionPattern = "## " .. version:gsub("%.", "%%."):gsub("%-", "%%%-") .. "\n(.-)\n## "
     local section = string.match(changelog, sectionPattern)
 
     if not section then
         -- Try matching to end of file
-        sectionPattern = "## " .. version:gsub("%.", "%%.") .. "\n(.-)$"
+        sectionPattern = "## " .. version:gsub("%.", "%%."):gsub("%-", "%%%-") .. "\n(.-)$"
         section = string.match(changelog, sectionPattern)
     end
 
