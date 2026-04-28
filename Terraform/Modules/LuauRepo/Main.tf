@@ -1,5 +1,41 @@
+resource "github_repository" "repo" {
+  name = var.repository
+
+  allow_squash_merge = true
+  allow_merge_commit = false
+  allow_rebase_merge = false
+
+  delete_branch_on_merge = true
+
+  squash_merge_commit_title   = "PR_TITLE"
+  squash_merge_commit_message = "PR_BODY"
+
+  lifecycle {
+    ignore_changes = [
+      allow_auto_merge,
+      allow_update_branch,
+      description,
+      homepage_url,
+      merge_commit_message,
+      merge_commit_title,
+      visibility,
+      topics,
+      has_downloads,
+      has_issues,
+      has_projects,
+      has_wiki,
+      archived,
+      archive_on_destroy,
+      vulnerability_alerts,
+      pages,
+      security_and_analysis,
+      template,
+    ]
+  }
+}
+
 resource "github_branch_protection" "main" {
-  repository_id = var.repository
+  repository_id = github_repository.repo.node_id
   pattern       = "main"
 
   required_status_checks {
@@ -22,7 +58,7 @@ resource "github_branch_protection" "main" {
 resource "github_branch_protection" "release" {
   count = var.has_release_branch ? 1 : 0
 
-  repository_id = var.repository
+  repository_id = github_repository.repo.node_id
   pattern       = "release"
 
   required_status_checks {
