@@ -1,5 +1,6 @@
 terraform {
-  required_version = ">= 1.0"
+  # Import blocks in Imports.tf require Terraform 1.5 or newer.
+  required_version = ">= 1.5"
 
   required_providers {
     github = {
