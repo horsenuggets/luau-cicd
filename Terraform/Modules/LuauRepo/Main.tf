@@ -55,6 +55,29 @@ resource "github_branch_protection" "main" {
   allows_force_pushes = false
 }
 
+# Classic branch protection can't express Copilot code review, so this ruleset layers it
+# on top of the protection above. It only requests the review and doesn't block merges.
+resource "github_repository_ruleset" "copilot_code_review" {
+  name        = "Copilot Code Review"
+  repository  = github_repository.repo.name
+  target      = "branch"
+  enforcement = "active"
+
+  conditions {
+    ref_name {
+      include = var.has_release_branch ? ["refs/heads/main", "refs/heads/release"] : ["refs/heads/main"]
+      exclude = []
+    }
+  }
+
+  rules {
+    copilot_code_review {
+      review_draft_pull_requests = false
+      review_on_push             = true
+    }
+  }
+}
+
 resource "github_branch_protection" "release" {
   count = var.has_release_branch ? 1 : 0
 
