@@ -33,5 +33,5 @@ aftman.toml
 
 # Repo-specific
 *.tfstate
-*.tfstate.backup
+*.tfstate.*
 .terraform/
