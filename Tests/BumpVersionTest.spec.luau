@@ -22,9 +22,6 @@ return function()
             env.cleanup()
         end)
 
-        -- Note: BumpVersion calls SyncVersion via subprocess which may fail in test environment
-        -- due to rokit/lune path issues. We verify VERSION file is updated correctly.
-
         it("should bump patch version", function()
             env.writeFile("VERSION", "1.0.0\n")
             env.writeFile(
@@ -38,10 +35,28 @@ return function()
 
             local result = env.runScript("BumpVersion", { "patch" })
 
-            -- VERSION should be updated even if sync subprocess fails
             local version = env.readFile("VERSION")
             expect(string.match(version, "^%s*(.-)%s*$")).to.equal("1.0.1")
             expect(string.find(result.stdout, 'Bumping to "1.0.1"')).to.be.ok()
+        end)
+
+        it("should sync wally.toml when run from outside the luau-cicd folder", function()
+            env.writeFile("VERSION", "1.0.0\n")
+            env.writeFile(
+                "wally.toml",
+                dedent([[
+                    [package]
+                    name = "test/package"
+                    version = "1.0.0"
+                ]])
+            )
+
+            -- The test environment runs scripts with a temp folder as the working directory,
+            -- the same way a consumer repo runs them through Submodules/luau-cicd/
+            local result = env.runScript("BumpVersion", { "patch" })
+
+            expect(result.ok).to.equal(true)
+            expect(string.find(env.readFile("wally.toml"), 'version = "1.0.1"', 1, true)).to.be.ok()
         end)
 
         it("should bump minor version and reset patch", function()

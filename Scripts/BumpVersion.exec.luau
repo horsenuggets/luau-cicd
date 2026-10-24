@@ -59,7 +59,10 @@ function BumpVersion.exec()
     fs.writeFile("VERSION", newVersion .. "\n")
 
     print("Syncing version to wally.toml.")
-    local syncResult = process.exec("lune", { "run", "Scripts/SyncVersion.exec" })
+    -- Resolve SyncVersion next to this script, so it's found when this runs from a
+    -- consumer repo through Submodules/luau-cicd/ and not only from luau-cicd itself
+    local scriptsDir = string.match(debug.info(1, "s"), "^(.*)[/\\]") or "."
+    local syncResult = process.exec("lune", { "run", `{scriptsDir}/SyncVersion.exec` })
     if not syncResult.ok then
         print("Failed to sync version.")
         print(syncResult.stderr)
