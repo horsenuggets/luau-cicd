@@ -15,23 +15,8 @@ blank line, then the header comment block.
 --]]
 
 local fs = require("@lune/fs")
+local isExcluded = require("./Helpers/isExcludedPath")
 local process = require("@lune/process")
-
-local EXCLUDED_PATHS = {
-    "DevPackages/",
-    "Packages/",
-    "Submodules/",
-    "node_modules/",
-}
-
-local function isExcluded(path: string): boolean
-    for _, excluded in EXCLUDED_PATHS do
-        if string.find(path, excluded, 1, true) then
-            return true
-        end
-    end
-    return false
-end
 
 local function isExcludedFile(filename: string, relativePath: string): boolean
     -- Root init.luau is excluded (just a re-export)

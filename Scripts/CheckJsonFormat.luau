@@ -10,23 +10,8 @@ Ensures consistent 4-space indentation as specified in .editorconfig.
 --]]
 
 local fs = require("@lune/fs")
+local isExcluded = require("./Helpers/isExcludedPath")
 local process = require("@lune/process")
-
-local EXCLUDED_DIRS = {
-    "DevPackages",
-    "Packages",
-    "node_modules",
-    "Submodules",
-}
-
-local function isExcluded(path: string): boolean
-    for _, excluded in EXCLUDED_DIRS do
-        if string.find(path, excluded, 1, true) then
-            return true
-        end
-    end
-    return false
-end
 
 local function findJsonFiles(dir: string): { string }
     local files: { string } = {}
