@@ -73,20 +73,8 @@ module "t" {
   source     = "./Modules/LuauRepo"
   repository = "t"
 
-  # t doesn't have tests or static analysis yet (legacy tests need migration),
-  # so we use the standard checks minus those two, plus Check version match.
-  main_checks = [
-    "Check .luaurc format",
-    "Check changelog format",
-    "Check file headers",
-    "Check for tabs",
-    "Check formatting",
-    "Check JSON format",
-    "Check rokit.toml format",
-    "Check version match",
-    "Check wally.toml format",
-    "Validate branch name",
-  ]
+  # t also runs Check version match on PRs to main.
+  main_checks = concat(var.standard_main_checks, ["Check version match"])
 
   release_checks = [
     "Check formatting",
