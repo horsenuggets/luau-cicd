@@ -6,7 +6,7 @@ Tests for the CheckLuaurcFormat script.
 
 --]]
 
-local TestEnvironment = require("./Helpers/TestEnvironment")
+const TestEnvironment = require("./Helpers/TestEnvironment")
 
 return function()
     describe("CheckLuaurcFormat", function()
@@ -31,7 +31,7 @@ return function()
 }]=]
                 )
 
-                local result = env.runScript("CheckLuaurcFormat", { "test.luaurc", "nonexistent.toml" })
+                const result = env.runScript("CheckLuaurcFormat", { "test.luaurc", "nonexistent.toml" })
 
                 expect(result.ok).to.equal(true)
                 expect(string.find(result.stdout, "format is valid")).to.be.ok()
@@ -48,7 +48,7 @@ return function()
 }]=]
                 )
 
-                local result = env.runScript("CheckLuaurcFormat", { "test.luaurc", "nonexistent.toml" })
+                const result = env.runScript("CheckLuaurcFormat", { "test.luaurc", "nonexistent.toml" })
 
                 expect(result.ok).to.equal(false)
                 expect(string.find(result.stdout, "@self is built%-in")).to.be.ok()
@@ -65,7 +65,7 @@ return function()
 }]=]
                 )
 
-                local result = env.runScript("CheckLuaurcFormat", { "test.luaurc", "nonexistent.toml" })
+                const result = env.runScript("CheckLuaurcFormat", { "test.luaurc", "nonexistent.toml" })
 
                 expect(result.ok).to.equal(false)
                 expect(string.find(result.stdout, "@self is built%-in")).to.be.ok()
@@ -81,7 +81,7 @@ return function()
 }]=]
                 )
 
-                local result = env.runScript("CheckLuaurcFormat", { "test.luaurc", "nonexistent.toml" })
+                const result = env.runScript("CheckLuaurcFormat", { "test.luaurc", "nonexistent.toml" })
 
                 expect(result.ok).to.equal(false)
                 expect(string.find(result.stdout, "@self is built%-in")).to.be.ok()
@@ -108,7 +108,7 @@ stylua = "johnnymorganz/stylua@2.3.1"
 ]=]
                 )
 
-                local result = env.runScript("CheckLuaurcFormat", { "test.luaurc", "test-rokit.toml" })
+                const result = env.runScript("CheckLuaurcFormat", { "test.luaurc", "test-rokit.toml" })
 
                 expect(result.ok).to.equal(true)
             end)
@@ -131,7 +131,7 @@ lune = "horsenuggets/lune@0.10.5"
 ]=]
                 )
 
-                local result = env.runScript("CheckLuaurcFormat", { "test.luaurc", "test-rokit.toml" })
+                const result = env.runScript("CheckLuaurcFormat", { "test.luaurc", "test-rokit.toml" })
 
                 expect(result.ok).to.equal(false)
                 expect(string.find(result.stdout, "does not match rokit.toml version")).to.be.ok()
@@ -155,7 +155,7 @@ lune = "horsenuggets/lune@0.10.5"
 ]=]
                 )
 
-                local result = env.runScript("CheckLuaurcFormat", { "test.luaurc", "test-rokit.toml" })
+                const result = env.runScript("CheckLuaurcFormat", { "test.luaurc", "test-rokit.toml" })
 
                 expect(result.ok).to.equal(false)
                 expect(string.find(result.stdout, "no lune alias found")).to.be.ok()
@@ -178,7 +178,7 @@ stylua = "johnnymorganz/stylua@2.3.1"
 ]=]
                 )
 
-                local result = env.runScript("CheckLuaurcFormat", { "test.luaurc", "test-rokit.toml" })
+                const result = env.runScript("CheckLuaurcFormat", { "test.luaurc", "test-rokit.toml" })
 
                 expect(result.ok).to.equal(true)
             end)
@@ -193,7 +193,7 @@ stylua = "johnnymorganz/stylua@2.3.1"
 }]=]
                 )
 
-                local result = env.runScript("CheckLuaurcFormat", { "test.luaurc", "nonexistent.toml" })
+                const result = env.runScript("CheckLuaurcFormat", { "test.luaurc", "nonexistent.toml" })
 
                 expect(result.ok).to.equal(true)
             end)
@@ -208,7 +208,7 @@ stylua = "johnnymorganz/stylua@2.3.1"
 }]=]
                 )
 
-                local result = env.runScript("CheckLuaurcFormat", { "test.luaurc", "nonexistent.toml" })
+                const result = env.runScript("CheckLuaurcFormat", { "test.luaurc", "nonexistent.toml" })
 
                 expect(result.ok).to.equal(true)
             end)
@@ -221,13 +221,13 @@ stylua = "johnnymorganz/stylua@2.3.1"
 }]=]
                 )
 
-                local result = env.runScript("CheckLuaurcFormat", { "test.luaurc", "nonexistent.toml" })
+                const result = env.runScript("CheckLuaurcFormat", { "test.luaurc", "nonexistent.toml" })
 
                 expect(result.ok).to.equal(true)
             end)
 
             it("should fail when file does not exist", function()
-                local result = env.runScript("CheckLuaurcFormat", { "nonexistent.luaurc" })
+                const result = env.runScript("CheckLuaurcFormat", { "nonexistent.luaurc" })
 
                 expect(result.ok).to.equal(false)
                 expect(string.find(result.stdout, "not found")).to.be.ok()
@@ -236,7 +236,7 @@ stylua = "johnnymorganz/stylua@2.3.1"
             it("should fail when file is not valid JSON", function()
                 env.writeFile("test.luaurc", "this is not json")
 
-                local result = env.runScript("CheckLuaurcFormat", { "test.luaurc" })
+                const result = env.runScript("CheckLuaurcFormat", { "test.luaurc" })
 
                 expect(result.ok).to.equal(false)
                 expect(string.find(result.stdout, "Failed to parse")).to.be.ok()

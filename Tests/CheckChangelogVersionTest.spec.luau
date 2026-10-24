@@ -6,9 +6,9 @@ Tests for the CheckChangelogVersion script.
 
 --]]
 
-local TestEnvironment = require("./Helpers/TestEnvironment")
+const TestEnvironment = require("./Helpers/TestEnvironment")
 
-local dedent = TestEnvironment.dedent
+const dedent = TestEnvironment.dedent
 
 return function()
     describe("CheckChangelogVersion", function()
@@ -37,7 +37,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckChangelogVersion")
+            const result = env.runScript("CheckChangelogVersion")
 
             expect(result.ok).to.equal(true)
             expect(string.find(result.stdout, "contains valid entry")).to.be.ok()
@@ -57,7 +57,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckChangelogVersion")
+            const result = env.runScript("CheckChangelogVersion")
 
             expect(result.ok).to.equal(false)
             expect(string.find(result.stdout, "VERSION file not found")).to.be.ok()
@@ -66,7 +66,7 @@ return function()
         it("should fail when CHANGELOG.md is missing", function()
             env.writeFile("VERSION", "1.0.0\n")
 
-            local result = env.runScript("CheckChangelogVersion")
+            const result = env.runScript("CheckChangelogVersion")
 
             expect(result.ok).to.equal(false)
             expect(string.find(result.stdout, "CHANGELOG.md not found")).to.be.ok()
@@ -87,7 +87,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckChangelogVersion")
+            const result = env.runScript("CheckChangelogVersion")
 
             expect(result.ok).to.equal(false)
             expect(string.find(result.stdout, "does not contain an entry")).to.be.ok()
@@ -110,7 +110,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckChangelogVersion")
+            const result = env.runScript("CheckChangelogVersion")
 
             expect(result.ok).to.equal(false)
             expect(string.find(result.stdout, "is empty")).to.be.ok()
@@ -137,7 +137,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckChangelogVersion")
+            const result = env.runScript("CheckChangelogVersion")
 
             expect(result.ok).to.equal(true)
         end)

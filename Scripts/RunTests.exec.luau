@@ -8,15 +8,15 @@ Executes all test suites and exits with appropriate status code.
 
 --]]
 
-local Testable = require("@devpackages/Testable")
-local process = require("@lune/process")
+const Testable = require("@devpackages/Testable")
+const process = require("@lune/process")
 
 -- Disable parallel execution for integration tests that manage file system state
 Testable.configure({
     Parallel = false,
 })
 
-local TESTS = {
+const TESTS = {
     { Name = "BumpVersionTest", Func = require("../Tests/BumpVersionTest.spec") },
     { Name = "CheckChangelogFormatTest", Func = require("../Tests/CheckChangelogFormatTest.spec") },
     { Name = "CheckChangelogVersionTest", Func = require("../Tests/CheckChangelogVersionTest.spec") },
@@ -37,7 +37,7 @@ local TESTS = {
 const RunTests = {}
 
 function RunTests.exec()
-    local _, passed = Testable.run(TESTS)
+    const _, passed = Testable.run(TESTS)
     process.exit(if passed then 0 else 1)
 end
 

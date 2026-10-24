@@ -6,7 +6,7 @@ Tests for the CheckFileHeaders script.
 
 --]]
 
-local TestEnvironment = require("./Helpers/TestEnvironment")
+const TestEnvironment = require("./Helpers/TestEnvironment")
 
 return function()
     describe("CheckFileHeaders", function()
@@ -36,7 +36,7 @@ return {}
 ]=]
                 )
 
-                local result = env.runScript("CheckFileHeaders", { env.path })
+                const result = env.runScript("CheckFileHeaders", { env.path })
 
                 expect(result.ok).to.equal(true)
                 expect(string.find(result.stdout, "1 file")).to.be.ok()
@@ -59,7 +59,7 @@ return {}
 ]=]
                 )
 
-                local result = env.runScript("CheckFileHeaders", { env.path })
+                const result = env.runScript("CheckFileHeaders", { env.path })
 
                 expect(result.ok).to.equal(true)
             end)
@@ -83,7 +83,7 @@ return {}
 ]=]
                 )
 
-                local result = env.runScript("CheckFileHeaders", { env.path })
+                const result = env.runScript("CheckFileHeaders", { env.path })
 
                 expect(result.ok).to.equal(true)
             end)
@@ -105,7 +105,7 @@ print("Hello")
 ]=]
                 )
 
-                local result = env.runScript("CheckFileHeaders", { env.path })
+                const result = env.runScript("CheckFileHeaders", { env.path })
 
                 expect(result.ok).to.equal(true)
             end)
@@ -128,7 +128,7 @@ return {}
 ]=]
                 )
 
-                local result = env.runScript("CheckFileHeaders", { env.path })
+                const result = env.runScript("CheckFileHeaders", { env.path })
 
                 expect(result.ok).to.equal(true)
             end)
@@ -149,7 +149,7 @@ return {}
 ]=]
                 )
 
-                local result = env.runScript("CheckFileHeaders", { env.path })
+                const result = env.runScript("CheckFileHeaders", { env.path })
 
                 expect(result.ok).to.equal(true)
             end)
@@ -169,7 +169,7 @@ return function() end
 ]=]
                 )
 
-                local result = env.runScript("CheckFileHeaders", { env.path })
+                const result = env.runScript("CheckFileHeaders", { env.path })
 
                 expect(result.ok).to.equal(true)
             end)
@@ -192,7 +192,7 @@ return {}
 ]=]
                 )
 
-                local result = env.runScript("CheckFileHeaders", { env.path })
+                const result = env.runScript("CheckFileHeaders", { env.path })
 
                 expect(result.ok).to.equal(false)
                 expect(string.find(result.stdout, "blank line after directives")).to.be.ok()
@@ -209,7 +209,7 @@ return foo
 ]=]
                 )
 
-                local result = env.runScript("CheckFileHeaders", { env.path })
+                const result = env.runScript("CheckFileHeaders", { env.path })
 
                 expect(result.ok).to.equal(false)
                 expect(string.find(result.stdout, 'Expected "%-%-%[%["')).to.be.ok()
@@ -230,7 +230,7 @@ return {}
 ]=]
                 )
 
-                local result = env.runScript("CheckFileHeaders", { env.path })
+                const result = env.runScript("CheckFileHeaders", { env.path })
 
                 expect(result.ok).to.equal(false)
                 expect(string.find(result.stdout, "does not match expected")).to.be.ok()
@@ -249,7 +249,7 @@ return {}
 ]=]
                 )
 
-                local result = env.runScript("CheckFileHeaders", { env.path })
+                const result = env.runScript("CheckFileHeaders", { env.path })
 
                 expect(result.ok).to.equal(false)
                 expect(string.find(result.stdout, "Expected description")).to.be.ok()
@@ -270,7 +270,7 @@ return {}
 ]=]
                 )
 
-                local result = env.runScript("CheckFileHeaders", { env.path })
+                const result = env.runScript("CheckFileHeaders", { env.path })
 
                 expect(result.ok).to.equal(false)
                 expect(string.find(result.stdout, "exceeds 90 characters")).to.be.ok()
@@ -290,7 +290,7 @@ return {}
 ]=]
                 )
 
-                local result = env.runScript("CheckFileHeaders", { env.path })
+                const result = env.runScript("CheckFileHeaders", { env.path })
 
                 expect(result.ok).to.equal(false)
                 expect(string.find(result.stdout, 'blank line before "%-%-%]%]"')).to.be.ok()
@@ -312,7 +312,7 @@ return {}
 ]=]
                 )
 
-                local result = env.runScript("CheckFileHeaders", { env.path })
+                const result = env.runScript("CheckFileHeaders", { env.path })
 
                 expect(result.ok).to.equal(false)
                 expect(string.find(result.stdout, "does not match expected")).to.be.ok()
@@ -323,7 +323,7 @@ return {}
             it("should skip root init.luau files", function()
                 env.writeFile("init.luau", "return {}")
 
-                local result = env.runScript("CheckFileHeaders", { env.path })
+                const result = env.runScript("CheckFileHeaders", { env.path })
 
                 expect(result.ok).to.equal(true)
                 expect(string.find(result.stdout, "0 file")).to.be.ok()
@@ -333,7 +333,7 @@ return {}
                 env.writeDir("DevPackages")
                 env.writeFile("DevPackages/SomePackage.luau", "return {}")
 
-                local result = env.runScript("CheckFileHeaders", { env.path })
+                const result = env.runScript("CheckFileHeaders", { env.path })
 
                 expect(result.ok).to.equal(true)
                 expect(string.find(result.stdout, "0 file")).to.be.ok()
@@ -343,7 +343,7 @@ return {}
                 env.writeDir("Build")
                 env.writeFile("Build/fixture.luau", "return {}")
 
-                local result = env.runScript("CheckFileHeaders")
+                const result = env.runScript("CheckFileHeaders")
 
                 expect(result.ok).to.equal(true)
                 expect(string.find(result.stdout, "0 file")).to.be.ok()
@@ -354,7 +354,7 @@ return {}
                 env.writeDir("Commands/Build")
                 env.writeFile("Commands/Build/init.luau", "return {}")
 
-                local result = env.runScript("CheckFileHeaders", { `{env.path}/Commands` })
+                const result = env.runScript("CheckFileHeaders", { `{env.path}/Commands` })
 
                 expect(result.ok).to.equal(false)
                 -- Paths in the report are relative to the scanned folder

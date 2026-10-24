@@ -12,13 +12,13 @@ all repository strings (package name and dependency values) are lowercase.
 
 --]]
 
-local fs = require("@lune/fs")
-local process = require("@lune/process")
+const fs = require("@lune/fs")
+const process = require("@lune/process")
 
 const CheckWallyFormat = {}
 
 function CheckWallyFormat.exec()
-    local filename = process.args[1] or "wally.toml"
+    const filename = process.args[1] or "wally.toml"
 
     print(`Checking {filename} format...`)
 
@@ -28,21 +28,21 @@ function CheckWallyFormat.exec()
         process.exit(1)
     end
 
-    local content = fs.readFile(filename)
-    local errors: { string } = {}
+    const content = fs.readFile(filename)
+    const errors: { string } = {}
 
     -- Track which section we're in
     local currentSection = ""
 
     for line in string.gmatch(content, "[^\n]+") do
         -- Check for section headers
-        local section = string.match(line, "^%s*%[([%w%-_]+)%]")
+        const section = string.match(line, "^%s*%[([%w%-_]+)%]")
         if section then
             currentSection = section
         end
 
         -- Check key = "value" pairs
-        local key, value = string.match(line, '^%s*([%w%-_]+)%s*=%s*"(.-)"')
+        const key, value = string.match(line, '^%s*([%w%-_]+)%s*=%s*"(.-)"')
         if key and value then
             local shouldCheckLowercase = false
             local fieldDescription = ""
@@ -60,7 +60,7 @@ function CheckWallyFormat.exec()
             end
 
             if shouldCheckLowercase then
-                local lowercase = string.lower(value)
+                const lowercase = string.lower(value)
                 if value ~= lowercase then
                     table.insert(
                         errors,

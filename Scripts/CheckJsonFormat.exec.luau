@@ -9,18 +9,18 @@ Ensures consistent 4-space indentation as specified in .editorconfig.
 
 --]]
 
-local fs = require("@lune/fs")
-local isExcluded = require("./Helpers/isExcludedPath")
-local process = require("@lune/process")
+const fs = require("@lune/fs")
+const isExcluded = require("./Helpers/isExcludedPath")
+const process = require("@lune/process")
 
-local function findJsonFiles(dir: string): { string }
-    local files: { string } = {}
+const function findJsonFiles(dir: string): { string }
+    const files: { string } = {}
 
-    local function traverse(currentDir: string)
-        local entries = fs.readDir(currentDir)
+    const function traverse(currentDir: string)
+        const entries = fs.readDir(currentDir)
 
         for _, entry in entries do
-            local path = `{currentDir}/{entry}`
+            const path = `{currentDir}/{entry}`
 
             -- This check always scans the repo root, so root-only folders are skipped too
             if isExcluded(path, true) then
@@ -40,8 +40,8 @@ local function findJsonFiles(dir: string): { string }
     return files
 end
 
-local function checkPrettierInstalled(): boolean
-    local result = process.exec("prettier", { "--version" })
+const function checkPrettierInstalled(): boolean
+    const result = process.exec("prettier", { "--version" })
     return result.ok
 end
 
@@ -55,7 +55,7 @@ function CheckJsonFormat.exec()
         process.exit(1)
     end
 
-    local jsonFiles = findJsonFiles(".")
+    const jsonFiles = findJsonFiles(".")
 
     if #jsonFiles == 0 then
         print("No JSON files found to check.")
@@ -65,12 +65,12 @@ function CheckJsonFormat.exec()
     print(`Found {#jsonFiles} JSON file(s) to check.`)
 
     -- Build prettier arguments: --check --tab-width 4 <files>
-    local args = { "--check", "--tab-width", "4" }
+    const args = { "--check", "--tab-width", "4" }
     for _, file in jsonFiles do
         table.insert(args, file)
     end
 
-    local result = process.exec("prettier", args)
+    const result = process.exec("prettier", args)
 
     if result.ok then
         print("JSON formatting check passed!")

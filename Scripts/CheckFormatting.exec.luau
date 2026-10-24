@@ -8,12 +8,12 @@ Verifies that all code is properly formatted using stylua.
 
 --]]
 
-local process = require("@lune/process")
+const process = require("@lune/process")
 
 const CheckFormatting = {}
 
 function CheckFormatting.exec()
-    local result = process.exec("stylua", { "--check", "." })
+    const result = process.exec("stylua", { "--check", "." })
 
     if result.ok then
         print("Formatting check passed!")

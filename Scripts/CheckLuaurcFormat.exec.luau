@@ -14,27 +14,27 @@ Validates that .luaurc follows the project format guidelines. Checks that:
 
 --]]
 
-local fs = require("@lune/fs")
-local process = require("@lune/process")
-local serde = require("@lune/serde")
+const fs = require("@lune/fs")
+const process = require("@lune/process")
+const serde = require("@lune/serde")
 
-local function getLuneVersionFromRokit(rokitPath: string): string?
+const function getLuneVersionFromRokit(rokitPath: string): string?
     if not fs.isFile(rokitPath) then
         return nil
     end
 
-    local content = fs.readFile(rokitPath)
+    const content = fs.readFile(rokitPath)
 
     -- Find lune = "owner/repo@version" pattern
-    local version = string.match(content, 'lune%s*=%s*"[^@]+@([^"]+)"')
+    const version = string.match(content, 'lune%s*=%s*"[^@]+@([^"]+)"')
     return version
 end
 
 const CheckLuaurcFormat = {}
 
 function CheckLuaurcFormat.exec()
-    local luaurcPath = process.args[1] or ".luaurc"
-    local rokitPath = process.args[2] or "rokit.toml"
+    const luaurcPath = process.args[1] or ".luaurc"
+    const rokitPath = process.args[2] or "rokit.toml"
 
     print(`Checking {luaurcPath} format...`)
 
@@ -44,11 +44,11 @@ function CheckLuaurcFormat.exec()
         process.exit(1)
     end
 
-    local content = fs.readFile(luaurcPath)
-    local errors: { string } = {}
+    const content = fs.readFile(luaurcPath)
+    const errors: { string } = {}
 
     -- Parse JSON
-    local ok, data = pcall(function()
+    const ok, data = pcall(function()
         return serde.decode("json", content)
     end)
 
@@ -60,7 +60,7 @@ function CheckLuaurcFormat.exec()
     -- Check for @self alias
     if data.aliases then
         for key, _ in data.aliases do
-            local lowerKey = string.lower(tostring(key))
+            const lowerKey = string.lower(tostring(key))
             if lowerKey == "self" or lowerKey == "@self" then
                 table.insert(
                     errors,
@@ -71,12 +71,12 @@ function CheckLuaurcFormat.exec()
     end
 
     -- Check lune alias version matches rokit.toml
-    local rokitLuneVersion = getLuneVersionFromRokit(rokitPath)
+    const rokitLuneVersion = getLuneVersionFromRokit(rokitPath)
     if rokitLuneVersion then
-        local luneAlias = data.aliases and data.aliases.lune
+        const luneAlias = data.aliases and data.aliases.lune
         if luneAlias then
             -- Expected format: ~/.lune/.typedefs/VERSION/
-            local expectedPath = `~/.lune/.typedefs/{rokitLuneVersion}/`
+            const expectedPath = `~/.lune/.typedefs/{rokitLuneVersion}/`
             if luneAlias ~= expectedPath then
                 table.insert(
                     errors,

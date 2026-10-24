@@ -8,22 +8,22 @@ Version numbers must be between 0 and 99999.
 
 --]]
 
-local MAX_VERSION_NUMBER = 99999
+const MAX_VERSION_NUMBER = 99999
 
-local function parseVersion(inputVersionString: string): (number?, number?, number?)
+const function parseVersion(inputVersionString: string): (number?, number?, number?)
     assert(typeof(inputVersionString) == "string", "Expected a string.")
 
     -- Trim whitespace
-    local versionString: string = string.match(inputVersionString, "^%s*(.-)%s*$") or ""
+    const versionString: string = string.match(inputVersionString, "^%s*(.-)%s*$") or ""
 
     -- Parse MAJOR.MINOR.PATCH format
-    local major, minor, patch = string.match(versionString, "^(%d+)%.(%d+)%.(%d+)$")
+    const major, minor, patch = string.match(versionString, "^(%d+)%.(%d+)%.(%d+)$")
 
     if not major or not minor or not patch then
         return nil, nil, nil
     end
 
-    local majorNum, minorNum, patchNum = tonumber(major), tonumber(minor), tonumber(patch)
+    const majorNum, minorNum, patchNum = tonumber(major), tonumber(minor), tonumber(patch)
 
     -- Validate version numbers are within reasonable bounds
     if majorNum > MAX_VERSION_NUMBER or minorNum > MAX_VERSION_NUMBER or patchNum > MAX_VERSION_NUMBER then

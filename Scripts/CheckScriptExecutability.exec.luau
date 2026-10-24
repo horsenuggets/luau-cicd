@@ -14,38 +14,38 @@ like Task/init.luau) are excluded from this check.
 
 --]]
 
-local fs = require("@lune/fs")
-local process = require("@lune/process")
+const fs = require("@lune/fs")
+const process = require("@lune/process")
 
-local SHEBANG = "#!/usr/bin/env -S lune run"
+const SHEBANG = "#!/usr/bin/env -S lune run"
 
 const CheckScriptExecutability = {}
 
 function CheckScriptExecutability.exec()
-    local scriptsDir = process.args[1] or "Scripts"
+    const scriptsDir = process.args[1] or "Scripts"
 
     if not fs.isDir(scriptsDir) then
         print(`No "{scriptsDir}" directory found, skipping.`)
         process.exit(0)
     end
 
-    local failures: { string } = {}
+    const failures: { string } = {}
 
     for _, entry in fs.readDir(scriptsDir) do
-        local path = `{scriptsDir}/{entry}`
+        const path = `{scriptsDir}/{entry}`
 
         if not fs.isFile(path) or not entry:match("%.luau$") then
             continue
         end
 
-        local contents = fs.readFile(path)
-        local firstLine = contents:match("^([^\n]*)")
+        const contents = fs.readFile(path)
+        const firstLine = contents:match("^([^\n]*)")
 
         if firstLine ~= SHEBANG then
             table.insert(failures, `{path} is missing shebang "{SHEBANG}"`)
         end
 
-        local result = process.exec("test", { "-x", path })
+        const result = process.exec("test", { "-x", path })
         if not result.ok then
             table.insert(failures, `{path} is not executable (run: chmod +x {path})`)
         end

@@ -6,9 +6,9 @@ Tests for the BumpVersion script.
 
 --]]
 
-local TestEnvironment = require("./Helpers/TestEnvironment")
+const TestEnvironment = require("./Helpers/TestEnvironment")
 
-local dedent = TestEnvironment.dedent
+const dedent = TestEnvironment.dedent
 
 return function()
     describe("BumpVersion", function()
@@ -33,9 +33,9 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("BumpVersion", { "patch" })
+            const result = env.runScript("BumpVersion", { "patch" })
 
-            local version = env.readFile("VERSION")
+            const version = env.readFile("VERSION")
             expect(string.match(version, "^%s*(.-)%s*$")).to.equal("1.0.1")
             expect(string.find(result.stdout, 'Bumping to "1.0.1"')).to.be.ok()
         end)
@@ -53,7 +53,7 @@ return function()
 
             -- The test environment runs scripts with a temp folder as the working directory,
             -- the same way a consumer repo runs them through Submodules/luau-cicd/
-            local result = env.runScript("BumpVersion", { "patch" })
+            const result = env.runScript("BumpVersion", { "patch" })
 
             expect(result.ok).to.equal(true)
             expect(string.find(env.readFile("wally.toml"), 'version = "1.0.1"', 1, true)).to.be.ok()
@@ -70,9 +70,9 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("BumpVersion", { "minor" })
+            const result = env.runScript("BumpVersion", { "minor" })
 
-            local version = env.readFile("VERSION")
+            const version = env.readFile("VERSION")
             expect(string.match(version, "^%s*(.-)%s*$")).to.equal("1.3.0")
             expect(string.find(result.stdout, 'Bumping to "1.3.0"')).to.be.ok()
         end)
@@ -88,9 +88,9 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("BumpVersion", { "major" })
+            const result = env.runScript("BumpVersion", { "major" })
 
-            local version = env.readFile("VERSION")
+            const version = env.readFile("VERSION")
             expect(string.match(version, "^%s*(.-)%s*$")).to.equal("2.0.0")
             expect(string.find(result.stdout, 'Bumping to "2.0.0"')).to.be.ok()
         end)
@@ -106,7 +106,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("BumpVersion", {})
+            const result = env.runScript("BumpVersion", {})
 
             expect(result.ok).to.equal(false)
             expect(string.find(result.stdout, "[Usage]")).to.be.ok()
@@ -123,7 +123,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("BumpVersion", { "invalid" })
+            const result = env.runScript("BumpVersion", { "invalid" })
 
             expect(result.ok).to.equal(false)
             expect(string.find(result.stdout, "Invalid bump type")).to.be.ok()
@@ -140,9 +140,9 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("BumpVersion", { "PATCH" })
+            const result = env.runScript("BumpVersion", { "PATCH" })
 
-            local version = env.readFile("VERSION")
+            const version = env.readFile("VERSION")
             expect(string.match(version, "^%s*(.-)%s*$")).to.equal("1.0.1")
             expect(string.find(result.stdout, 'Bumping to "1.0.1"')).to.be.ok()
         end)
@@ -158,7 +158,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("BumpVersion", { "patch" })
+            const result = env.runScript("BumpVersion", { "patch" })
 
             expect(result.ok).to.equal(false)
             expect(string.find(result.stdout, "Could not parse")).to.be.ok()

@@ -12,12 +12,12 @@ Validates that no Luau files contain tab characters. All indentation must use sp
 
 --]]
 
-local fs = require("@lune/fs")
-local isExcluded = require("./Helpers/isExcludedPath")
-local process = require("@lune/process")
+const fs = require("@lune/fs")
+const isExcluded = require("./Helpers/isExcludedPath")
+const process = require("@lune/process")
 
-local function findTabsInFile(content: string): { number }
-    local linesWithTabs: { number } = {}
+const function findTabsInFile(content: string): { number }
+    const linesWithTabs: { number } = {}
     local lineNum = 1
 
     for line in string.gmatch(content .. "\n", "([^\n]*)\n") do
@@ -30,16 +30,16 @@ local function findTabsInFile(content: string): { number }
     return linesWithTabs
 end
 
-local function findLuauFiles(directory: string, scanningRepoRoot: boolean): { string }
-    local files: { string } = {}
+const function findLuauFiles(directory: string, scanningRepoRoot: boolean): { string }
+    const files: { string } = {}
 
-    local function scanDir(dir: string)
-        local entries = fs.readDir(dir)
+    const function scanDir(dir: string)
+        const entries = fs.readDir(dir)
         table.sort(entries)
 
         for _, entry in entries do
-            local fullPath = dir .. "/" .. entry
-            local relativePath = string.sub(fullPath, #directory + 2)
+            const fullPath = dir .. "/" .. entry
+            const relativePath = string.sub(fullPath, #directory + 2)
 
             if fs.isDir(fullPath) then
                 if not isExcluded(relativePath .. "/", scanningRepoRoot) then
@@ -60,7 +60,7 @@ end
 const CheckNoTabs = {}
 
 function CheckNoTabs.exec()
-    local directory = process.args[1] or process.cwd
+    const directory = process.args[1] or process.cwd
 
     print(`Checking for tabs in {directory}...`)
 
@@ -70,15 +70,15 @@ function CheckNoTabs.exec()
     end
 
     -- Root-only folders like Build/ are only skipped when the whole repo is scanned
-    local scanningRepoRoot = process.args[1] == nil or process.args[1] == "."
-    local files = findLuauFiles(directory, scanningRepoRoot)
-    local errors: { { file: string, lines: { number } } } = {}
+    const scanningRepoRoot = process.args[1] == nil or process.args[1] == "."
+    const files = findLuauFiles(directory, scanningRepoRoot)
+    const errors: { { file: string, lines: { number } } } = {}
 
     for _, filepath in files do
-        local content = fs.readFile(filepath)
-        local linesWithTabs = findTabsInFile(content)
+        const content = fs.readFile(filepath)
+        const linesWithTabs = findTabsInFile(content)
         if #linesWithTabs > 0 then
-            local relativePath = string.sub(filepath, #directory + 2)
+            const relativePath = string.sub(filepath, #directory + 2)
             table.insert(errors, { file = relativePath, lines = linesWithTabs })
         end
     end
@@ -87,7 +87,7 @@ function CheckNoTabs.exec()
         print(`Found {#errors} file(s) with tabs:`)
         print("")
         for _, e in errors do
-            local lineList = table.concat(e.lines, ", ")
+            const lineList = table.concat(e.lines, ", ")
             print(`  {e.file}`)
             print(`    Lines with tabs: {lineList}`)
             print("")

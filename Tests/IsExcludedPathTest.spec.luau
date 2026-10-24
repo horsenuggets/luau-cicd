@@ -6,11 +6,11 @@ Tests for the isExcludedPath helper that the file scanning checks share.
 
 --]]
 
-local isExcludedPath = require("../Scripts/Helpers/isExcludedPath")
+const isExcludedPath = require("../Scripts/Helpers/isExcludedPath")
 
 return function()
     it("should skip dependency and submodule folders at any depth", function()
-        local paths = {
+        const paths = {
             "Packages/Fusion.luau",
             "DevPackages/Testable.luau",
             "ServerPackages/x.luau",

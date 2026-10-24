@@ -6,9 +6,9 @@ Tests for the CheckChangelogFormat script.
 
 --]]
 
-local TestEnvironment = require("./Helpers/TestEnvironment")
+const TestEnvironment = require("./Helpers/TestEnvironment")
 
-local dedent = TestEnvironment.dedent
+const dedent = TestEnvironment.dedent
 
 return function()
     describe("CheckChangelogFormat", function()
@@ -34,7 +34,7 @@ return function()
                     ]])
                 )
 
-                local result = env.runScript("CheckChangelogFormat")
+                const result = env.runScript("CheckChangelogFormat")
 
                 expect(result.ok).to.equal(true)
                 expect(string.find(result.stdout, "format is valid")).to.be.ok()
@@ -55,7 +55,7 @@ return function()
                     ]])
                 )
 
-                local result = env.runScript("CheckChangelogFormat")
+                const result = env.runScript("CheckChangelogFormat")
 
                 expect(result.ok).to.equal(true)
             end)
@@ -73,7 +73,7 @@ return function()
                     ]])
                 )
 
-                local result = env.runScript("CheckChangelogFormat")
+                const result = env.runScript("CheckChangelogFormat")
 
                 expect(result.ok).to.equal(true)
             end)
@@ -81,7 +81,7 @@ return function()
 
         describe("missing file", function()
             it("should fail when CHANGELOG.md is missing", function()
-                local result = env.runScript("CheckChangelogFormat")
+                const result = env.runScript("CheckChangelogFormat")
 
                 expect(result.ok).to.equal(false)
                 expect(string.find(result.stdout, "CHANGELOG.md not found")).to.be.ok()
@@ -100,7 +100,7 @@ return function()
                     ]])
                 )
 
-                local result = env.runScript("CheckChangelogFormat")
+                const result = env.runScript("CheckChangelogFormat")
 
                 expect(result.ok).to.equal(false)
                 expect(string.find(result.stdout, 'First line must be exactly "# Changelog"')).to.be.ok()
@@ -109,7 +109,7 @@ return function()
             it("should fail when there is no blank line after title", function()
                 env.writeFile("CHANGELOG.md", "# Changelog\n## 1.0.0\n- Something\n")
 
-                local result = env.runScript("CheckChangelogFormat")
+                const result = env.runScript("CheckChangelogFormat")
 
                 expect(result.ok).to.equal(false)
                 expect(string.find(result.stdout, "Second line must be blank")).to.be.ok()
@@ -128,7 +128,7 @@ return function()
                     ]])
                 )
 
-                local result = env.runScript("CheckChangelogFormat")
+                const result = env.runScript("CheckChangelogFormat")
 
                 expect(result.ok).to.equal(false)
                 expect(string.find(result.stdout, "Version header must be")).to.be.ok()
@@ -143,7 +143,7 @@ return function()
                     ]])
                 )
 
-                local result = env.runScript("CheckChangelogFormat")
+                const result = env.runScript("CheckChangelogFormat")
 
                 expect(result.ok).to.equal(false)
                 expect(string.find(result.stdout, "must contain at least one version section")).to.be.ok()
@@ -164,7 +164,7 @@ return function()
                     ]])
                 )
 
-                local result = env.runScript("CheckChangelogFormat")
+                const result = env.runScript("CheckChangelogFormat")
 
                 expect(result.ok).to.equal(false)
                 expect(string.find(result.stdout, "Subsection headers")).to.be.ok()
@@ -184,7 +184,7 @@ return function()
                     ]])
                 )
 
-                local result = env.runScript("CheckChangelogFormat")
+                const result = env.runScript("CheckChangelogFormat")
 
                 expect(result.ok).to.equal(false)
                 expect(string.find(result.stdout, "must have a space after the dash")).to.be.ok()
@@ -193,7 +193,7 @@ return function()
             it("should fail when list item is indented", function()
                 env.writeFile("CHANGELOG.md", "# Changelog\n\n## 1.0.0\n  - Something\n")
 
-                local result = env.runScript("CheckChangelogFormat")
+                const result = env.runScript("CheckChangelogFormat")
 
                 expect(result.ok).to.equal(false)
                 expect(string.find(result.stdout, "must not be indented")).to.be.ok()
@@ -209,7 +209,7 @@ return function()
                     ]])
                 )
 
-                local result = env.runScript("CheckChangelogFormat")
+                const result = env.runScript("CheckChangelogFormat")
 
                 expect(result.ok).to.equal(false)
                 expect(string.find(result.stdout, "must be inside a version section")).to.be.ok()
@@ -220,7 +220,7 @@ return function()
             it("should fail when file does not end with newline", function()
                 env.writeFile("CHANGELOG.md", "# Changelog\n\n## 1.0.0\n- Something")
 
-                local result = env.runScript("CheckChangelogFormat")
+                const result = env.runScript("CheckChangelogFormat")
 
                 expect(result.ok).to.equal(false)
                 expect(string.find(result.stdout, "must end with a newline")).to.be.ok()
@@ -229,7 +229,7 @@ return function()
             it("should fail when file ends with multiple newlines", function()
                 env.writeFile("CHANGELOG.md", "# Changelog\n\n## 1.0.0\n- Something\n\n")
 
-                local result = env.runScript("CheckChangelogFormat")
+                const result = env.runScript("CheckChangelogFormat")
 
                 expect(result.ok).to.equal(false)
                 expect(string.find(result.stdout, "exactly one newline")).to.be.ok()

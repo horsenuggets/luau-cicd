@@ -13,11 +13,11 @@ ignore patterns, and target directories.
 
 --]]
 
-local process = require("@lune/process")
+const process = require("@lune/process")
 
-local Lint = {}
+const Lint = {}
 
-local DEFAULT_IGNORE_PATTERNS = {
+const DEFAULT_IGNORE_PATTERNS = {
     "DevPackages/**",
     "Packages/**",
     "ServerPackages/**",
@@ -25,13 +25,13 @@ local DEFAULT_IGNORE_PATTERNS = {
     ".*/**",
 }
 
-local function getProjectName(): string
-    local cwd = process.cwd
-    local name = string.match(cwd, "([^/]+)/?$")
+const function getProjectName(): string
+    const cwd = process.cwd
+    const name = string.match(cwd, "([^/]+)/?$")
     return name or "."
 end
 
-local function formatTarget(target: string): string
+const function formatTarget(target: string): string
     if target == "." or target == "/" then
         return getProjectName()
     end
@@ -43,22 +43,22 @@ local function formatTarget(target: string): string
     return clean
 end
 
-local function normalizeTarget(target: string): string
+const function normalizeTarget(target: string): string
     if target == "/" then
         return "."
     end
     return (string.gsub(target, "^/", ""))
 end
 
-local function formatLabel(targets: { string }): string
-    local parts = {}
+const function formatLabel(targets: { string }): string
+    const parts = {}
     for _, target in targets do
         table.insert(parts, formatTarget(target))
     end
     return table.concat(parts, ", ")
 end
 
-local function printOutput(result: process.ExecResult)
+const function printOutput(result: process.ExecResult)
     if result.stdout ~= "" then
         print(result.stdout)
     end
@@ -67,8 +67,8 @@ local function printOutput(result: process.ExecResult)
     end
 end
 
-local function generateSourcemap(rojoProject: string, outputFile: string)
-    local result = process.exec("rojo", {
+const function generateSourcemap(rojoProject: string, outputFile: string)
+    const result = process.exec("rojo", {
         "sourcemap",
         rojoProject,
         "--output",
@@ -82,8 +82,8 @@ local function generateSourcemap(rojoProject: string, outputFile: string)
     end
 end
 
-local function buildIgnoreArgs(extraPatterns: { string }?): { string }
-    local args = {}
+const function buildIgnoreArgs(extraPatterns: { string }?): { string }
+    const args = {}
 
     for _, pattern in DEFAULT_IGNORE_PATTERNS do
         table.insert(args, `--ignore={pattern}`)
@@ -98,7 +98,7 @@ local function buildIgnoreArgs(extraPatterns: { string }?): { string }
     return args
 end
 
-local function analyze(
+const function analyze(
     label: string,
     platform: string,
     targets: { string },
@@ -107,7 +107,7 @@ local function analyze(
 ): boolean
     print(`Analyzing {label}...`)
 
-    local args = {
+    const args = {
         "analyze",
         `--platform={platform}`,
         "--no-flags-enabled",
@@ -126,7 +126,7 @@ local function analyze(
         table.insert(args, normalizeTarget(target))
     end
 
-    local result = process.exec("luau-lsp", args)
+    const result = process.exec("luau-lsp", args)
     printOutput(result)
 
     if result.ok then
@@ -150,10 +150,10 @@ export type LintConfig = {
 }
 
 function Lint.run(config: LintConfig?)
-    local cfg = config or {}
-    local ignoreArgs = buildIgnoreArgs(cfg.IgnorePatterns)
+    const cfg = config or {}
+    const ignoreArgs = buildIgnoreArgs(cfg.IgnorePatterns)
 
-    local platforms: { Platform } = cfg.Platforms or {
+    const platforms: { Platform } = cfg.Platforms or {
         { Platform = "lune", Targets = { "." } },
     }
 
@@ -175,7 +175,7 @@ function Lint.run(config: LintConfig?)
             end
         end
 
-        local label = formatLabel(entry.Targets)
+        const label = formatLabel(entry.Targets)
         if not analyze(label, entry.Platform, entry.Targets, sourcemap, entryIgnoreArgs) then
             allPassed = false
         end

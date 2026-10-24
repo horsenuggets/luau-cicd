@@ -6,9 +6,9 @@ Tests for the CheckFormatting script.
 
 --]]
 
-local TestEnvironment = require("./Helpers/TestEnvironment")
+const TestEnvironment = require("./Helpers/TestEnvironment")
 
-local dedent = TestEnvironment.dedent
+const dedent = TestEnvironment.dedent
 
 return function()
     describe("CheckFormatting", function()
@@ -38,7 +38,7 @@ return function()
             env.writeFile(
                 "test.luau",
                 dedent([[
-                    local function hello()
+                    const function hello()
                         print("Hello, world!")
                     end
 
@@ -46,7 +46,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckFormatting")
+            const result = env.runScript("CheckFormatting")
 
             expect(result.ok).to.equal(true)
             expect(string.find(result.stdout, "Formatting check passed")).to.be.ok()
@@ -57,7 +57,7 @@ return function()
             env.writeFile(
                 "test.luau",
                 dedent([[
-                    local function hello()
+                    const function hello()
                     print("Hello, world!")
                         end
 
@@ -65,7 +65,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckFormatting")
+            const result = env.runScript("CheckFormatting")
 
             expect(result.ok).to.equal(false)
             expect(string.find(result.stdout, "Formatting check failed")).to.be.ok()
@@ -75,19 +75,19 @@ return function()
             env.writeFile(
                 "file1.luau",
                 dedent([[
-                    local a = 1
+                    const a = 1
                     return a
                 ]])
             )
             env.writeFile(
                 "file2.luau",
                 dedent([[
-                    local b = 2
+                    const b = 2
                     return b
                 ]])
             )
 
-            local result = env.runScript("CheckFormatting")
+            const result = env.runScript("CheckFormatting")
 
             expect(result.ok).to.equal(true)
         end)
@@ -96,7 +96,7 @@ return function()
             env.writeFile(
                 "good.luau",
                 dedent([[
-                    local a = 1
+                    const a = 1
                     return a
                 ]])
             )
@@ -104,7 +104,7 @@ return function()
             env.writeFile(
                 "bad.luau",
                 dedent([[
-                    local function test()
+                    const function test()
                     if true then
                     print("bad")
                     end
@@ -113,7 +113,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckFormatting")
+            const result = env.runScript("CheckFormatting")
 
             expect(result.ok).to.equal(false)
         end)
@@ -123,12 +123,12 @@ return function()
             env.writeFile(
                 "subdir/nested.luau",
                 dedent([[
-                    local nested = true
+                    const nested = true
                     return nested
                 ]])
             )
 
-            local result = env.runScript("CheckFormatting")
+            const result = env.runScript("CheckFormatting")
 
             expect(result.ok).to.equal(true)
         end)

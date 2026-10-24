@@ -12,13 +12,13 @@ all tool repository strings are lowercase.
 
 --]]
 
-local fs = require("@lune/fs")
-local process = require("@lune/process")
+const fs = require("@lune/fs")
+const process = require("@lune/process")
 
 const CheckRokitFormat = {}
 
 function CheckRokitFormat.exec()
-    local filename = process.args[1] or "rokit.toml"
+    const filename = process.args[1] or "rokit.toml"
 
     print(`Checking {filename} format...`)
 
@@ -28,16 +28,16 @@ function CheckRokitFormat.exec()
         process.exit(1)
     end
 
-    local content = fs.readFile(filename)
-    local errors: { string } = {}
+    const content = fs.readFile(filename)
+    const errors: { string } = {}
 
     -- Find all tool definitions: key = "value"
     -- Pattern matches lines like: luau-lsp = "johnnymorganz/luau-lsp@1.60.0"
     for line in string.gmatch(content, "[^\n]+") do
-        local key, value = string.match(line, '^%s*([%w%-_]+)%s*=%s*"(.-)"')
+        const key, value = string.match(line, '^%s*([%w%-_]+)%s*=%s*"(.-)"')
         if key and value then
             -- Check if the value contains uppercase letters
-            local lowercase = string.lower(value)
+            const lowercase = string.lower(value)
             if value ~= lowercase then
                 table.insert(errors, `Tool "{key}" has non-lowercase value "{value}". Should be "{lowercase}".`)
             end

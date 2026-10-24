@@ -8,8 +8,8 @@ Validates that CHANGELOG.md contains an entry for the current VERSION.
 
 --]]
 
-local fs = require("@lune/fs")
-local process = require("@lune/process")
+const fs = require("@lune/fs")
+const process = require("@lune/process")
 
 const CheckChangelogVersion = {}
 
@@ -31,10 +31,10 @@ function CheckChangelogVersion.exec()
         process.exit(1)
     end
 
-    local changelog = fs.readFile("CHANGELOG.md")
+    const changelog = fs.readFile("CHANGELOG.md")
 
     -- Check if version header exists
-    local pattern = "## " .. version:gsub("%.", "%%."):gsub("%-", "%%-")
+    const pattern = "## " .. version:gsub("%.", "%%."):gsub("%-", "%%-")
     if not string.find(changelog, pattern) then
         print(`CHANGELOG.md does not contain an entry for version "{version}".`)
         print("Please add a changelog section before releasing.")

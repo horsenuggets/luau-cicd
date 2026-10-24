@@ -12,16 +12,16 @@ shebangs natively, so no stripping is needed.
 
 --]]
 
-local process = require("@lune/process")
+const process = require("@lune/process")
 
 const RunStaticAnalysis = {}
 
 function RunStaticAnalysis.exec()
-    local platform = process.args[1] or "standard"
+    const platform = process.args[1] or "standard"
 
     print(`Running static analysis with platform "{platform}"...`)
 
-    local result = process.exec("luau-lsp", {
+    const result = process.exec("luau-lsp", {
         "analyze",
         "--platform",
         platform,
@@ -37,7 +37,7 @@ function RunStaticAnalysis.exec()
     -- Check for any issues in output (warnings or errors)
     -- luau-lsp outputs issues in the format: file(line,col): Type: message
     local hasIssues = false
-    local issuePattern = "%):%s+%w+:"
+    const issuePattern = "%):%s+%w+:"
 
     if string.find(result.stdout, issuePattern) then
         hasIssues = true

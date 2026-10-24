@@ -11,27 +11,27 @@ Bumps the version in VERSION file and syncs it to wally.toml. Pass "major", "min
 
 --]]
 
-local fs = require("@lune/fs")
-local process = require("@lune/process")
+const fs = require("@lune/fs")
+const process = require("@lune/process")
 
-local parseVersion = require("./Helpers/parseVersion")
+const parseVersion = require("./Helpers/parseVersion")
 
 const BumpVersion = {}
 
 function BumpVersion.exec()
-    local args = process.args
+    const args = process.args
     if #args < 1 then
         print("[Usage] ./Scripts/BumpVersion.exec.luau <major|minor|patch>")
         process.exit(1)
     end
 
-    local bumpType = string.lower(args[1])
+    const bumpType = string.lower(args[1])
     if bumpType ~= "major" and bumpType ~= "minor" and bumpType ~= "patch" then
         print(`Invalid bump type "{bumpType}". Must be "major", "minor", or "patch".`)
         process.exit(1)
     end
 
-    local currentVersionString = fs.readFile("VERSION")
+    const currentVersionString = fs.readFile("VERSION")
     local major, minor, patch = parseVersion(currentVersionString)
 
     if not major then
@@ -39,7 +39,7 @@ function BumpVersion.exec()
         process.exit(1)
     end
 
-    local previousVersion = `{major}.{minor}.{patch}`
+    const previousVersion = `{major}.{minor}.{patch}`
     print(`Current version is "{previousVersion}".`)
 
     if bumpType == "major" then
@@ -53,7 +53,7 @@ function BumpVersion.exec()
         patch += 1
     end
 
-    local newVersion = `{major}.{minor}.{patch}`
+    const newVersion = `{major}.{minor}.{patch}`
     print(`Bumping to "{newVersion}".`)
 
     fs.writeFile("VERSION", newVersion .. "\n")
@@ -61,8 +61,8 @@ function BumpVersion.exec()
     print("Syncing version to wally.toml.")
     -- Resolve SyncVersion next to this script, so it's found when this runs from a
     -- consumer repo through Submodules/luau-cicd/ and not only from luau-cicd itself
-    local scriptsDir = string.match(debug.info(1, "s"), "^(.*)[/\\]") or "."
-    local syncResult = process.exec("lune", { "run", `{scriptsDir}/SyncVersion.exec` })
+    const scriptsDir = string.match(debug.info(1, "s"), "^(.*)[/\\]") or "."
+    const syncResult = process.exec("lune", { "run", `{scriptsDir}/SyncVersion.exec` })
     if not syncResult.ok then
         print("Failed to sync version.")
         print(syncResult.stderr)

@@ -6,9 +6,9 @@ Tests for the CheckRokitFormat script.
 
 --]]
 
-local TestEnvironment = require("./Helpers/TestEnvironment")
+const TestEnvironment = require("./Helpers/TestEnvironment")
 
-local dedent = TestEnvironment.dedent
+const dedent = TestEnvironment.dedent
 
 return function()
     describe("CheckRokitFormat", function()
@@ -33,7 +33,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckRokitFormat", { "test-rokit.toml" })
+            const result = env.runScript("CheckRokitFormat", { "test-rokit.toml" })
 
             expect(result.ok).to.equal(true)
             expect(string.find(result.stdout, "test%-rokit%.toml format is valid")).to.be.ok()
@@ -48,7 +48,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckRokitFormat", { "test-rokit.toml" })
+            const result = env.runScript("CheckRokitFormat", { "test-rokit.toml" })
 
             expect(result.ok).to.equal(false)
             expect(string.find(result.stdout, "non%-lowercase")).to.be.ok()
@@ -65,14 +65,14 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckRokitFormat", { "test-rokit.toml" })
+            const result = env.runScript("CheckRokitFormat", { "test-rokit.toml" })
 
             expect(result.ok).to.equal(false)
             expect(string.find(result.stdout, "2 format error")).to.be.ok()
         end)
 
         it("should fail when file does not exist", function()
-            local result = env.runScript("CheckRokitFormat", { "nonexistent.toml" })
+            const result = env.runScript("CheckRokitFormat", { "nonexistent.toml" })
 
             expect(result.ok).to.equal(false)
             expect(string.find(result.stdout, "nonexistent%.toml not found")).to.be.ok()
@@ -86,7 +86,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckRokitFormat", { "test-rokit.toml" })
+            const result = env.runScript("CheckRokitFormat", { "test-rokit.toml" })
 
             expect(result.ok).to.equal(true)
         end)
@@ -100,7 +100,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckRokitFormat", { "test-rokit.toml" })
+            const result = env.runScript("CheckRokitFormat", { "test-rokit.toml" })
 
             expect(result.ok).to.equal(false)
             expect(string.find(result.stdout, "non%-lowercase")).to.be.ok()

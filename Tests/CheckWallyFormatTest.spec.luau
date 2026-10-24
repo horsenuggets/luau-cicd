@@ -6,9 +6,9 @@ Tests for the CheckWallyFormat script.
 
 --]]
 
-local TestEnvironment = require("./Helpers/TestEnvironment")
+const TestEnvironment = require("./Helpers/TestEnvironment")
 
-local dedent = TestEnvironment.dedent
+const dedent = TestEnvironment.dedent
 
 return function()
     describe("CheckWallyFormat", function()
@@ -38,7 +38,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckWallyFormat", { "test-wally.toml" })
+            const result = env.runScript("CheckWallyFormat", { "test-wally.toml" })
 
             expect(result.ok).to.equal(true)
             expect(string.find(result.stdout, "test%-wally%.toml format is valid")).to.be.ok()
@@ -54,7 +54,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckWallyFormat", { "test-wally.toml" })
+            const result = env.runScript("CheckWallyFormat", { "test-wally.toml" })
 
             expect(result.ok).to.equal(false)
             expect(string.find(result.stdout, "Package name")).to.be.ok()
@@ -74,7 +74,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckWallyFormat", { "test-wally.toml" })
+            const result = env.runScript("CheckWallyFormat", { "test-wally.toml" })
 
             expect(result.ok).to.equal(false)
             expect(string.find(result.stdout, 'Dependency "some%-dep"')).to.be.ok()
@@ -94,7 +94,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckWallyFormat", { "test-wally.toml" })
+            const result = env.runScript("CheckWallyFormat", { "test-wally.toml" })
 
             expect(result.ok).to.equal(false)
             expect(string.find(result.stdout, 'Dependency "testable"')).to.be.ok()
@@ -117,14 +117,14 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckWallyFormat", { "test-wally.toml" })
+            const result = env.runScript("CheckWallyFormat", { "test-wally.toml" })
 
             expect(result.ok).to.equal(false)
             expect(string.find(result.stdout, "3 format error")).to.be.ok()
         end)
 
         it("should fail when file does not exist", function()
-            local result = env.runScript("CheckWallyFormat", { "nonexistent.toml" })
+            const result = env.runScript("CheckWallyFormat", { "nonexistent.toml" })
 
             expect(result.ok).to.equal(false)
             expect(string.find(result.stdout, "nonexistent%.toml not found")).to.be.ok()
@@ -140,7 +140,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckWallyFormat", { "test-wally.toml" })
+            const result = env.runScript("CheckWallyFormat", { "test-wally.toml" })
 
             expect(result.ok).to.equal(true)
         end)
@@ -156,7 +156,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckWallyFormat", { "test-wally.toml" })
+            const result = env.runScript("CheckWallyFormat", { "test-wally.toml" })
 
             expect(result.ok).to.equal(true)
         end)
@@ -173,7 +173,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckWallyFormat", { "test-wally.toml" })
+            const result = env.runScript("CheckWallyFormat", { "test-wally.toml" })
 
             expect(result.ok).to.equal(true)
         end)
