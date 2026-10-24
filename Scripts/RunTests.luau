@@ -29,6 +29,7 @@ local TESTS = {
     { Name = "CheckWallyFormatTest", Func = require("../Tests/CheckWallyFormatTest.spec") },
     { Name = "EnsureProperVersionUpdateTest", Func = require("../Tests/EnsureProperVersionUpdateTest.spec") },
     { Name = "ExtractChangelogTest", Func = require("../Tests/ExtractChangelogTest.spec") },
+    { Name = "IsExcludedPathTest", Func = require("../Tests/IsExcludedPathTest.spec") },
     { Name = "ParseVersionTest", Func = require("../Tests/ParseVersionTest.spec") },
     { Name = "SyncVersionTest", Func = require("../Tests/SyncVersionTest.spec") },
 }

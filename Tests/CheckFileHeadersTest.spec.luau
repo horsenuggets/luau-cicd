@@ -338,6 +338,28 @@ return {}
                 expect(result.ok).to.equal(true)
                 expect(string.find(result.stdout, "0 file")).to.be.ok()
             end)
+
+            it("should skip root build output when scanning the whole repo", function()
+                env.writeDir("Build")
+                env.writeFile("Build/fixture.luau", "return {}")
+
+                local result = env.runScript("CheckFileHeaders")
+
+                expect(result.ok).to.equal(true)
+                expect(string.find(result.stdout, "0 file")).to.be.ok()
+            end)
+
+            it("should still check a Build folder when scanning a subfolder", function()
+                env.writeDir("Commands")
+                env.writeDir("Commands/Build")
+                env.writeFile("Commands/Build/init.luau", "return {}")
+
+                local result = env.runScript("CheckFileHeaders", { `{env.path}/Commands` })
+
+                expect(result.ok).to.equal(false)
+                -- Paths in the report are relative to the scanned folder
+                expect(string.find(result.stdout, "Build/init.luau", 1, true)).to.be.ok()
+            end)
         end)
     end)
 end

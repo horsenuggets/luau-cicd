@@ -13,23 +13,8 @@ Validates that no Luau files contain tab characters. All indentation must use sp
 --]]
 
 local fs = require("@lune/fs")
+local isExcluded = require("./Helpers/isExcludedPath")
 local process = require("@lune/process")
-
-local EXCLUDED_PATHS = {
-    "DevPackages/",
-    "Packages/",
-    "Submodules/",
-    "node_modules/",
-}
-
-local function isExcluded(path: string): boolean
-    for _, excluded in EXCLUDED_PATHS do
-        if string.find(path, excluded, 1, true) then
-            return true
-        end
-    end
-    return false
-end
 
 local function findTabsInFile(content: string): { number }
     local linesWithTabs: { number } = {}
@@ -45,7 +30,7 @@ local function findTabsInFile(content: string): { number }
     return linesWithTabs
 end
 
-local function findLuauFiles(directory: string): { string }
+local function findLuauFiles(directory: string, scanningRepoRoot: boolean): { string }
     local files: { string } = {}
 
     local function scanDir(dir: string)
@@ -57,11 +42,11 @@ local function findLuauFiles(directory: string): { string }
             local relativePath = string.sub(fullPath, #directory + 2)
 
             if fs.isDir(fullPath) then
-                if not isExcluded(relativePath .. "/") then
+                if not isExcluded(relativePath .. "/", scanningRepoRoot) then
                     scanDir(fullPath)
                 end
             elseif fs.isFile(fullPath) and string.match(entry, "%.luau$") then
-                if not isExcluded(relativePath) then
+                if not isExcluded(relativePath, scanningRepoRoot) then
                     table.insert(files, fullPath)
                 end
             end
@@ -82,7 +67,9 @@ local function checkNoTabs()
         process.exit(1)
     end
 
-    local files = findLuauFiles(directory)
+    -- Root-only folders like Build/ are only skipped when the whole repo is scanned
+    local scanningRepoRoot = process.args[1] == nil or process.args[1] == "."
+    local files = findLuauFiles(directory, scanningRepoRoot)
     local errors: { { file: string, lines: { number } } } = {}
 
     for _, filepath in files do
