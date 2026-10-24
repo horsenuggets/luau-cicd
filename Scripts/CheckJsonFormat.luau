@@ -22,7 +22,8 @@ local function findJsonFiles(dir: string): { string }
         for _, entry in entries do
             local path = `{currentDir}/{entry}`
 
-            if isExcluded(path) then
+            -- This check always scans the repo root, so root-only folders are skipped too
+            if isExcluded(path, true) then
                 continue
             end
 

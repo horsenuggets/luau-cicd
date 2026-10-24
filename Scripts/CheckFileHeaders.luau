@@ -158,7 +158,7 @@ local function validateHeader(filepath: string, content: string): string?
     return nil -- No errors
 end
 
-local function findLuauFiles(directory: string): { string }
+local function findLuauFiles(directory: string, scanningRepoRoot: boolean): { string }
     local files: { string } = {}
 
     local function scanDir(dir: string)
@@ -170,11 +170,11 @@ local function findLuauFiles(directory: string): { string }
             local relativePath = string.sub(fullPath, #directory + 2)
 
             if fs.isDir(fullPath) then
-                if not isExcluded(relativePath .. "/") then
+                if not isExcluded(relativePath .. "/", scanningRepoRoot) then
                     scanDir(fullPath)
                 end
             elseif fs.isFile(fullPath) and string.match(entry, "%.luau$") then
-                if not isExcluded(relativePath) and not isExcludedFile(entry, relativePath) then
+                if not isExcluded(relativePath, scanningRepoRoot) and not isExcludedFile(entry, relativePath) then
                     table.insert(files, fullPath)
                 end
             end
@@ -195,7 +195,9 @@ local function checkFileHeaders()
         process.exit(1)
     end
 
-    local files = findLuauFiles(directory)
+    -- Root-only folders like Build/ are only skipped when the whole repo is scanned
+    local scanningRepoRoot = process.args[1] == nil or process.args[1] == "."
+    local files = findLuauFiles(directory, scanningRepoRoot)
     local errors: { { file: string, error: string } } = {}
 
     for _, filepath in files do

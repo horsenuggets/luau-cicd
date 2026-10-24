@@ -2,19 +2,21 @@
 
 isExcludedPath
 
-Decides whether a repo-relative path should be skipped by the checks that scan files.
-Dependency and submodule folders are skipped at any depth, while generated output
-(Build/) and worktree folders (.wt/, .worktrees/) are only skipped at the repo root, so a
-source folder that happens to be named Build is still checked. Path parts are compared
-whole, so a folder like MyPackages isn't mistaken for Packages.
+Decides whether a path should be skipped by the checks that scan files. The path is
+relative to the folder being scanned. Dependency and submodule folders are skipped at any
+depth. Generated output (Build/) and worktree folders (.wt/, .worktrees/) only exist at
+the repo root, so they're skipped only when the scan starts there, which keeps a source
+folder that happens to be named Build checked. Path parts are compared whole, so a folder
+like MyPackages isn't mistaken for Packages.
 
 --]]
 
 local EXCLUDED_FOLDERS = { "DevPackages", "node_modules", "Packages", "ServerPackages", "Submodules" }
 local EXCLUDED_ROOT_FOLDERS = { ".worktrees", ".wt", "Build" }
 
-local function isExcludedPath(relativePath: string): boolean
+local function isExcludedPath(relativePath: string, scanningRepoRoot: boolean): boolean
     assert(typeof(relativePath) == "string", "Expected a string.")
+    assert(typeof(scanningRepoRoot) == "boolean", "Expected a boolean.")
 
     local path = string.gsub(string.gsub(relativePath, "\\", "/"), "^%./", "")
     local index = 0
@@ -23,7 +25,7 @@ local function isExcludedPath(relativePath: string): boolean
         if table.find(EXCLUDED_FOLDERS, part) then
             return true
         end
-        if index == 1 and table.find(EXCLUDED_ROOT_FOLDERS, part) then
+        if scanningRepoRoot and index == 1 and table.find(EXCLUDED_ROOT_FOLDERS, part) then
             return true
         end
     end
