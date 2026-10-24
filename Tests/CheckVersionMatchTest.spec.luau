@@ -6,9 +6,9 @@ Tests for the CheckVersionMatch script.
 
 --]]
 
-local TestEnvironment = require("./Helpers/TestEnvironment")
+const TestEnvironment = require("./Helpers/TestEnvironment")
 
-local dedent = TestEnvironment.dedent
+const dedent = TestEnvironment.dedent
 
 return function()
     describe("CheckVersionMatch", function()
@@ -33,7 +33,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckVersionMatch")
+            const result = env.runScript("CheckVersionMatch")
 
             expect(result.ok).to.equal(true)
             expect(string.find(result.stdout, 'All versions match "1.2.3"')).to.be.ok()
@@ -50,7 +50,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckVersionMatch")
+            const result = env.runScript("CheckVersionMatch")
 
             expect(result.ok).to.equal(false)
             expect(string.find(result.stdout, "Version mismatch")).to.be.ok()
@@ -67,7 +67,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckVersionMatch")
+            const result = env.runScript("CheckVersionMatch")
 
             expect(result.ok).to.equal(true)
         end)
@@ -82,7 +82,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckVersionMatch")
+            const result = env.runScript("CheckVersionMatch")
 
             expect(result.ok).to.equal(false)
             expect(string.find(result.stdout, "Could not find version")).to.be.ok()
@@ -99,7 +99,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckVersionMatch")
+            const result = env.runScript("CheckVersionMatch")
 
             expect(result.ok).to.equal(true)
         end)
@@ -123,7 +123,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckVersionMatch")
+            const result = env.runScript("CheckVersionMatch")
 
             expect(result.ok).to.equal(true)
             expect(string.find(result.stdout, 'All versions match "2.0.0"')).to.be.ok()
@@ -148,7 +148,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckVersionMatch")
+            const result = env.runScript("CheckVersionMatch")
 
             expect(result.ok).to.equal(false)
             expect(string.find(result.stdout, "Version mismatch")).to.be.ok()
@@ -174,7 +174,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckVersionMatch")
+            const result = env.runScript("CheckVersionMatch")
 
             expect(result.ok).to.equal(true)
         end)
@@ -198,7 +198,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckVersionMatch")
+            const result = env.runScript("CheckVersionMatch")
 
             expect(result.ok).to.equal(true)
             expect(string.find(result.stdout, 'All versions match "3.1.1%-horse.0.3"')).to.be.ok()
@@ -223,7 +223,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckVersionMatch")
+            const result = env.runScript("CheckVersionMatch")
 
             expect(result.ok).to.equal(false)
             expect(string.find(result.stdout, "Version mismatch")).to.be.ok()
@@ -248,7 +248,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckVersionMatch")
+            const result = env.runScript("CheckVersionMatch")
 
             expect(result.ok).to.equal(true)
         end)
@@ -264,7 +264,7 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("CheckVersionMatch")
+            const result = env.runScript("CheckVersionMatch")
 
             expect(result.ok).to.equal(true)
         end)

@@ -2,37 +2,39 @@
 
 --[[
 
-CheckLuaurcFormat
+CheckLuaurcFormat.exec
 
 Validates that .luaurc follows the project format guidelines. Checks that:
 - "@self" is never added as an alias since it is already built-in
 - If lune is in rokit.toml, the lune alias version must match
 
-[Usage] ./Scripts/CheckLuaurcFormat.luau [luaurc-file] [rokit-file]
+[Usage] ./Scripts/CheckLuaurcFormat.exec.luau [luaurc-file] [rokit-file]
 > luaurc-file - Optional path to the .luaurc file. Defaults to ".luaurc".
 > rokit-file - Optional path to the rokit.toml file. Defaults to "rokit.toml".
 
 --]]
 
-local fs = require("@lune/fs")
-local process = require("@lune/process")
-local serde = require("@lune/serde")
+const fs = require("@lune/fs")
+const process = require("@lune/process")
+const serde = require("@lune/serde")
 
-local function getLuneVersionFromRokit(rokitPath: string): string?
+const function getLuneVersionFromRokit(rokitPath: string): string?
     if not fs.isFile(rokitPath) then
         return nil
     end
 
-    local content = fs.readFile(rokitPath)
+    const content = fs.readFile(rokitPath)
 
     -- Find lune = "owner/repo@version" pattern
-    local version = string.match(content, 'lune%s*=%s*"[^@]+@([^"]+)"')
+    const version = string.match(content, 'lune%s*=%s*"[^@]+@([^"]+)"')
     return version
 end
 
-local function checkLuaurcFormat()
-    local luaurcPath = process.args[1] or ".luaurc"
-    local rokitPath = process.args[2] or "rokit.toml"
+const CheckLuaurcFormat = {}
+
+function CheckLuaurcFormat.exec()
+    const luaurcPath = process.args[1] or ".luaurc"
+    const rokitPath = process.args[2] or "rokit.toml"
 
     print(`Checking {luaurcPath} format...`)
 
@@ -42,11 +44,11 @@ local function checkLuaurcFormat()
         process.exit(1)
     end
 
-    local content = fs.readFile(luaurcPath)
-    local errors: { string } = {}
+    const content = fs.readFile(luaurcPath)
+    const errors: { string } = {}
 
     -- Parse JSON
-    local ok, data = pcall(function()
+    const ok, data = pcall(function()
         return serde.decode("json", content)
     end)
 
@@ -58,7 +60,7 @@ local function checkLuaurcFormat()
     -- Check for @self alias
     if data.aliases then
         for key, _ in data.aliases do
-            local lowerKey = string.lower(tostring(key))
+            const lowerKey = string.lower(tostring(key))
             if lowerKey == "self" or lowerKey == "@self" then
                 table.insert(
                     errors,
@@ -69,12 +71,12 @@ local function checkLuaurcFormat()
     end
 
     -- Check lune alias version matches rokit.toml
-    local rokitLuneVersion = getLuneVersionFromRokit(rokitPath)
+    const rokitLuneVersion = getLuneVersionFromRokit(rokitPath)
     if rokitLuneVersion then
-        local luneAlias = data.aliases and data.aliases.lune
+        const luneAlias = data.aliases and data.aliases.lune
         if luneAlias then
             -- Expected format: ~/.lune/.typedefs/VERSION/
-            local expectedPath = `~/.lune/.typedefs/{rokitLuneVersion}/`
+            const expectedPath = `~/.lune/.typedefs/{rokitLuneVersion}/`
             if luneAlias ~= expectedPath then
                 table.insert(
                     errors,
@@ -102,4 +104,4 @@ local function checkLuaurcFormat()
     print(`{luaurcPath} format is valid.`)
 end
 
-checkLuaurcFormat()
+CheckLuaurcFormat.exec()

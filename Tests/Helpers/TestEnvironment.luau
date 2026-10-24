@@ -6,19 +6,19 @@ Helper module for creating isolated test environments with temp directories.
 
 --]]
 
-local fs = require("@lune/fs")
-local process = require("@lune/process")
+const fs = require("@lune/fs")
+const process = require("@lune/process")
 
-local TestEnvironment = {}
+const TestEnvironment = {}
 
-local function dedent(str: string): string
+const function dedent(str: string): string
     -- Remove leading newline if present
-    local content = string.match(str, "^\n(.*)$") or str
+    const content = string.match(str, "^\n(.*)$") or str
 
     -- Find minimum indentation (ignoring empty lines)
     local minIndent = math.huge
     for line in string.gmatch(content, "[^\n]+") do
-        local indent = string.match(line, "^(%s*)")
+        const indent = string.match(line, "^(%s*)")
         if indent and #line > #indent then
             minIndent = math.min(minIndent, #indent)
         end
@@ -29,7 +29,7 @@ local function dedent(str: string): string
     end
 
     -- Remove that amount of indentation from each line
-    local lines = {}
+    const lines = {}
     for line in string.gmatch(content .. "\n", "([^\n]*)\n") do
         if #line > 0 then
             table.insert(lines, string.sub(line, minIndent + 1))
@@ -64,19 +64,19 @@ export type Environment = {
 }
 
 function TestEnvironment.create(): Environment
-    local timestamp = tostring(os.time()) .. tostring(math.random(10000, 99999))
-    local tempDir = `/tmp/luau-cicd-test-{timestamp}`
+    const timestamp = tostring(os.time()) .. tostring(math.random(10000, 99999))
+    const tempDir = `/tmp/luau-cicd-test-{timestamp}`
     fs.writeDir(tempDir)
 
     -- Get the absolute path to the Scripts directory
-    local scriptsDir = process.cwd .. "/Scripts"
+    const scriptsDir = process.cwd .. "/Scripts"
 
     -- Copy rokit.toml to temp dir so rokit-managed tools work
     if fs.isFile("rokit.toml") then
         fs.copy("rokit.toml", `{tempDir}/rokit.toml`)
     end
 
-    local env: Environment = {
+    const env: Environment = {
         path = tempDir,
 
         cleanup = function()
@@ -90,8 +90,8 @@ function TestEnvironment.create(): Environment
         end,
 
         writeFile = function(relativePath: string, content: string)
-            local fullPath = `{tempDir}/{relativePath}`
-            local dir = string.match(fullPath, "(.+)/[^/]+$")
+            const fullPath = `{tempDir}/{relativePath}`
+            const dir = string.match(fullPath, "(.+)/[^/]+$")
             if dir and not fs.isDir(dir) then
                 fs.writeDir(dir)
             end
@@ -107,8 +107,8 @@ function TestEnvironment.create(): Environment
         end,
 
         runScript = function(scriptName: string, args: { string }?): ExecResult
-            local scriptPath = `{scriptsDir}/{scriptName}.luau`
-            local luneArgs = { "run", scriptPath }
+            const scriptPath = `{scriptsDir}/{scriptName}.exec.luau`
+            const luneArgs = { "run", scriptPath }
             if args then
                 for _, arg in args do
                     table.insert(luneArgs, arg)

@@ -6,9 +6,9 @@ Tests for the SyncVersion script.
 
 --]]
 
-local TestEnvironment = require("./Helpers/TestEnvironment")
+const TestEnvironment = require("./Helpers/TestEnvironment")
 
-local dedent = TestEnvironment.dedent
+const dedent = TestEnvironment.dedent
 
 return function()
     describe("SyncVersion", function()
@@ -33,10 +33,10 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("SyncVersion")
+            const result = env.runScript("SyncVersion")
 
             expect(result.ok).to.equal(true)
-            local wallyContent = env.readFile("wally.toml")
+            const wallyContent = env.readFile("wally.toml")
             expect(string.find(wallyContent, 'version = "1.2.3"')).to.be.ok()
         end)
 
@@ -51,10 +51,10 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("SyncVersion")
+            const result = env.runScript("SyncVersion")
 
             expect(result.ok).to.equal(true)
-            local wallyContent = env.readFile("wally.toml")
+            const wallyContent = env.readFile("wally.toml")
             expect(string.find(wallyContent, 'version = "2.0.0"')).to.be.ok()
         end)
 
@@ -74,10 +74,10 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("SyncVersion")
+            const result = env.runScript("SyncVersion")
 
             expect(result.ok).to.equal(true)
-            local wallyContent = env.readFile("wally.toml")
+            const wallyContent = env.readFile("wally.toml")
             expect(string.find(wallyContent, 'version = "3.0.0"')).to.be.ok()
             expect(string.find(wallyContent, 'name = "test/package"')).to.be.ok()
             expect(string.find(wallyContent, 'description = "A test package"')).to.be.ok()
@@ -99,10 +99,10 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("SyncVersion")
+            const result = env.runScript("SyncVersion")
 
             expect(result.ok).to.equal(true)
-            local wallyContent = env.readFile("wally.toml")
+            const wallyContent = env.readFile("wally.toml")
             expect(string.find(wallyContent, 'version = "5.0.0"')).to.be.ok()
             -- Dependency version should remain unchanged
             expect(string.find(wallyContent, "dep@2.0.0")).to.be.ok()
@@ -134,10 +134,10 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("SyncVersion")
+            const result = env.runScript("SyncVersion")
 
             expect(result.ok).to.equal(true)
-            local readmeContent = env.readFile("README.md")
+            const readmeContent = env.readFile("README.md")
             expect(string.find(readmeContent, "author/my%-package@2%.0%.0")).to.be.ok()
         end)
 
@@ -163,12 +163,12 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("SyncVersion")
+            const result = env.runScript("SyncVersion")
 
             expect(result.ok).to.equal(true)
-            local readmeContent = env.readFile("README.md")
+            const readmeContent = env.readFile("README.md")
             -- Both occurrences should be updated
-            local _, count = string.gsub(readmeContent, "author/my%-package@3%.0%.0", "")
+            const _, count = string.gsub(readmeContent, "author/my%-package@3%.0%.0", "")
             expect(count).to.equal(2)
         end)
 
@@ -191,12 +191,12 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("SyncVersion")
+            const result = env.runScript("SyncVersion")
 
             expect(result.ok).to.equal(true)
-            local wallyContent = env.readFile("wally.toml")
+            const wallyContent = env.readFile("wally.toml")
             expect(string.find(wallyContent, 'version = "3.1.1%-horse.0.4"')).to.be.ok()
-            local readmeContent = env.readFile("README.md")
+            const readmeContent = env.readFile("README.md")
             expect(string.find(readmeContent, "author/my%-package@3%.1%.1%-horse%.0%.4")).to.be.ok()
         end)
 
@@ -219,10 +219,10 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("SyncVersion")
+            const result = env.runScript("SyncVersion")
 
             expect(result.ok).to.equal(true)
-            local readmeContent = env.readFile("README.md")
+            const readmeContent = env.readFile("README.md")
             expect(string.find(readmeContent, "author/my%-package@2%.0%.0%-beta%.6")).to.be.ok()
         end)
 
@@ -245,10 +245,10 @@ return function()
                 ]])
             )
 
-            local result = env.runScript("SyncVersion")
+            const result = env.runScript("SyncVersion")
 
             expect(result.ok).to.equal(true)
-            local readmeContent = env.readFile("README.md")
+            const readmeContent = env.readFile("README.md")
             expect(string.find(readmeContent, "without installation")).to.be.ok()
         end)
     end)

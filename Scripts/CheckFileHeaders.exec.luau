@@ -2,23 +2,23 @@
 
 --[[
 
-CheckFileHeaders
+CheckFileHeaders.exec
 
 Validates that all Luau files have properly formatted header comments. Supports optional
 directives (like --!strict, --!native) or shebangs at the top of the file, followed by a
 blank line, then the header comment block.
 
-[Usage] ./Scripts/CheckFileHeaders.luau [directory]
+[Usage] ./Scripts/CheckFileHeaders.exec.luau [directory]
 > directory - Optional path to the directory to check. Defaults to current
 > directory.
 
 --]]
 
-local fs = require("@lune/fs")
-local isExcluded = require("./Helpers/isExcludedPath")
-local process = require("@lune/process")
+const fs = require("@lune/fs")
+const isExcluded = require("./Helpers/isExcludedPath")
+const process = require("@lune/process")
 
-local function isExcludedFile(filename: string, relativePath: string): boolean
+const function isExcludedFile(filename: string, relativePath: string): boolean
     -- Root init.luau is excluded (just a re-export)
     if filename == "init.luau" and not string.find(relativePath, "/", 1, true) then
         return true
@@ -26,26 +26,26 @@ local function isExcludedFile(filename: string, relativePath: string): boolean
     return false
 end
 
-local function getExpectedName(filepath: string): string
-    local filename = string.match(filepath, "([^/]+)%.luau$")
+const function getExpectedName(filepath: string): string
+    const filename = string.match(filepath, "([^/]+)%.luau$")
     if filename == "init" or string.match(filename or "", "^init%.") then
         -- For init.luau (and Rojo variants like init.server.luau,
         -- init.client.luau, init.plugin.luau), use the parent folder
         -- name
-        local parentFolder = string.match(filepath, "([^/]+)/init[^/]*%.luau$")
+        const parentFolder = string.match(filepath, "([^/]+)/init[^/]*%.luau$")
         return parentFolder or "init"
     end
     return filename or ""
 end
 
-local function isDirective(line: string): boolean
+const function isDirective(line: string): boolean
     -- Luau directives: --!strict, --!nonstrict, --!nocheck, --!native, --!optimize
     -- Shebangs: #!/usr/bin/env lune
     return string.match(line, "^%-%-!") ~= nil or string.match(line, "^#!") ~= nil
 end
 
-local function validateHeader(filepath: string, content: string): string?
-    local lines: { string } = {}
+const function validateHeader(filepath: string, content: string): string?
+    const lines: { string } = {}
     for line in string.gmatch(content .. "\n", "([^\n]*)\n") do
         table.insert(lines, line)
     end
@@ -95,12 +95,12 @@ local function validateHeader(filepath: string, content: string): string?
     if lineIndex > #lines then
         return "Missing module name in header."
     end
-    local moduleName = lines[lineIndex]
+    const moduleName = lines[lineIndex]
     if moduleName == "" then
         return `Expected module name at line {lineIndex}, found blank line.`
     end
 
-    local expectedName = getExpectedName(filepath)
+    const expectedName = getExpectedName(filepath)
     if moduleName ~= expectedName then
         return `Module name "{moduleName}" does not match expected "{expectedName}" at line {lineIndex}.`
     end
@@ -123,7 +123,7 @@ local function validateHeader(filepath: string, content: string): string?
     local prevLineWasBlank = false
 
     while lineIndex <= #lines do
-        local line = lines[lineIndex]
+        const line = lines[lineIndex]
 
         -- Check if we've reached the closing
         if line == "--]]" then
@@ -158,16 +158,16 @@ local function validateHeader(filepath: string, content: string): string?
     return nil -- No errors
 end
 
-local function findLuauFiles(directory: string, scanningRepoRoot: boolean): { string }
-    local files: { string } = {}
+const function findLuauFiles(directory: string, scanningRepoRoot: boolean): { string }
+    const files: { string } = {}
 
-    local function scanDir(dir: string)
-        local entries = fs.readDir(dir)
+    const function scanDir(dir: string)
+        const entries = fs.readDir(dir)
         table.sort(entries)
 
         for _, entry in entries do
-            local fullPath = dir .. "/" .. entry
-            local relativePath = string.sub(fullPath, #directory + 2)
+            const fullPath = dir .. "/" .. entry
+            const relativePath = string.sub(fullPath, #directory + 2)
 
             if fs.isDir(fullPath) then
                 if not isExcluded(relativePath .. "/", scanningRepoRoot) then
@@ -185,8 +185,10 @@ local function findLuauFiles(directory: string, scanningRepoRoot: boolean): { st
     return files
 end
 
-local function checkFileHeaders()
-    local directory = process.args[1] or process.cwd
+const CheckFileHeaders = {}
+
+function CheckFileHeaders.exec()
+    const directory = process.args[1] or process.cwd
 
     print(`Checking file headers in {directory}...`)
 
@@ -196,15 +198,15 @@ local function checkFileHeaders()
     end
 
     -- Root-only folders like Build/ are only skipped when the whole repo is scanned
-    local scanningRepoRoot = process.args[1] == nil or process.args[1] == "."
-    local files = findLuauFiles(directory, scanningRepoRoot)
-    local errors: { { file: string, error: string } } = {}
+    const scanningRepoRoot = process.args[1] == nil or process.args[1] == "."
+    const files = findLuauFiles(directory, scanningRepoRoot)
+    const errors: { { file: string, error: string } } = {}
 
     for _, filepath in files do
-        local content = fs.readFile(filepath)
-        local err = validateHeader(filepath, content)
+        const content = fs.readFile(filepath)
+        const err = validateHeader(filepath, content)
         if err then
-            local relativePath = string.sub(filepath, #directory + 2)
+            const relativePath = string.sub(filepath, #directory + 2)
             table.insert(errors, { file = relativePath, error = err })
         end
     end
@@ -223,4 +225,4 @@ local function checkFileHeaders()
     print(`All {#files} file(s) have valid headers.`)
 end
 
-checkFileHeaders()
+CheckFileHeaders.exec()

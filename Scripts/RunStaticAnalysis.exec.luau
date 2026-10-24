@@ -2,24 +2,26 @@
 
 --[[
 
-RunStaticAnalysis
+RunStaticAnalysis.exec
 
 Runs luau-lsp static analysis. Accepts an optional platform argument
 (defaults to "standard"). The horsenuggets/luau-lsp fork handles
 shebangs natively, so no stripping is needed.
 
-[Usage] ./Scripts/RunStaticAnalysis.luau [platform]
+[Usage] ./Scripts/RunStaticAnalysis.exec.luau [platform]
 
 --]]
 
-local process = require("@lune/process")
+const process = require("@lune/process")
 
-local function runStaticAnalysis()
-    local platform = process.args[1] or "standard"
+const RunStaticAnalysis = {}
+
+function RunStaticAnalysis.exec()
+    const platform = process.args[1] or "standard"
 
     print(`Running static analysis with platform "{platform}"...`)
 
-    local result = process.exec("luau-lsp", {
+    const result = process.exec("luau-lsp", {
         "analyze",
         "--platform",
         platform,
@@ -35,7 +37,7 @@ local function runStaticAnalysis()
     -- Check for any issues in output (warnings or errors)
     -- luau-lsp outputs issues in the format: file(line,col): Type: message
     local hasIssues = false
-    local issuePattern = "%):%s+%w+:"
+    const issuePattern = "%):%s+%w+:"
 
     if string.find(result.stdout, issuePattern) then
         hasIssues = true
@@ -56,4 +58,4 @@ local function runStaticAnalysis()
     end
 end
 
-runStaticAnalysis()
+RunStaticAnalysis.exec()

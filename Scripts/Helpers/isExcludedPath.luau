@@ -11,14 +11,14 @@ like MyPackages isn't mistaken for Packages.
 
 --]]
 
-local EXCLUDED_FOLDERS = { "DevPackages", "node_modules", "Packages", "ServerPackages", "Submodules" }
-local EXCLUDED_ROOT_FOLDERS = { ".worktrees", ".wt", "Build" }
+const EXCLUDED_FOLDERS = { "DevPackages", "node_modules", "Packages", "ServerPackages", "Submodules" }
+const EXCLUDED_ROOT_FOLDERS = { ".worktrees", ".wt", "Build" }
 
-local function isExcludedPath(relativePath: string, scanningRepoRoot: boolean): boolean
+const function isExcludedPath(relativePath: string, scanningRepoRoot: boolean): boolean
     assert(typeof(relativePath) == "string", "Expected a string.")
     assert(typeof(scanningRepoRoot) == "boolean", "Expected a boolean.")
 
-    local path = string.gsub(string.gsub(relativePath, "\\", "/"), "^%./", "")
+    const path = string.gsub(string.gsub(relativePath, "\\", "/"), "^%./", "")
     local index = 0
     for part in string.gmatch(path, "[^/]+") do
         index += 1

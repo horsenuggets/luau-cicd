@@ -2,7 +2,7 @@
 
 --[[
 
-EnsureProperVersionUpdate
+EnsureProperVersionUpdate.exec
 
 Validates that the VERSION file contains a proper semantic version and that it has been
 bumped correctly since the last release tag. Compares against the most recent Git tag
@@ -10,17 +10,19 @@ bumped correctly since the last release tag. Compares against the most recent Gi
 
 --]]
 
-local fs = require("@lune/fs")
-local process = require("@lune/process")
+const fs = require("@lune/fs")
+const process = require("@lune/process")
 
-local parseVersion = require("./Helpers/parseVersion")
+const parseVersion = require("./Helpers/parseVersion")
 
-local function ensureProperVersionUpdate()
+const EnsureProperVersionUpdate = {}
+
+function EnsureProperVersionUpdate.exec()
     assert(fs.isFile("VERSION"), "VERSION file does not exist.")
 
     -- Read current VERSION file
-    local currentVersionString = fs.readFile("VERSION")
-    local currentMajor, currentMinor, currentPatch = parseVersion(currentVersionString)
+    const currentVersionString = fs.readFile("VERSION")
+    const currentMajor, currentMinor, currentPatch = parseVersion(currentVersionString)
 
     -- Validate current version format
     if not currentMajor then
@@ -36,7 +38,7 @@ local function ensureProperVersionUpdate()
     print(`Current version is "{currentMajor}.{currentMinor}.{currentPatch}".`)
 
     -- Get the latest tag (excluding v0.0.0)
-    local tagResult = process.exec("git", { "tag", "--sort=-version:refname" })
+    const tagResult = process.exec("git", { "tag", "--sort=-version:refname" })
 
     if not tagResult.ok then
         print("Could not retrieve Git tags.")
@@ -62,7 +64,7 @@ local function ensureProperVersionUpdate()
     print(`Latest release tag is "{latestTag}".`)
 
     -- Get VERSION from the tag
-    local versionAtTagResult = process.exec("git", { "show", `{latestTag}:VERSION` })
+    const versionAtTagResult = process.exec("git", { "show", `{latestTag}:VERSION` })
 
     if not versionAtTagResult.ok then
         print(`Could not read VERSION at tag "{latestTag}".`)
@@ -70,8 +72,8 @@ local function ensureProperVersionUpdate()
         return
     end
 
-    local previousVersionString = versionAtTagResult.stdout
-    local previousMajor, previousMinor, previousPatch = parseVersion(previousVersionString)
+    const previousVersionString = versionAtTagResult.stdout
+    const previousMajor, previousMinor, previousPatch = parseVersion(previousVersionString)
 
     if not previousMajor then
         print(`VERSION at tag "{latestTag}" was not in proper format, skipping comparison.`)
@@ -93,9 +95,9 @@ local function ensureProperVersionUpdate()
     -- 2. Minor bump: major same, minor+1, patch=0
     -- 3. Patch bump: major same, minor same, patch+1
 
-    local isMajorBump = currentMajor == previousMajor + 1 and currentMinor == 0 and currentPatch == 0
-    local isMinorBump = currentMajor == previousMajor and currentMinor == previousMinor + 1 and currentPatch == 0
-    local isPatchBump = currentMajor == previousMajor
+    const isMajorBump = currentMajor == previousMajor + 1 and currentMinor == 0 and currentPatch == 0
+    const isMinorBump = currentMajor == previousMajor and currentMinor == previousMinor + 1 and currentPatch == 0
+    const isPatchBump = currentMajor == previousMajor
         and currentMinor == previousMinor
         and currentPatch == previousPatch + 1
 
@@ -119,4 +121,4 @@ local function ensureProperVersionUpdate()
     print("Version update is valid.")
 end
 
-ensureProperVersionUpdate()
+EnsureProperVersionUpdate.exec()

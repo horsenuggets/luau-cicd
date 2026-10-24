@@ -2,34 +2,36 @@
 
 --[[
 
-BumpVersion
+BumpVersion.exec
 
 Bumps the version in VERSION file and syncs it to wally.toml. Pass "major", "minor", or
 "patch" as an argument to bump the corresponding version component.
 
-[Usage] ./Scripts/BumpVersion.luau <major|minor|patch>
+[Usage] ./Scripts/BumpVersion.exec.luau <major|minor|patch>
 
 --]]
 
-local fs = require("@lune/fs")
-local process = require("@lune/process")
+const fs = require("@lune/fs")
+const process = require("@lune/process")
 
-local parseVersion = require("./Helpers/parseVersion")
+const parseVersion = require("./Helpers/parseVersion")
 
-local function bumpVersion()
-    local args = process.args
+const BumpVersion = {}
+
+function BumpVersion.exec()
+    const args = process.args
     if #args < 1 then
-        print("[Usage] ./Scripts/BumpVersion.luau <major|minor|patch>")
+        print("[Usage] ./Scripts/BumpVersion.exec.luau <major|minor|patch>")
         process.exit(1)
     end
 
-    local bumpType = string.lower(args[1])
+    const bumpType = string.lower(args[1])
     if bumpType ~= "major" and bumpType ~= "minor" and bumpType ~= "patch" then
         print(`Invalid bump type "{bumpType}". Must be "major", "minor", or "patch".`)
         process.exit(1)
     end
 
-    local currentVersionString = fs.readFile("VERSION")
+    const currentVersionString = fs.readFile("VERSION")
     local major, minor, patch = parseVersion(currentVersionString)
 
     if not major then
@@ -37,7 +39,7 @@ local function bumpVersion()
         process.exit(1)
     end
 
-    local previousVersion = `{major}.{minor}.{patch}`
+    const previousVersion = `{major}.{minor}.{patch}`
     print(`Current version is "{previousVersion}".`)
 
     if bumpType == "major" then
@@ -51,13 +53,16 @@ local function bumpVersion()
         patch += 1
     end
 
-    local newVersion = `{major}.{minor}.{patch}`
+    const newVersion = `{major}.{minor}.{patch}`
     print(`Bumping to "{newVersion}".`)
 
     fs.writeFile("VERSION", newVersion .. "\n")
 
     print("Syncing version to wally.toml.")
-    local syncResult = process.exec("lune", { "run", "Scripts/SyncVersion" })
+    -- Resolve SyncVersion next to this script, so it's found when this runs from a
+    -- consumer repo through Submodules/luau-cicd/ and not only from luau-cicd itself
+    const scriptsDir = string.match(debug.info(1, "s"), "^(.*)[/\\]") or "."
+    const syncResult = process.exec("lune", { "run", `{scriptsDir}/SyncVersion.exec` })
     if not syncResult.ok then
         print("Failed to sync version.")
         print(syncResult.stderr)
@@ -67,4 +72,4 @@ local function bumpVersion()
     print("Done.")
 end
 
-bumpVersion()
+BumpVersion.exec()

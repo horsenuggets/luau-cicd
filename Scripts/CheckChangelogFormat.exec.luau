@@ -2,16 +2,18 @@
 
 --[[
 
-CheckChangelogFormat
+CheckChangelogFormat.exec
 
 Validates that CHANGELOG.md follows the exact format specified in the project guidelines.
 
 --]]
 
-local fs = require("@lune/fs")
-local process = require("@lune/process")
+const fs = require("@lune/fs")
+const process = require("@lune/process")
 
-local function checkChangelogFormat()
+const CheckChangelogFormat = {}
+
+function CheckChangelogFormat.exec()
     print("Checking CHANGELOG.md format...")
 
     -- Check file exists
@@ -20,8 +22,8 @@ local function checkChangelogFormat()
         process.exit(1)
     end
 
-    local content = fs.readFile("CHANGELOG.md")
-    local errors: { string } = {}
+    const content = fs.readFile("CHANGELOG.md")
+    const errors: { string } = {}
 
     -- Check file ends with exactly one newline
     if not string.match(content, "\n$") then
@@ -31,7 +33,7 @@ local function checkChangelogFormat()
     end
 
     -- Split into lines for analysis
-    local lines: { string } = {}
+    const lines: { string } = {}
     for line in string.gmatch(content, "([^\n]*)\n?") do
         table.insert(lines, line)
     end
@@ -57,11 +59,11 @@ local function checkChangelogFormat()
     local hasVersions = false
 
     for i = 3, #lines do
-        local line = lines[i]
-        local prevLine = lines[i - 1]
+        const line = lines[i]
+        const prevLine = lines[i - 1]
 
         -- Check for version header (## X.Y.Z or ## X.Y.Z-suffix)
-        local version = string.match(line, "^## (%d+%.%d+%.%d+[%w%.%-]*)$")
+        const version = string.match(line, "^## (%d+%.%d+%.%d+[%w%.%-]*)$")
         if version then
             hasVersions = true
             -- Version header must be preceded by a blank line (except at start)
@@ -78,7 +80,7 @@ local function checkChangelogFormat()
             end
 
             -- Check item has content after "- "
-            local itemContent = string.match(line, "^%- (.+)$")
+            const itemContent = string.match(line, "^%- (.+)$")
             if not itemContent then
                 table.insert(errors, `Line {i}: List item must have content after "- ".`)
             end
@@ -131,4 +133,4 @@ local function checkChangelogFormat()
     print("CHANGELOG.md format is valid.")
 end
 
-checkChangelogFormat()
+CheckChangelogFormat.exec()

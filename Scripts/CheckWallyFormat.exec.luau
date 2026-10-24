@@ -2,21 +2,23 @@
 
 --[[
 
-CheckWallyFormat
+CheckWallyFormat.exec
 
 Validates that wally.toml follows the project format guidelines. Specifically checks that
 all repository strings (package name and dependency values) are lowercase.
 
-[Usage] ./Scripts/CheckWallyFormat.luau [filename]
+[Usage] ./Scripts/CheckWallyFormat.exec.luau [filename]
 > filename - Optional path to the file to check. Defaults to "wally.toml".
 
 --]]
 
-local fs = require("@lune/fs")
-local process = require("@lune/process")
+const fs = require("@lune/fs")
+const process = require("@lune/process")
 
-local function checkWallyFormat()
-    local filename = process.args[1] or "wally.toml"
+const CheckWallyFormat = {}
+
+function CheckWallyFormat.exec()
+    const filename = process.args[1] or "wally.toml"
 
     print(`Checking {filename} format...`)
 
@@ -26,21 +28,21 @@ local function checkWallyFormat()
         process.exit(1)
     end
 
-    local content = fs.readFile(filename)
-    local errors: { string } = {}
+    const content = fs.readFile(filename)
+    const errors: { string } = {}
 
     -- Track which section we're in
     local currentSection = ""
 
     for line in string.gmatch(content, "[^\n]+") do
         -- Check for section headers
-        local section = string.match(line, "^%s*%[([%w%-_]+)%]")
+        const section = string.match(line, "^%s*%[([%w%-_]+)%]")
         if section then
             currentSection = section
         end
 
         -- Check key = "value" pairs
-        local key, value = string.match(line, '^%s*([%w%-_]+)%s*=%s*"(.-)"')
+        const key, value = string.match(line, '^%s*([%w%-_]+)%s*=%s*"(.-)"')
         if key and value then
             local shouldCheckLowercase = false
             local fieldDescription = ""
@@ -58,7 +60,7 @@ local function checkWallyFormat()
             end
 
             if shouldCheckLowercase then
-                local lowercase = string.lower(value)
+                const lowercase = string.lower(value)
                 if value ~= lowercase then
                     table.insert(
                         errors,
@@ -82,4 +84,4 @@ local function checkWallyFormat()
     print(`{filename} format is valid.`)
 end
 
-checkWallyFormat()
+CheckWallyFormat.exec()

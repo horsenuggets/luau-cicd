@@ -6,7 +6,7 @@ Tests for the EnsureProperVersionUpdate script.
 
 --]]
 
-local TestEnvironment = require("./Helpers/TestEnvironment")
+const TestEnvironment = require("./Helpers/TestEnvironment")
 
 return function()
     describe("EnsureProperVersionUpdate", function()
@@ -31,7 +31,7 @@ return function()
             env.writeFile("VERSION", "1.0.1\n")
             env.gitCommit("Bump version")
 
-            local result = env.runScript("EnsureProperVersionUpdate")
+            const result = env.runScript("EnsureProperVersionUpdate")
 
             expect(result.ok).to.equal(true)
             expect(string.find(result.stdout, "Valid patch version bump")).to.be.ok()
@@ -45,7 +45,7 @@ return function()
             env.writeFile("VERSION", "1.1.0\n")
             env.gitCommit("Bump version")
 
-            local result = env.runScript("EnsureProperVersionUpdate")
+            const result = env.runScript("EnsureProperVersionUpdate")
 
             expect(result.ok).to.equal(true)
             expect(string.find(result.stdout, "Valid minor version bump")).to.be.ok()
@@ -59,7 +59,7 @@ return function()
             env.writeFile("VERSION", "2.0.0\n")
             env.gitCommit("Bump version")
 
-            local result = env.runScript("EnsureProperVersionUpdate")
+            const result = env.runScript("EnsureProperVersionUpdate")
 
             expect(result.ok).to.equal(true)
             expect(string.find(result.stdout, "Valid major version bump")).to.be.ok()
@@ -73,7 +73,7 @@ return function()
             -- Version unchanged
             env.gitCommit("Another commit")
 
-            local result = env.runScript("EnsureProperVersionUpdate")
+            const result = env.runScript("EnsureProperVersionUpdate")
 
             expect(result.ok).to.equal(false)
             expect(string.find(result.stdout, "Version has not been updated")).to.be.ok()
@@ -88,7 +88,7 @@ return function()
             env.writeFile("VERSION", "1.0.5\n")
             env.gitCommit("Bad bump")
 
-            local result = env.runScript("EnsureProperVersionUpdate")
+            const result = env.runScript("EnsureProperVersionUpdate")
 
             expect(result.ok).to.equal(false)
             expect(string.find(result.stdout, "Invalid version bump")).to.be.ok()
@@ -98,7 +98,7 @@ return function()
             env.writeFile("VERSION", "not-a-version\n")
             env.gitCommit("Bad version")
 
-            local result = env.runScript("EnsureProperVersionUpdate")
+            const result = env.runScript("EnsureProperVersionUpdate")
 
             expect(result.ok).to.equal(false)
             expect(string.find(result.stdout, "not in MAJOR.MINOR.PATCH format")).to.be.ok()
@@ -109,7 +109,7 @@ return function()
             env.gitCommit("Initial commit")
             -- No tags created
 
-            local result = env.runScript("EnsureProperVersionUpdate")
+            const result = env.runScript("EnsureProperVersionUpdate")
 
             expect(result.ok).to.equal(true)
             expect(string.find(result.stdout, "No previous release tags found")).to.be.ok()
@@ -123,7 +123,7 @@ return function()
             env.writeFile("VERSION", "1.0.0\n")
             env.gitCommit("First release")
 
-            local result = env.runScript("EnsureProperVersionUpdate")
+            const result = env.runScript("EnsureProperVersionUpdate")
 
             expect(result.ok).to.equal(true)
             -- Should report no previous tags since 0.0.0 is ignored
@@ -139,7 +139,7 @@ return function()
             env.writeFile("VERSION", "1.1.5\n")
             env.gitCommit("Bad bump")
 
-            local result = env.runScript("EnsureProperVersionUpdate")
+            const result = env.runScript("EnsureProperVersionUpdate")
 
             expect(result.ok).to.equal(false)
             expect(string.find(result.stdout, "Invalid version bump")).to.be.ok()
@@ -154,7 +154,7 @@ return function()
             env.writeFile("VERSION", "2.2.3\n")
             env.gitCommit("Bad bump")
 
-            local result = env.runScript("EnsureProperVersionUpdate")
+            const result = env.runScript("EnsureProperVersionUpdate")
 
             expect(result.ok).to.equal(false)
             expect(string.find(result.stdout, "Invalid version bump")).to.be.ok()
@@ -173,7 +173,7 @@ return function()
             env.writeFile("VERSION", "1.1.1\n")
             env.gitCommit("v1.1.1")
 
-            local result = env.runScript("EnsureProperVersionUpdate")
+            const result = env.runScript("EnsureProperVersionUpdate")
 
             expect(result.ok).to.equal(true)
             expect(string.find(result.stdout, "Valid patch version bump")).to.be.ok()
