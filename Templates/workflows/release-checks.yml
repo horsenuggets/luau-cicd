@@ -109,7 +109,7 @@ jobs:
         run: wally install
 
       - name: Run tests
-        run: ./Scripts/RunTests.luau
+        run: ./Scripts/RunTests.exec.luau
 
   analyze:
     name: Static analysis
