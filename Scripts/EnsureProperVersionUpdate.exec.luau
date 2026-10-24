@@ -2,7 +2,7 @@
 
 --[[
 
-EnsureProperVersionUpdate
+EnsureProperVersionUpdate.exec
 
 Validates that the VERSION file contains a proper semantic version and that it has been
 bumped correctly since the last release tag. Compares against the most recent Git tag
@@ -15,7 +15,9 @@ local process = require("@lune/process")
 
 local parseVersion = require("./Helpers/parseVersion")
 
-local function ensureProperVersionUpdate()
+const EnsureProperVersionUpdate = {}
+
+function EnsureProperVersionUpdate.exec()
     assert(fs.isFile("VERSION"), "VERSION file does not exist.")
 
     -- Read current VERSION file
@@ -119,4 +121,4 @@ local function ensureProperVersionUpdate()
     print("Version update is valid.")
 end
 
-ensureProperVersionUpdate()
+EnsureProperVersionUpdate.exec()

@@ -14,7 +14,7 @@ return function()
             "Packages/Fusion.luau",
             "DevPackages/Testable.luau",
             "ServerPackages/x.luau",
-            "Submodules/luau-cicd/Scripts/Lint.luau",
+            "Submodules/luau-cicd/Scripts/Lint.exec.luau",
             "web/node_modules/a/b.json",
             "Source/Packages/x.luau",
             "Packages/",

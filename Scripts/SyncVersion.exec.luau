@@ -2,7 +2,7 @@
 
 --[[
 
-SyncVersion
+SyncVersion.exec
 
 Synchronizes the version from the VERSION file to wally.toml and README.md (if a Wally
 dependency string exists).
@@ -11,7 +11,9 @@ dependency string exists).
 
 local fs = require("@lune/fs")
 
-local function syncVersion()
+const SyncVersion = {}
+
+function SyncVersion.exec()
     assert(fs.isFile("VERSION"), "VERSION file not found")
     assert(fs.isFile("wally.toml"), "wally.toml not found")
 
@@ -59,4 +61,4 @@ local function syncVersion()
     end
 end
 
-syncVersion()
+SyncVersion.exec()

@@ -2,12 +2,12 @@
 
 --[[
 
-CheckRokitFormat
+CheckRokitFormat.exec
 
 Validates that rokit.toml follows the project format guidelines. Specifically checks that
 all tool repository strings are lowercase.
 
-[Usage] ./Scripts/CheckRokitFormat.luau [filename]
+[Usage] ./Scripts/CheckRokitFormat.exec.luau [filename]
 > filename - Optional path to the file to check. Defaults to "rokit.toml".
 
 --]]
@@ -15,7 +15,9 @@ all tool repository strings are lowercase.
 local fs = require("@lune/fs")
 local process = require("@lune/process")
 
-local function checkRokitFormat()
+const CheckRokitFormat = {}
+
+function CheckRokitFormat.exec()
     local filename = process.args[1] or "rokit.toml"
 
     print(`Checking {filename} format...`)
@@ -55,4 +57,4 @@ local function checkRokitFormat()
     print(`{filename} format is valid.`)
 end
 
-checkRokitFormat()
+CheckRokitFormat.exec()

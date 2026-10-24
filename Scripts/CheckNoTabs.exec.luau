@@ -2,11 +2,11 @@
 
 --[[
 
-CheckNoTabs
+CheckNoTabs.exec
 
 Validates that no Luau files contain tab characters. All indentation must use spaces.
 
-[Usage] ./Scripts/CheckNoTabs.luau [directory]
+[Usage] ./Scripts/CheckNoTabs.exec.luau [directory]
 > directory - Optional path to the directory to check. Defaults to current
 > directory.
 
@@ -57,7 +57,9 @@ local function findLuauFiles(directory: string, scanningRepoRoot: boolean): { st
     return files
 end
 
-local function checkNoTabs()
+const CheckNoTabs = {}
+
+function CheckNoTabs.exec()
     local directory = process.args[1] or process.cwd
 
     print(`Checking for tabs in {directory}...`)
@@ -96,4 +98,4 @@ local function checkNoTabs()
     print(`All {#files} file(s) use spaces for indentation.`)
 end
 
-checkNoTabs()
+CheckNoTabs.exec()

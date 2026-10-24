@@ -2,7 +2,7 @@
 
 --[[
 
-CheckChangelogVersion
+CheckChangelogVersion.exec
 
 Validates that CHANGELOG.md contains an entry for the current VERSION.
 
@@ -11,7 +11,9 @@ Validates that CHANGELOG.md contains an entry for the current VERSION.
 local fs = require("@lune/fs")
 local process = require("@lune/process")
 
-local function checkChangelogVersion()
+const CheckChangelogVersion = {}
+
+function CheckChangelogVersion.exec()
     -- Read current version
     if not fs.isFile("VERSION") then
         print("VERSION file not found.")
@@ -58,4 +60,4 @@ local function checkChangelogVersion()
     print(`CHANGELOG.md contains valid entry for version "{version}".`)
 end
 
-checkChangelogVersion()
+CheckChangelogVersion.exec()

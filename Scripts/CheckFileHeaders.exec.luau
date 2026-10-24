@@ -2,13 +2,13 @@
 
 --[[
 
-CheckFileHeaders
+CheckFileHeaders.exec
 
 Validates that all Luau files have properly formatted header comments. Supports optional
 directives (like --!strict, --!native) or shebangs at the top of the file, followed by a
 blank line, then the header comment block.
 
-[Usage] ./Scripts/CheckFileHeaders.luau [directory]
+[Usage] ./Scripts/CheckFileHeaders.exec.luau [directory]
 > directory - Optional path to the directory to check. Defaults to current
 > directory.
 
@@ -185,7 +185,9 @@ local function findLuauFiles(directory: string, scanningRepoRoot: boolean): { st
     return files
 end
 
-local function checkFileHeaders()
+const CheckFileHeaders = {}
+
+function CheckFileHeaders.exec()
     local directory = process.args[1] or process.cwd
 
     print(`Checking file headers in {directory}...`)
@@ -223,4 +225,4 @@ local function checkFileHeaders()
     print(`All {#files} file(s) have valid headers.`)
 end
 
-checkFileHeaders()
+CheckFileHeaders.exec()

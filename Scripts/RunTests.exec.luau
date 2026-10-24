@@ -2,7 +2,7 @@
 
 --[[
 
-RunTests
+RunTests.exec
 
 Executes all test suites and exits with appropriate status code.
 
@@ -34,9 +34,11 @@ local TESTS = {
     { Name = "SyncVersionTest", Func = require("../Tests/SyncVersionTest.spec") },
 }
 
-local function runTests()
+const RunTests = {}
+
+function RunTests.exec()
     local _, passed = Testable.run(TESTS)
     process.exit(if passed then 0 else 1)
 end
 
-runTests()
+RunTests.exec()

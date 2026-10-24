@@ -2,7 +2,7 @@
 
 --[[
 
-CheckChangelogFormat
+CheckChangelogFormat.exec
 
 Validates that CHANGELOG.md follows the exact format specified in the project guidelines.
 
@@ -11,7 +11,9 @@ Validates that CHANGELOG.md follows the exact format specified in the project gu
 local fs = require("@lune/fs")
 local process = require("@lune/process")
 
-local function checkChangelogFormat()
+const CheckChangelogFormat = {}
+
+function CheckChangelogFormat.exec()
     print("Checking CHANGELOG.md format...")
 
     -- Check file exists
@@ -131,4 +133,4 @@ local function checkChangelogFormat()
     print("CHANGELOG.md format is valid.")
 end
 
-checkChangelogFormat()
+CheckChangelogFormat.exec()

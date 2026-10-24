@@ -2,12 +2,12 @@
 
 --[[
 
-CheckWallyFormat
+CheckWallyFormat.exec
 
 Validates that wally.toml follows the project format guidelines. Specifically checks that
 all repository strings (package name and dependency values) are lowercase.
 
-[Usage] ./Scripts/CheckWallyFormat.luau [filename]
+[Usage] ./Scripts/CheckWallyFormat.exec.luau [filename]
 > filename - Optional path to the file to check. Defaults to "wally.toml".
 
 --]]
@@ -15,7 +15,9 @@ all repository strings (package name and dependency values) are lowercase.
 local fs = require("@lune/fs")
 local process = require("@lune/process")
 
-local function checkWallyFormat()
+const CheckWallyFormat = {}
+
+function CheckWallyFormat.exec()
     local filename = process.args[1] or "wally.toml"
 
     print(`Checking {filename} format...`)
@@ -82,4 +84,4 @@ local function checkWallyFormat()
     print(`{filename} format is valid.`)
 end
 
-checkWallyFormat()
+CheckWallyFormat.exec()

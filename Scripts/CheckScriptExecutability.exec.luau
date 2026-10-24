@@ -2,13 +2,13 @@
 
 --[[
 
-CheckScriptExecutability
+CheckScriptExecutability.exec
 
 Validates that all Luau scripts in the Scripts/ directory have the executable bit set and
 start with the shebang line "#!/usr/bin/env -S lune run". Helper modules (non-root files
 like Task/init.luau) are excluded from this check.
 
-[Usage] ./Scripts/CheckScriptExecutability.luau [directory]
+[Usage] ./Scripts/CheckScriptExecutability.exec.luau [directory]
 > directory - Optional path to the Scripts directory to check. Defaults to
 > "Scripts".
 
@@ -19,7 +19,9 @@ local process = require("@lune/process")
 
 local SHEBANG = "#!/usr/bin/env -S lune run"
 
-local function checkScriptExecutability()
+const CheckScriptExecutability = {}
+
+function CheckScriptExecutability.exec()
     local scriptsDir = process.args[1] or "Scripts"
 
     if not fs.isDir(scriptsDir) then
@@ -62,4 +64,4 @@ local function checkScriptExecutability()
     process.exit(1)
 end
 
-checkScriptExecutability()
+CheckScriptExecutability.exec()

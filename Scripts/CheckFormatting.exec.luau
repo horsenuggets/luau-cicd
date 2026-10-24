@@ -2,7 +2,7 @@
 
 --[[
 
-CheckFormatting
+CheckFormatting.exec
 
 Verifies that all code is properly formatted using stylua.
 
@@ -10,7 +10,9 @@ Verifies that all code is properly formatted using stylua.
 
 local process = require("@lune/process")
 
-local function checkFormatting()
+const CheckFormatting = {}
+
+function CheckFormatting.exec()
     local result = process.exec("stylua", { "--check", "." })
 
     if result.ok then
@@ -24,4 +26,4 @@ local function checkFormatting()
     end
 end
 
-checkFormatting()
+CheckFormatting.exec()

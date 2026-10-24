@@ -2,7 +2,7 @@
 
 --[[
 
-CheckJsonFormat
+CheckJsonFormat.exec
 
 Validates that all JSON files are formatted according to project standards using Prettier.
 Ensures consistent 4-space indentation as specified in .editorconfig.
@@ -45,7 +45,9 @@ local function checkPrettierInstalled(): boolean
     return result.ok
 end
 
-local function checkJsonFormat()
+const CheckJsonFormat = {}
+
+function CheckJsonFormat.exec()
     print("Checking JSON formatting...")
 
     if not checkPrettierInstalled() then
@@ -88,4 +90,4 @@ local function checkJsonFormat()
     end
 end
 
-checkJsonFormat()
+CheckJsonFormat.exec()

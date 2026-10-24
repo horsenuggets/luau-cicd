@@ -2,12 +2,12 @@
 
 --[[
 
-BumpVersion
+BumpVersion.exec
 
 Bumps the version in VERSION file and syncs it to wally.toml. Pass "major", "minor", or
 "patch" as an argument to bump the corresponding version component.
 
-[Usage] ./Scripts/BumpVersion.luau <major|minor|patch>
+[Usage] ./Scripts/BumpVersion.exec.luau <major|minor|patch>
 
 --]]
 
@@ -16,10 +16,12 @@ local process = require("@lune/process")
 
 local parseVersion = require("./Helpers/parseVersion")
 
-local function bumpVersion()
+const BumpVersion = {}
+
+function BumpVersion.exec()
     local args = process.args
     if #args < 1 then
-        print("[Usage] ./Scripts/BumpVersion.luau <major|minor|patch>")
+        print("[Usage] ./Scripts/BumpVersion.exec.luau <major|minor|patch>")
         process.exit(1)
     end
 
@@ -57,7 +59,7 @@ local function bumpVersion()
     fs.writeFile("VERSION", newVersion .. "\n")
 
     print("Syncing version to wally.toml.")
-    local syncResult = process.exec("lune", { "run", "Scripts/SyncVersion" })
+    local syncResult = process.exec("lune", { "run", "Scripts/SyncVersion.exec" })
     if not syncResult.ok then
         print("Failed to sync version.")
         print(syncResult.stderr)
@@ -67,4 +69,4 @@ local function bumpVersion()
     print("Done.")
 end
 
-bumpVersion()
+BumpVersion.exec()

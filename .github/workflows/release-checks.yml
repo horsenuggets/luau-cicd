@@ -60,7 +60,7 @@ jobs:
         uses: CompeyDev/setup-rokit@v0.1.2
 
       - name: Check formatting
-        run: ./Scripts/CheckFormatting.luau
+        run: ./Scripts/CheckFormatting.exec.luau
 
   test:
     name: Run tests
@@ -76,7 +76,7 @@ jobs:
         run: wally install
 
       - name: Run tests
-        run: ./Scripts/RunTests.luau
+        run: ./Scripts/RunTests.exec.luau
 
   analyze:
     name: Static analysis
@@ -95,7 +95,7 @@ jobs:
         run: lune setup --no-update-luaurc
 
       - name: Run static analysis
-        run: ./Scripts/RunStaticAnalysis.luau
+        run: ./Scripts/RunStaticAnalysis.exec.luau
 
   json-format:
     name: Check JSON format
@@ -116,7 +116,7 @@ jobs:
         uses: CompeyDev/setup-rokit@v0.1.2
 
       - name: Check JSON format
-        run: ./Scripts/CheckJsonFormat.luau
+        run: ./Scripts/CheckJsonFormat.exec.luau
 
   script-executability:
     name: Check script executability
@@ -129,7 +129,7 @@ jobs:
         uses: CompeyDev/setup-rokit@v0.1.2
 
       - name: Check script executability
-        run: ./Scripts/CheckScriptExecutability.luau
+        run: ./Scripts/CheckScriptExecutability.exec.luau
 
   wally-auth:
     name: Verify Wally auth
@@ -175,16 +175,16 @@ jobs:
         uses: CompeyDev/setup-rokit@v0.1.2
 
       - name: Check version update
-        run: ./Scripts/EnsureProperVersionUpdate.luau
+        run: ./Scripts/EnsureProperVersionUpdate.exec.luau
 
       - name: Check version match
-        run: ./Scripts/CheckVersionMatch.luau
+        run: ./Scripts/CheckVersionMatch.exec.luau
 
       - name: Check changelog entry
-        run: ./Scripts/CheckChangelogVersion.luau
+        run: ./Scripts/CheckChangelogVersion.exec.luau
 
       - name: Check changelog format
-        run: ./Scripts/CheckChangelogFormat.luau
+        run: ./Scripts/CheckChangelogFormat.exec.luau
 
       - name: Verify PR title matches VERSION
         env:

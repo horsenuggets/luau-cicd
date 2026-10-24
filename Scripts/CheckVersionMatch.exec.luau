@@ -2,7 +2,7 @@
 
 --[[
 
-CheckVersionMatch
+CheckVersionMatch.exec
 
 Ensures that the version in VERSION file matches the version in wally.toml and README.md
 (if applicable). Exits with code 0 if they all match, 1 if they do not.
@@ -12,7 +12,9 @@ Ensures that the version in VERSION file matches the version in wally.toml and R
 local fs = require("@lune/fs")
 local process = require("@lune/process")
 
-local function checkVersionMatch()
+const CheckVersionMatch = {}
+
+function CheckVersionMatch.exec()
     local versionFileContent = fs.readFile("VERSION")
     local version = string.match(versionFileContent, "^%s*(.-)%s*$")
 
@@ -52,4 +54,4 @@ local function checkVersionMatch()
     process.exit(0)
 end
 
-checkVersionMatch()
+CheckVersionMatch.exec()

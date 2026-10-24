@@ -13,6 +13,6 @@ git submodule add git@github.com:horsenuggets/luau-cicd.git Submodules/luau-cicd
 Then run scripts directly:
 
 ```bash
-./Submodules/luau-cicd/Scripts/CheckFormatting.luau
-./Submodules/luau-cicd/Scripts/BumpVersion.luau patch
+./Submodules/luau-cicd/Scripts/CheckFormatting.exec.luau
+./Submodules/luau-cicd/Scripts/BumpVersion.exec.luau patch
 ```

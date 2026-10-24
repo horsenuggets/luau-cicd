@@ -2,13 +2,13 @@
 
 --[[
 
-CheckLuaurcFormat
+CheckLuaurcFormat.exec
 
 Validates that .luaurc follows the project format guidelines. Checks that:
 - "@self" is never added as an alias since it is already built-in
 - If lune is in rokit.toml, the lune alias version must match
 
-[Usage] ./Scripts/CheckLuaurcFormat.luau [luaurc-file] [rokit-file]
+[Usage] ./Scripts/CheckLuaurcFormat.exec.luau [luaurc-file] [rokit-file]
 > luaurc-file - Optional path to the .luaurc file. Defaults to ".luaurc".
 > rokit-file - Optional path to the rokit.toml file. Defaults to "rokit.toml".
 
@@ -30,7 +30,9 @@ local function getLuneVersionFromRokit(rokitPath: string): string?
     return version
 end
 
-local function checkLuaurcFormat()
+const CheckLuaurcFormat = {}
+
+function CheckLuaurcFormat.exec()
     local luaurcPath = process.args[1] or ".luaurc"
     local rokitPath = process.args[2] or "rokit.toml"
 
@@ -102,4 +104,4 @@ local function checkLuaurcFormat()
     print(`{luaurcPath} format is valid.`)
 end
 
-checkLuaurcFormat()
+CheckLuaurcFormat.exec()

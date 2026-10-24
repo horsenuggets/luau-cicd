@@ -107,7 +107,7 @@ function TestEnvironment.create(): Environment
         end,
 
         runScript = function(scriptName: string, args: { string }?): ExecResult
-            local scriptPath = `{scriptsDir}/{scriptName}.luau`
+            local scriptPath = `{scriptsDir}/{scriptName}.exec.luau`
             local luneArgs = { "run", scriptPath }
             if args then
                 for _, arg in args do
