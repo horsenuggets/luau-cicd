@@ -2,7 +2,7 @@ resource "github_repository" "repo" {
   name = var.repository
 
   allow_squash_merge = true
-  allow_merge_commit = false
+  allow_merge_commit = var.allow_merge_commit
   allow_rebase_merge = false
 
   delete_branch_on_merge = true
