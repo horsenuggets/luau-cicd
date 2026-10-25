@@ -27,3 +27,22 @@ import {
   id = "tower-of-falling-brainrots:13764603"
   to = module.tower-of-falling-brainrots.github_repository_ruleset.copilot_code_review
 }
+
+# eat-while-mom-isnt-looking existed with hand-made settings and branch protection before
+# it was added here, so we adopt them instead of creating new ones. These blocks are also
+# no-ops once applied.
+
+import {
+  id = "eat-while-mom-isnt-looking"
+  to = module.eat-while-mom-isnt-looking.github_repository.repo
+}
+
+import {
+  id = "eat-while-mom-isnt-looking:main"
+  to = module.eat-while-mom-isnt-looking.github_branch_protection.main
+}
+
+import {
+  id = "eat-while-mom-isnt-looking:release"
+  to = module.eat-while-mom-isnt-looking.github_branch_protection.release[0]
+}
