@@ -44,9 +44,11 @@ resource "github_branch_protection" "main" {
     contexts = concat(var.main_checks, var.extra_main_checks)
   }
 
+  # The one required approval comes from Copilot, which needs "Allow Copilot to approve pull
+  # requests" turned on in the repo's Copilot code review settings.
   required_pull_request_reviews {
     dismiss_stale_reviews           = true
-    required_approving_review_count = 0
+    required_approving_review_count = 1
   }
 
   enforce_admins = true
@@ -56,7 +58,8 @@ resource "github_branch_protection" "main" {
 }
 
 # Classic branch protection can't express Copilot code review, so this ruleset layers it
-# on top of the protection above. It only requests the review and doesn't block merges.
+# on top of the protection above. It only requests the review, and the approval
+# requirement above is what blocks merges.
 resource "github_repository_ruleset" "copilot_code_review" {
   name        = "Copilot Code Review"
   repository  = github_repository.repo.name
@@ -92,7 +95,7 @@ resource "github_branch_protection" "release" {
 
   required_pull_request_reviews {
     dismiss_stale_reviews           = true
-    required_approving_review_count = 0
+    required_approving_review_count = 1
   }
 
   enforce_admins = true
