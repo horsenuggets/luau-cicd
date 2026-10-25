@@ -1,11 +1,11 @@
 # Manages a repository's Copilot code review effort level. The GitHub provider has no
 # resource for it, so this talks to the REST endpoint through the gh CLI, which reads
-# GITHUB_TOKEN like the provider does and runs the same way on every platform.
+# GITHUB_TOKEN like the provider does and sends a proper JSON body.
 #
-# Every plan reads the current setting. The update resource only exists while the setting
-# differs from the desired level, so a repo that drifts shows up as "1 to add" and is
-# corrected on apply. The next plan then removes the update resource again, which makes no
-# API call.
+# Every plan reads the current setting, and the update resource's trigger is the desired
+# level while the repo matches it and "drift" otherwise. A repo that drifts is replaced and
+# corrected on apply. Because the stored trigger is still "drift" at that point, the next
+# apply replaces it once more with a PATCH that changes nothing, and then it stays stable.
 
 locals {
   settings_path = "repos/${var.repository}/copilot/code-review/settings"
@@ -16,10 +16,14 @@ data "external" "current" {
 }
 
 resource "terraform_data" "update" {
-  count = data.external.current.result.configured == var.review_effort ? 0 : 1
+  triggers_replace = [
+    var.repository,
+    var.review_effort,
+    data.external.current.result.configured == var.review_effort ? var.review_effort : "drift",
+  ]
 
-  triggers_replace = [var.repository, var.review_effort]
-
+  # The repository and effort are validated in Variables.tf, so they can't inject shell
+  # syntax into this command.
   provisioner "local-exec" {
     command = "gh api --method PATCH ${local.settings_path} -f review_effort=${var.review_effort} --silent"
   }

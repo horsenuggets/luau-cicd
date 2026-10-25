@@ -81,10 +81,11 @@ resource "github_repository_ruleset" "copilot_code_review" {
   }
 }
 
-# Looks up the full owner/name at plan time, which the Copilot review module needs to
-# check the current effort level before anything is applied.
+# Looks up the full owner/name for the Copilot review module. Waiting on the repository
+# resource keeps this working when the module is about to create the repo.
 data "github_repository" "repo" {
-  name = var.repository
+  name       = github_repository.repo.name
+  depends_on = [github_repository.repo]
 }
 
 # Runs Copilot code reviews at the Lite effort level, which costs several times fewer AI

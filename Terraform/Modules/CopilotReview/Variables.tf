@@ -1,6 +1,11 @@
 variable "repository" {
-  description = "Full repository name in owner/name form. Pass a literal string, not a resource attribute, so the effort check can run at plan time."
+  description = "Full repository name in owner/name form."
   type        = string
+
+  validation {
+    condition     = can(regex("^[A-Za-z0-9-]+/[A-Za-z0-9._-]+$", var.repository))
+    error_message = "The repository must be in owner/name form using only letters, digits, \".\", \"_\", and \"-\"."
+  }
 }
 
 variable "review_effort" {
