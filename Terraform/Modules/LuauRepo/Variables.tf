@@ -25,6 +25,12 @@ variable "extra_release_checks" {
   default     = []
 }
 
+variable "allow_merge_commit" {
+  description = "Whether merge commits are allowed. Forks that take upstream syncs need this, since sync PRs land with a merge commit to keep upstream history"
+  type        = bool
+  default     = false
+}
+
 variable "has_release_branch" {
   description = "Whether the repo has a release branch"
   type        = bool
