@@ -35,6 +35,20 @@ variable "standard_release_checks" {
   ]
 }
 
+# Release checks for games, matching the job names in their release-checks.yml
+variable "game_release_checks" {
+  description = "Required checks for PRs to release in games"
+  type        = list(string)
+  default = [
+    "Check formatting",
+    "Run tests",
+    "Static analysis",
+    "Validate PR title",
+    "Validate version",
+    "Verify diff matches main",
+  ]
+}
+
 # Release checks for private packages that don't publish to Wally
 variable "standard_release_checks_no_wally" {
   description = "Required checks for PRs to release (no Wally auth)"
