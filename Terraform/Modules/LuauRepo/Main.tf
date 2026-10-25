@@ -44,8 +44,10 @@ resource "github_branch_protection" "main" {
     contexts = concat(var.main_checks, var.extra_main_checks)
   }
 
-  # The one required approval comes from Copilot, which needs "Allow Copilot to approve pull
-  # requests" turned on in the repo's Copilot code review settings.
+  # One approving review is required. The rule counts any eligible approver, not only
+  # Copilot, but authors can't approve their own pull requests, so on single-maintainer repos
+  # the approval comes from Copilot. That needs "Allow Copilot to approve pull requests"
+  # turned on in the repo's Copilot code review settings.
   required_pull_request_reviews {
     dismiss_stale_reviews           = true
     required_approving_review_count = 1
@@ -81,18 +83,11 @@ resource "github_repository_ruleset" "copilot_code_review" {
   }
 }
 
-# Looks up the full owner/name for the Copilot review module. Waiting on the repository
-# resource keeps this working when the module is about to create the repo.
-data "github_repository" "repo" {
-  name       = github_repository.repo.name
-  depends_on = [github_repository.repo]
-}
-
 # Runs Copilot code reviews at the Lite effort level, which costs several times fewer AI
 # credits than the Balanced default.
 module "copilot_review" {
   source        = "../CopilotReview"
-  repository    = data.github_repository.repo.full_name
+  repository    = github_repository.repo.full_name
   review_effort = "lite"
 }
 
