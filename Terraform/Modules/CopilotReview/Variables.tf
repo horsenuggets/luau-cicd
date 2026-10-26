@@ -17,7 +17,6 @@ variable "repository" {
 variable "review_effort" {
   description = "Copilot code review effort level for the repository."
   type        = string
-  default     = "lite"
 
   validation {
     condition     = contains(["lite", "balanced"], var.review_effort)

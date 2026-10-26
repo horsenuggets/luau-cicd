@@ -44,13 +44,11 @@ resource "github_branch_protection" "main" {
     contexts = concat(var.main_checks, var.extra_main_checks)
   }
 
-  # One approving review is required. The rule counts any eligible approver, not only
-  # Copilot, but authors can't approve their own pull requests, so on single-maintainer repos
-  # the approval comes from Copilot. That needs "Allow Copilot to approve pull requests"
-  # turned on in the repo's Copilot code review settings.
+  # Merges need a pull request but no approval. Copilot reviews each pull request once for
+  # feedback, and its comments are addressed before merging rather than gating the merge.
   required_pull_request_reviews {
     dismiss_stale_reviews           = true
-    required_approving_review_count = 1
+    required_approving_review_count = 0
   }
 
   enforce_admins = true
@@ -60,8 +58,8 @@ resource "github_branch_protection" "main" {
 }
 
 # Classic branch protection can't express Copilot code review, so this ruleset layers it
-# on top of the protection above. It only requests the review, and the approval
-# requirement above is what blocks merges.
+# on top of the protection above. Copilot reviews each non-draft pull request once when
+# it's opened, not again on every push, and the review doesn't block merges.
 resource "github_repository_ruleset" "copilot_code_review" {
   name        = "Copilot Code Review"
   repository  = github_repository.repo.name
@@ -78,17 +76,16 @@ resource "github_repository_ruleset" "copilot_code_review" {
   rules {
     copilot_code_review {
       review_draft_pull_requests = false
-      review_on_push             = true
+      review_on_push             = false
     }
   }
 }
 
-# Runs Copilot code reviews at the Lite effort level, which costs several times fewer AI
-# credits than the Balanced default.
+# Each pull request gets a single Copilot review, so it runs at the deeper Balanced level.
 module "copilot_review" {
   source        = "../CopilotReview"
   repository    = github_repository.repo.full_name
-  review_effort = "lite"
+  review_effort = "balanced"
 }
 
 resource "github_branch_protection" "release" {
@@ -105,7 +102,7 @@ resource "github_branch_protection" "release" {
 
   required_pull_request_reviews {
     dismiss_stale_reviews           = true
-    required_approving_review_count = 1
+    required_approving_review_count = 0
   }
 
   enforce_admins = true
