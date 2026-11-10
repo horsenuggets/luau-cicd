@@ -1,112 +1,112 @@
 resource "github_repository" "repo" {
-  name = var.repository
+    name = var.repository
 
-  allow_squash_merge = true
-  allow_merge_commit = var.allow_merge_commit
-  allow_rebase_merge = false
+    allow_squash_merge = true
+    allow_merge_commit = var.allow_merge_commit
+    allow_rebase_merge = false
 
-  delete_branch_on_merge = true
+    delete_branch_on_merge = true
 
-  squash_merge_commit_title   = "PR_TITLE"
-  squash_merge_commit_message = "PR_BODY"
+    squash_merge_commit_title   = "PR_TITLE"
+    squash_merge_commit_message = "PR_BODY"
 
-  lifecycle {
-    ignore_changes = [
-      allow_auto_merge,
-      allow_update_branch,
-      description,
-      homepage_url,
-      merge_commit_message,
-      merge_commit_title,
-      visibility,
-      topics,
-      has_downloads,
-      has_issues,
-      has_projects,
-      has_wiki,
-      archived,
-      archive_on_destroy,
-      vulnerability_alerts,
-      pages,
-      security_and_analysis,
-      template,
-    ]
-  }
+    lifecycle {
+        ignore_changes = [
+            allow_auto_merge,
+            allow_update_branch,
+            description,
+            homepage_url,
+            merge_commit_message,
+            merge_commit_title,
+            visibility,
+            topics,
+            has_downloads,
+            has_issues,
+            has_projects,
+            has_wiki,
+            archived,
+            archive_on_destroy,
+            vulnerability_alerts,
+            pages,
+            security_and_analysis,
+            template,
+        ]
+    }
 }
 
 resource "github_branch_protection" "main" {
-  repository_id = github_repository.repo.node_id
-  pattern       = "main"
+    repository_id = github_repository.repo.node_id
+    pattern       = "main"
 
-  required_status_checks {
-    strict = true
+    required_status_checks {
+        strict = true
 
-    contexts = concat(var.main_checks, var.extra_main_checks)
-  }
+        contexts = concat(var.main_checks, var.extra_main_checks)
+    }
 
-  # Merges need a pull request but no approval. Copilot reviews each pull request once for
-  # feedback, and its comments are addressed before merging rather than gating the merge.
-  required_pull_request_reviews {
-    dismiss_stale_reviews           = true
-    required_approving_review_count = 0
-  }
+    # Merges need a pull request but no approval. Copilot reviews each pull request once for
+    # feedback, and its comments are addressed before merging rather than gating the merge.
+    required_pull_request_reviews {
+        dismiss_stale_reviews           = true
+        required_approving_review_count = 0
+    }
 
-  enforce_admins = true
+    enforce_admins = true
 
-  allows_deletions    = false
-  allows_force_pushes = false
+    allows_deletions    = false
+    allows_force_pushes = false
 }
 
 # Classic branch protection can't express Copilot code review, so this ruleset layers it
 # on top of the protection above. Copilot reviews each non-draft pull request once when
 # it's opened, not again on every push, and the review doesn't block merges.
 resource "github_repository_ruleset" "copilot_code_review" {
-  name        = "Copilot Code Review"
-  repository  = github_repository.repo.name
-  target      = "branch"
-  enforcement = "active"
+    name        = "Copilot Code Review"
+    repository  = github_repository.repo.name
+    target      = "branch"
+    enforcement = "active"
 
-  conditions {
-    ref_name {
-      include = var.has_release_branch ? ["refs/heads/main", "refs/heads/release"] : ["refs/heads/main"]
-      exclude = []
+    conditions {
+        ref_name {
+            include = var.has_release_branch ? ["refs/heads/main", "refs/heads/release"] : ["refs/heads/main"]
+            exclude = []
+        }
     }
-  }
 
-  rules {
-    copilot_code_review {
-      review_draft_pull_requests = false
-      review_on_push             = false
+    rules {
+        copilot_code_review {
+            review_draft_pull_requests = false
+            review_on_push             = false
+        }
     }
-  }
 }
 
 # Each pull request gets a single Copilot review, so it runs at the deeper Balanced level.
 module "copilot_review" {
-  source        = "../CopilotReview"
-  repository    = github_repository.repo.full_name
-  review_effort = "balanced"
+    source        = "../CopilotReview"
+    repository    = github_repository.repo.full_name
+    review_effort = "balanced"
 }
 
 resource "github_branch_protection" "release" {
-  count = var.has_release_branch ? 1 : 0
+    count = var.has_release_branch ? 1 : 0
 
-  repository_id = github_repository.repo.node_id
-  pattern       = "release"
+    repository_id = github_repository.repo.node_id
+    pattern       = "release"
 
-  required_status_checks {
-    strict = true
+    required_status_checks {
+        strict = true
 
-    contexts = concat(var.release_checks, var.extra_release_checks)
-  }
+        contexts = concat(var.release_checks, var.extra_release_checks)
+    }
 
-  required_pull_request_reviews {
-    dismiss_stale_reviews           = true
-    required_approving_review_count = 0
-  }
+    required_pull_request_reviews {
+        dismiss_stale_reviews           = true
+        required_approving_review_count = 0
+    }
 
-  enforce_admins = true
+    enforce_admins = true
 
-  allows_deletions    = false
-  allows_force_pushes = false
+    allows_deletions    = false
+    allows_force_pushes = false
 }
