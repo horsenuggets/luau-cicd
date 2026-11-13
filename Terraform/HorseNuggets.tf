@@ -82,7 +82,7 @@ module "t" {
         "Validate PR title",
         "Validate version",
         "Verify diff matches main",
-        "Verify Wally auth",
+        "Verify Wally auth"
     ]
 }
 

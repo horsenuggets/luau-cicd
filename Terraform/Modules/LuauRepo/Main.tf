@@ -29,7 +29,7 @@ resource "github_repository" "repo" {
             vulnerability_alerts,
             pages,
             security_and_analysis,
-            template,
+            template
         ]
     }
 }

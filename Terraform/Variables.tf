@@ -14,7 +14,7 @@ variable "standard_main_checks" {
         "Check wally.toml format",
         "Run tests",
         "Static analysis",
-        "Validate branch name",
+        "Validate branch name"
     ]
 }
 
@@ -31,7 +31,7 @@ variable "standard_release_checks" {
         "Validate PR title",
         "Validate version",
         "Verify diff matches main",
-        "Verify Wally auth",
+        "Verify Wally auth"
     ]
 }
 
@@ -45,7 +45,7 @@ variable "game_release_checks" {
         "Static analysis",
         "Validate PR title",
         "Validate version",
-        "Verify diff matches main",
+        "Verify diff matches main"
     ]
 }
 
@@ -60,6 +60,6 @@ variable "standard_release_checks_no_wally" {
         "Static analysis",
         "Validate PR title",
         "Validate version",
-        "Verify diff matches main",
+        "Verify diff matches main"
     ]
 }

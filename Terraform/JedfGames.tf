@@ -25,7 +25,7 @@ module "eat-while-mom-isnt-looking" {
         "Check formatting",
         "Run tests",
         "Static analysis",
-        "Validate branch name",
+        "Validate branch name"
     ]
     release_checks = var.game_release_checks
 }
