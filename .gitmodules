@@ -7,6 +7,6 @@
 [submodule "Submodules/agents-md-shared"]
 	path = Submodules/agents-md-shared
 	url = git@github.com:horsenuggets/agents-md-shared.git
-[submodule "Submodules/tf4fmt"]
-	path = Submodules/tf4fmt
-	url = git@github.com:horsenuggets/tf4fmt.git
+[submodule "Submodules/hcl4fmt"]
+	path = Submodules/hcl4fmt
+	url = git@github.com:horsenuggets/hcl4fmt.git
