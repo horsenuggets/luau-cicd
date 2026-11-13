@@ -6,8 +6,8 @@ module "bloxdrive" {
     providers = {
         github = github.jedfgames
     }
-    repository     = "bloxdrive"
-    main_checks    = var.standard_main_checks
+    repository = "bloxdrive"
+    main_checks = var.standard_main_checks
     release_checks = var.standard_release_checks
 }
 
@@ -35,8 +35,8 @@ module "slopkit" {
     providers = {
         github = github.jedfgames
     }
-    repository     = "slopkit"
-    main_checks    = var.standard_main_checks
+    repository = "slopkit"
+    main_checks = var.standard_main_checks
     release_checks = var.standard_release_checks
 }
 
@@ -45,8 +45,8 @@ module "tower-defense-maker" {
     providers = {
         github = github.jedfgames
     }
-    repository     = "tower-defense-maker"
-    main_checks    = var.standard_main_checks
+    repository = "tower-defense-maker"
+    main_checks = var.standard_main_checks
     release_checks = var.standard_release_checks
 }
 
@@ -55,8 +55,8 @@ module "tower-of-falling-brainrots" {
     providers = {
         github = github.jedfgames
     }
-    repository        = "tower-of-falling-brainrots"
-    main_checks       = var.standard_main_checks
+    repository = "tower-of-falling-brainrots"
+    main_checks = var.standard_main_checks
     extra_main_checks = ["Check version match"]
-    release_checks    = var.game_release_checks
+    release_checks = var.game_release_checks
 }

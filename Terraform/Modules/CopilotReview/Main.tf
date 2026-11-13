@@ -30,7 +30,7 @@ check "review_effort" {
     }
 
     assert {
-        condition     = data.external.current.result.configured == var.review_effort
+        condition = data.external.current.result.configured == var.review_effort
         error_message = "Copilot review effort for \"${var.repository}\" is \"${data.external.current.result.configured}\" instead of \"${var.review_effort}\". Restore it by applying with -replace on this module's terraform_data.update resource."
     }
 }

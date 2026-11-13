@@ -1,5 +1,5 @@
 module "repo" {
-    source     = "../LuauRepo"
+    source = "../LuauRepo"
     repository = var.repository
 
     main_checks = [
@@ -26,6 +26,6 @@ module "repo" {
         "Verify diff matches main",
     ]
 
-    extra_main_checks    = var.extra_main_checks
+    extra_main_checks = var.extra_main_checks
     extra_release_checks = var.extra_release_checks
 }
