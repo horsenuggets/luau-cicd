@@ -1,6 +1,6 @@
 variable "repository" {
     description = "Full repository name in owner/name form."
-    type        = string
+    type = string
 
     # The name also can't be "." or "..", which would be resolved as path segments in the API
     # path (GitHub doesn't allow those names anyway). Terraform doesn't short-circuit "&&", so
@@ -16,10 +16,10 @@ variable "repository" {
 
 variable "review_effort" {
     description = "Copilot code review effort level for the repository."
-    type        = string
+    type = string
 
     validation {
-        condition     = contains(["lite", "balanced"], var.review_effort)
+        condition = contains(["lite", "balanced"], var.review_effort)
         error_message = "The review effort must be \"lite\" or \"balanced\"."
     }
 }

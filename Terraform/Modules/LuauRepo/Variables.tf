@@ -1,38 +1,38 @@
 variable "repository" {
     description = "GitHub repository name"
-    type        = string
+    type = string
 }
 
 variable "main_checks" {
     description = "Required status checks for PRs to main"
-    type        = list(string)
+    type = list(string)
 }
 
 variable "release_checks" {
     description = "Required status checks for PRs to release"
-    type        = list(string)
+    type = list(string)
 }
 
 variable "extra_main_checks" {
     description = "Additional required checks for main (appended to main_checks)"
-    type        = list(string)
-    default     = []
+    type = list(string)
+    default = []
 }
 
 variable "extra_release_checks" {
     description = "Additional required checks for release (appended to release_checks)"
-    type        = list(string)
-    default     = []
+    type = list(string)
+    default = []
 }
 
 variable "allow_merge_commit" {
     description = "Whether merge commits are allowed. Forks that take upstream syncs need this, since sync PRs land with a merge commit to keep upstream history"
-    type        = bool
-    default     = false
+    type = bool
+    default = false
 }
 
 variable "has_release_branch" {
     description = "Whether the repo has a release branch"
-    type        = bool
-    default     = true
+    type = bool
+    default = true
 }

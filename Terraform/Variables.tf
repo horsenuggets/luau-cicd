@@ -2,7 +2,7 @@
 # These must match the job names in Templates/workflows/ci.yml
 variable "standard_main_checks" {
     description = "Required CI checks for PRs to main"
-    type        = list(string)
+    type = list(string)
     default = [
         "Check .luaurc format",
         "Check changelog format",
@@ -14,7 +14,7 @@ variable "standard_main_checks" {
         "Check wally.toml format",
         "Run tests",
         "Static analysis",
-        "Validate branch name",
+        "Validate branch name"
     ]
 }
 
@@ -22,7 +22,7 @@ variable "standard_main_checks" {
 # These must match the job names in Templates/workflows/release-checks.yml
 variable "standard_release_checks" {
     description = "Required checks for PRs to release"
-    type        = list(string)
+    type = list(string)
     default = [
         "Check formatting",
         "Check JSON format",
@@ -31,28 +31,28 @@ variable "standard_release_checks" {
         "Validate PR title",
         "Validate version",
         "Verify diff matches main",
-        "Verify Wally auth",
+        "Verify Wally auth"
     ]
 }
 
 # Release checks for games, matching the job names in their release-checks.yml
 variable "game_release_checks" {
     description = "Required checks for PRs to release in games"
-    type        = list(string)
+    type = list(string)
     default = [
         "Check formatting",
         "Run tests",
         "Static analysis",
         "Validate PR title",
         "Validate version",
-        "Verify diff matches main",
+        "Verify diff matches main"
     ]
 }
 
 # Release checks for private packages that don't publish to Wally
 variable "standard_release_checks_no_wally" {
     description = "Required checks for PRs to release (no Wally auth)"
-    type        = list(string)
+    type = list(string)
     default = [
         "Check formatting",
         "Check JSON format",
@@ -60,6 +60,6 @@ variable "standard_release_checks_no_wally" {
         "Static analysis",
         "Validate PR title",
         "Validate version",
-        "Verify diff matches main",
+        "Verify diff matches main"
     ]
 }
