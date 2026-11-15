@@ -1,4 +1,4 @@
-name: Release checks
+name: Release / CI
 
 on:
   pull_request:
@@ -6,35 +6,6 @@ on:
       - release
 
 jobs:
-  check-script-executability:
-    name: check-script-executability
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          submodules: true
-
-      - name: Setup Rokit
-        uses: CompeyDev/setup-rokit@v0.1.2
-
-      - name: Check script executability
-        run: ./Submodules/luau-cicd/Scripts/CheckScriptExecutability.exec.luau
-
-  verify-wally-auth:
-    name: verify-wally-auth
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check WALLY_AUTH exists
-        env:
-          WALLY_AUTH: ${{ secrets.WALLY_AUTH }}
-        run: |
-          if [ -z "$WALLY_AUTH" ]; then
-            echo "::error::WALLY_AUTH secret is not configured. Run: gh secret set WALLY_AUTH < ~/.wally/auth.toml"
-            exit 1
-          fi
-          echo "WALLY_AUTH is configured."
-
   validate-pr-title:
     name: validate-pr-title
     runs-on: ubuntu-latest
@@ -84,14 +55,12 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          submodules: true
 
       - name: Setup Rokit
         uses: CompeyDev/setup-rokit@v0.1.2
 
       - name: Check formatting
-        run: ./Submodules/luau-cicd/Scripts/CheckFormatting.exec.luau
+        run: ./Scripts/CheckFormatting.exec.luau
 
   run-tests:
     name: run-tests
@@ -99,8 +68,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          submodules: true
 
       - name: Setup Rokit
         uses: CompeyDev/setup-rokit@v0.1.2
@@ -117,8 +84,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          submodules: true
 
       - name: Setup Rokit
         uses: CompeyDev/setup-rokit@v0.1.2
@@ -127,10 +92,10 @@ jobs:
         run: wally install
 
       - name: Setup Lune typedefs
-        run: lune setup --no-update-luaurc
+        run: lune setup
 
       - name: Run static analysis
-        run: ./Submodules/luau-cicd/Scripts/RunStaticAnalysis.exec.luau lune
+        run: ./Scripts/RunStaticAnalysis.exec.luau
 
   check-json-format:
     name: check-json-format
@@ -138,8 +103,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          submodules: true
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -153,7 +116,51 @@ jobs:
         uses: CompeyDev/setup-rokit@v0.1.2
 
       - name: Check JSON format
-        run: ./Submodules/luau-cicd/Scripts/CheckJsonFormat.exec.luau
+        run: ./Scripts/CheckJsonFormat.exec.luau
+
+  check-script-executability:
+    name: check-script-executability
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Rokit
+        uses: CompeyDev/setup-rokit@v0.1.2
+
+      - name: Check script executability
+        run: ./Scripts/CheckScriptExecutability.exec.luau
+
+  verify-wally-auth:
+    name: verify-wally-auth
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check WALLY_AUTH secret
+        env:
+          WALLY_AUTH: ${{ secrets.WALLY_AUTH }}
+        run: |
+          # Skip if no wally.toml exists
+          if [ ! -f "wally.toml" ]; then
+            echo "No wally.toml found, skipping WALLY_AUTH check."
+            exit 0
+          fi
+
+          # Skip if this is a private package (won't be published to Wally)
+          if grep -q '^private = true' wally.toml; then
+            echo "Private package detected, skipping WALLY_AUTH check."
+            exit 0
+          fi
+
+          if [ -z "$WALLY_AUTH" ]; then
+            echo "::error::WALLY_AUTH secret is not configured. This is required for publishing to Wally."
+            echo "::error::Add the secret using: gh secret set WALLY_AUTH < ~/.wally/auth.toml"
+            exit 1
+          fi
+
+          echo "WALLY_AUTH secret is configured."
 
   validate-version:
     name: validate-version
@@ -163,22 +170,21 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          submodules: true
 
       - name: Setup Rokit
         uses: CompeyDev/setup-rokit@v0.1.2
 
       - name: Check version update
-        run: ./Submodules/luau-cicd/Scripts/EnsureProperVersionUpdate.exec.luau
+        run: ./Scripts/EnsureProperVersionUpdate.exec.luau
 
       - name: Check version match
-        run: ./Submodules/luau-cicd/Scripts/CheckVersionMatch.exec.luau
+        run: ./Scripts/CheckVersionMatch.exec.luau
 
       - name: Check changelog entry
-        run: ./Submodules/luau-cicd/Scripts/CheckChangelogVersion.exec.luau
+        run: ./Scripts/CheckChangelogVersion.exec.luau
 
       - name: Check changelog format
-        run: ./Submodules/luau-cicd/Scripts/CheckChangelogFormat.exec.luau
+        run: ./Scripts/CheckChangelogFormat.exec.luau
 
       - name: Verify PR title matches VERSION
         env:
