@@ -8,8 +8,8 @@ permissions:
   contents: write
 
 jobs:
-  sync-dev:
-    name: Sync dev with main
+  sync-dev-with-main:
+    name: sync-dev-with-main
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
