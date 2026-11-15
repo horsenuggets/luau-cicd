@@ -37,11 +37,18 @@ const function resolve(path: string): string
     end
 
     -- Resolve through the operating system without expanding the path in a shell command.
-    const command = if WINDOWS then "cmd" else "pwd"
-    const args = if WINDOWS then { "/d", "/c", "cd" } else { "-P" }
+    const command = if WINDOWS then "powershell.exe" else "pwd"
+    const args = if WINDOWS
+        then {
+            "-NoProfile",
+            "-NonInteractive",
+            "-Command",
+            "[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false); [Console]::Write((Get-Location).ProviderPath)",
+        }
+        else { "-P" }
     const result = process.exec(command, args, { cwd = path })
     assert(result.ok, `Could not resolve scan directory "{path}". {result.stderr}`)
-    return normalize((string.gsub(result.stdout, if WINDOWS then "\r\n$" else "\n$", "")))
+    return normalize(if WINDOWS then result.stdout else (string.gsub(result.stdout, "\n$", "")))
 end
 
 const function ResolveScanDirectory(directory: string, workingDirectory: string): (string, boolean)

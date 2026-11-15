@@ -163,6 +163,24 @@ return {}
         end
     end)
 
+    it("should resolve checkout paths with spaces, quotes, and Unicode", function()
+        const folder = "Checkout 'quoted' café"
+        env.WriteFile(`{folder}/Module.luau`, "--[[\n\nModule\n\nValid module.\n\n--]]\n\nreturn {}\n")
+        const checkout = `{env.Path}/{folder}`
+        const directory, scanningRepoRoot = ResolveScanDirectory(".", checkout)
+        expect(string.sub(directory, -#folder)).to.equal(folder)
+        expect(scanningRepoRoot).to.equal(true)
+
+        for _, scriptName in { "CheckFileHeaders", "CheckNoTabs" } do
+            const result = process.exec("lune", {
+                "run",
+                `{process.cwd}/Scripts/{scriptName}.exec.luau`,
+            }, { cwd = checkout })
+            expect(result.ok).to.equal(true)
+            expect(string.find(result.stdout, "1 file", 1, true)).to.be.ok()
+        end
+    end)
+
     if process.os ~= "windows" then
         it("should preserve special characters in POSIX checkout paths", function()
             env.WriteFile("Repo/Invalid.luau", "\treturn {}\n")
