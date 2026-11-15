@@ -26,7 +26,7 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "tag=$VERSION" >> $GITHUB_OUTPUT
 
-          # Extract changelog for this version
+          # Extract the changelog for this version.
           CHANGELOG=$(awk -v ver="$VERSION" '
             /^## / {
               if (found) exit
@@ -36,7 +36,7 @@ jobs:
             found { print }
           ' CHANGELOG.md | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | sed '/^$/N;/^\n$/d')
 
-          # Write to file for multi-line support
+          # Write to a file for multiline support.
           echo "$CHANGELOG" > /tmp/changelog.txt
 
       - name: Create git tag

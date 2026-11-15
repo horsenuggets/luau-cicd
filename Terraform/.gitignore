@@ -1,3 +1,4 @@
-.terraform/
+# Terraform
 *.tfstate
-*.tfstate.backup
+*.tfstate.*
+/.terraform/

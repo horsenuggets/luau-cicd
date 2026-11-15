@@ -3,18 +3,18 @@
 *.rbxlx
 *.rbxm
 *.rbxmx
-/Build
+/Build/
 
 # Dependencies
-/DevPackages
-/Packages
-/ServerPackages
+/DevPackages/
+/Packages/
+/ServerPackages/
 
-# Editor and environment
-.claude
+# Editor & environment
+.claude/
 .DS_Store
 .env
-.local
+.local/
 .mcp.json
 /.vscode/*
 !/.vscode/extensions.json
@@ -34,11 +34,11 @@ aftman.toml
 /CONTEXT.md
 /TODO.md
 
-# Worktrees
-/.worktrees/
-/.wt/
-
-# Repo-specific
+# Terraform
 *.tfstate
 *.tfstate.*
 .terraform/
+
+# Worktrees
+/.worktrees/
+/.wt/
