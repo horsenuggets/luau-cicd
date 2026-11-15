@@ -143,22 +143,40 @@ return {}
         end
     end)
 
-    it("should normalize scan paths portably without mistaking subfolders for roots", function()
-        for _, case in
-            {
-                { Base = "/repo/project/", Path = "./", Root = true, Value = "/repo/project" },
-                { Base = "/repo/project", Path = "Source/Build/", Root = false, Value = "/repo/project/Source/Build" },
-                { Base = "C:\\Repo\\Project\\", Path = ".\\", Root = true, Value = "C:/Repo/Project" },
-                { Base = "C:/Repo/Project", Path = "c:/repo/project/", Root = true, Value = "c:/repo/project" },
-                { Base = "//server/share/Project/", Path = "./", Root = true, Value = "//server/share/Project" },
-                { Base = "/", Path = "./", Root = true, Value = "/" },
-            }
-        do
-            const directory, scanningRepoRoot = ResolveScanDirectory(case.Path, case.Base)
+    it("should normalize scan paths without mistaking subfolders for roots", function()
+        env.WriteDir("Build")
+        env.WriteDir("Source/Build")
+        const base = ResolveScanDirectory(".", env.Path)
+        const cases = {
+            { Path = "./", Root = true, Value = base },
+            { Path = "Build/../", Root = true, Value = base },
+            { Path = "Source/Build/", Root = false, Value = `{base}/Source/Build` },
+        }
+        if process.os == "windows" then
+            table.insert(cases, { Path = ".\\Build\\..\\", Root = true, Value = base })
+        end
+
+        for _, case in cases do
+            const directory, scanningRepoRoot = ResolveScanDirectory(case.Path, env.Path)
             expect(directory).to.equal(case.Value)
             expect(scanningRepoRoot).to.equal(case.Root)
         end
     end)
+
+    if process.os ~= "windows" then
+        it("should preserve literal backslashes in POSIX checkout paths", function()
+            env.WriteFile("Repo\\name/Module.luau", "--[[\n\nModule\n\nValid module.\n\n--]]\n\nreturn {}\n")
+
+            for _, scriptName in { "CheckFileHeaders", "CheckNoTabs" } do
+                const result = process.exec("lune", {
+                    "run",
+                    `{process.cwd}/Scripts/{scriptName}.exec.luau`,
+                }, { cwd = `{env.Path}/Repo\\name` })
+                expect(result.ok).to.equal(true)
+                expect(string.find(result.stdout, "1 file", 1, true)).to.be.ok()
+            end
+        end)
+    end
 
     it("should resolve parent directories through symbolic links before scanning", function()
         env.WriteDir("Repository")

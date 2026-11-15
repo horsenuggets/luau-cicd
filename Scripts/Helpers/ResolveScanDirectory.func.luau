@@ -9,9 +9,10 @@ directory. Preserves parent-directory semantics when paths contain symbolic link
 
 const fs = require("@lune/fs")
 const process = require("@lune/process")
+const WINDOWS = process.os == "windows"
 
 const function normalize(path: string): string
-    const clean = string.gsub(path, "\\", "/")
+    const clean = if WINDOWS then string.gsub(path, "\\", "/") else path
     const drive = string.match(clean, "^%a:/")
     const share = string.match(clean, "^(//[^/]+/[^/]+)/?")
     const root = drive or share or "/"
@@ -36,9 +37,8 @@ const function resolve(path: string): string
     end
 
     -- Resolve through the operating system without expanding the path in a shell command.
-    const windows = process.os == "windows"
-    const command = if windows then "cmd" else "pwd"
-    const args = if windows then { "/d", "/c", "cd" } else { "-P" }
+    const command = if WINDOWS then "cmd" else "pwd"
+    const args = if WINDOWS then { "/d", "/c", "cd" } else { "-P" }
     const result = process.exec(command, args, { cwd = path })
     assert(result.ok, `Could not resolve scan directory "{path}". {result.stderr}`)
     return normalize((string.gsub(result.stdout, "[\r\n]+$", "")))
@@ -49,14 +49,13 @@ const function ResolveScanDirectory(directory: string, workingDirectory: string)
     assert(type(workingDirectory) == "string", "Expected a working directory string.")
 
     const base = resolve(workingDirectory)
-    local path = string.gsub(directory, "\\", "/")
-    if string.sub(path, 1, 1) ~= "/" and not string.match(path, "^%a:/") then
+    local path = if WINDOWS then string.gsub(directory, "\\", "/") else directory
+    if string.sub(path, 1, 1) ~= "/" and not (WINDOWS and string.match(path, "^%a:/")) then
         path = `{base}/{path}`
     end
     path = resolve(path)
 
-    const windowsPath = string.match(base, "^%a:/") ~= nil or string.sub(base, 1, 2) == "//"
-    const scanningRepoRoot = if windowsPath then string.lower(path) == string.lower(base) else path == base
+    const scanningRepoRoot = if WINDOWS then string.lower(path) == string.lower(base) else path == base
     return path, scanningRepoRoot
 end
 
