@@ -116,6 +116,27 @@ return function()
     end)
 
     describe("version section validation", function()
+        it("should accept bare versions and hyphenated suffixes", function()
+            for _, version in { "1.0.0", "1.0.0-beta", "1.0.0-beta.5", "1.0.0-horse.1.2" } do
+                env.WriteFile("CHANGELOG.md", `# Changelog\n\n## {version}\n- A release.\n`)
+
+                const result = env.RunScript("CheckChangelogFormat")
+
+                expect(result.ok).to.equal(true)
+            end
+        end)
+
+        it("should reject version suffixes without a hyphen or content", function()
+            for _, version in { "1.0.0beta", "1.0.0.1", "1.0.0-" } do
+                env.WriteFile("CHANGELOG.md", `# Changelog\n\n## {version}\n- A release.\n`)
+
+                const result = env.RunScript("CheckChangelogFormat")
+
+                expect(result.ok).to.equal(false)
+                expect(string.find(result.stdout, "must use a version header", 1, true)).to.be.ok()
+            end
+        end)
+
         it("should fail when version format is invalid", function()
             env.WriteFile(
                 "CHANGELOG.md",

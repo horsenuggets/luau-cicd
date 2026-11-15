@@ -63,7 +63,8 @@ function CheckChangelogFormat.exec()
         const prevLine = lines[i - 1]
 
         -- Check for a version header in the "## X.Y.Z" or "## X.Y.Z-suffix" format.
-        const version = string.match(line, "^## (%d+%.%d+%.%d+[%w%.%-]*)$")
+        const version = string.match(line, "^## (%d+%.%d+%.%d+)$")
+            or string.match(line, "^## (%d+%.%d+%.%d+%-[%w%.%-]+)$")
         if version then
             hasVersions = true
             -- Require a blank line before each version header.

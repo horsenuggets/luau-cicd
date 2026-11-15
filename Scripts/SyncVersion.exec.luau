@@ -9,6 +9,7 @@ dependency string exists).
 
 --]]
 
+const GetReadmeVersionReferences = require("./Helpers/GetReadmeVersionReferences.func")
 const fs = require("@lune/fs")
 
 const SyncVersion = {}
@@ -22,7 +23,7 @@ function SyncVersion.exec()
 
     -- Trim whitespace from the version.
     version = string.match(version, "^%s*(.-)%s*$")
-    assert(type(version) == "string", 'The "VERSION" file is empty or invalid.')
+    assert(type(version) == "string" and version ~= "", 'The "VERSION" file is empty or invalid.')
 
     -- Read wally.toml.
     const wallyContent = fs.readFile("wally.toml")
@@ -44,14 +45,19 @@ function SyncVersion.exec()
     if fs.isFile("README.md") then
         const readmeContent = fs.readFile("README.md")
 
-        -- Match a dependency coordinate such as owner/package@1.2.3.
-        const escapedPackageName = string.gsub(packageName, "([%-%.%+%[%]%(%)%$%^%%%?%*])", "%%%1")
-        const pattern = `({escapedPackageName}@)[%d][%w%.%-]*`
-
-        const updatedReadme, count = string.gsub(readmeContent, pattern, `%1{version}`)
+        const references = GetReadmeVersionReferences(readmeContent, packageName)
+        const count = #references
 
         if count > 0 then
-            fs.writeFile("README.md", updatedReadme)
+            const parts = {}
+            local nextIndex = 1
+            for _, reference in references do
+                table.insert(parts, string.sub(readmeContent, nextIndex, reference.Start - 1))
+                table.insert(parts, version)
+                nextIndex = reference.End + 1
+            end
+            table.insert(parts, string.sub(readmeContent, nextIndex))
+            fs.writeFile("README.md", table.concat(parts))
             print(
                 `Updated {count} version {if count == 1 then "reference" else "references"} in "README.md" to "{version}".`
             )

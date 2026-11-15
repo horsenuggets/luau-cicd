@@ -225,6 +225,39 @@ return function()
         expect(string.find(readmeContent, "author/my%-package@2%.0%.0%-beta%.6")).to.be.ok()
     end)
 
+    it("should preserve punctuation when synchronizing every README reference", function()
+        const originalReadme = "Install author/my-package@1.0.0.\nOr `author/my-package@1.0.0-beta.5`...\n"
+        for _, version in { "2.0.0", "2.0.0-beta.6", "2.0.0-horse.1.2" } do
+            env.WriteFile("VERSION", `{version}\n`)
+            env.WriteFile("wally.toml", '[package]\nname = "author/my-package"\nversion = "1.0.0"\n')
+            env.WriteFile("README.md", originalReadme)
+
+            const result = env.RunScript("SyncVersion")
+
+            expect(result.ok).to.equal(true)
+            expect(env.ReadFile("README.md")).to.equal(
+                `Install author/my-package@{version}.\nOr \`author/my-package@{version}\`...\n`
+            )
+        end
+    end)
+
+    it("should reject empty versions before modifying the manifest or README", function()
+        const originalManifest = '[package]\nname = "author/my-package"\nversion = "1.0.0"\n'
+        const originalReadme = "Install author/my-package@1.0.0.\n"
+        for _, version in { "", " \t\n " } do
+            env.WriteFile("VERSION", version)
+            env.WriteFile("wally.toml", originalManifest)
+            env.WriteFile("README.md", originalReadme)
+
+            const result = env.RunScript("SyncVersion")
+
+            expect(result.ok).to.equal(false)
+            expect(string.find(result.stderr, 'The "VERSION" file is empty or invalid.', 1, true)).to.be.ok()
+            expect(env.ReadFile("wally.toml")).to.equal(originalManifest)
+            expect(env.ReadFile("README.md")).to.equal(originalReadme)
+        end
+    end)
+
     it("should not modify README.md if no package dependency string exists", function()
         env.WriteFile("VERSION", "2.0.0\n")
         env.WriteFile(

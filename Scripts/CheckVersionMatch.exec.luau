@@ -9,6 +9,7 @@ Ensures that the version in VERSION file matches the version in wally.toml and R
 
 --]]
 
+const GetReadmeVersionReferences = require("./Helpers/GetReadmeVersionReferences.func")
 const fs = require("@lune/fs")
 const process = require("@lune/process")
 
@@ -37,15 +38,13 @@ function CheckVersionMatch.exec()
     if packageName and fs.isFile("README.md") then
         const readmeContent = fs.readFile("README.md")
 
-        -- Match a dependency coordinate such as owner/package@1.2.3.
-        const escapedPackageName = string.gsub(packageName, "([%-%.%+%[%]%(%)%$%^%%%?%*])", "%%%1")
-        const pattern = `{escapedPackageName}@([%d][%w%.%-]*)`
-
-        const readmeVersion = string.match(readmeContent, pattern)
-
-        if readmeVersion and readmeVersion ~= version then
-            print(`Version mismatch. "VERSION" has "{version}", but "README.md" has "{packageName}@{readmeVersion}".`)
-            process.exit(1)
+        for _, reference in GetReadmeVersionReferences(readmeContent, packageName) do
+            if reference.Version ~= version then
+                print(
+                    `Version mismatch. "VERSION" has "{version}", but "README.md" has "{packageName}@{reference.Version}".`
+                )
+                process.exit(1)
+            end
         end
     end
 
