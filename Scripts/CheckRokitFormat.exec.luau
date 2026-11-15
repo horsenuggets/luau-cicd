@@ -14,6 +14,7 @@ all tool repository strings are lowercase.
 
 const fs = require("@lune/fs")
 const process = require("@lune/process")
+const serde = require("@lune/serde")
 
 const CheckRokitFormat = {}
 
@@ -28,14 +29,23 @@ function CheckRokitFormat.exec()
         process.exit(1)
     end
 
-    const content = fs.readFile(filename)
+    const ok, data = pcall(function()
+        return serde.decode("toml", fs.readFile(filename))
+    end)
+    assert(ok, `Failed to parse "{filename}" as TOML. {data}`)
     const errors: { string } = {}
 
-    -- Find tool definitions with the key = "owner/repo@version" pattern.
-    for line in string.gmatch(content, "[^\n]+") do
-        const key, value = string.match(line, '^%s*([%w%-_]+)%s*=%s*"(.-)"')
-        if key and value then
-            -- Check whether the value contains uppercase letters.
+    if data.tools ~= nil then
+        assert(type(data.tools) == "table", `Expected "tools" to be a table in "{filename}".`)
+        const keys = {}
+        for key in data.tools do
+            assert(type(key) == "string", `Expected tool names to be strings in "{filename}".`)
+            table.insert(keys, key)
+        end
+        table.sort(keys)
+        for _, key in keys do
+            const value = data.tools[key]
+            assert(type(value) == "string", `Expected tool "{key}" to be a string in "{filename}".`)
             const lowercase = string.lower(value)
             if value ~= lowercase then
                 table.insert(errors, `Tool "{key}" has non-lowercase value "{value}". Should be "{lowercase}".`)

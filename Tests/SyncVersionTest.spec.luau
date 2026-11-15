@@ -6,6 +6,7 @@ Tests for the SyncVersion script.
 
 --]]
 
+const ReplaceWallyPackageVersion = require("../Scripts/Helpers/ReplaceWallyPackageVersion.func")
 const TestEnvironment = require("./Helpers/TestEnvironment")
 
 const dedent = TestEnvironment.dedent
@@ -268,6 +269,68 @@ return function()
                 `[package]\nname = "author/my-package"\nversion = "{version}"\n`
             )
         end
+    end)
+
+    it("should replace only the active TOML version token and preserve all other bytes", function()
+        const cases = {
+            {
+                Prefix = '# version = "1.0.0"\n[package]\nname = "author/my-package"\nversion = ',
+                Suffix = ' # Keep this.\n# version = "1.0.0"\n# name = "other/package"\n[dependencies]\nOther = "other/package@1.0.0"\n',
+                Token = '"1.0.0"',
+            },
+            {
+                Prefix = "[\"package\"]\r\n'name' = 'author/my-package'\r\n\"version\" = ",
+                Suffix = '\r\n# version = "1.0.0"\r\n',
+                Token = "'1.0.0'",
+            },
+            {
+                Prefix = 'package = { name = "author/my-package", version = ',
+                Suffix = ', description = "1.0.0" }\n',
+                Token = '"1.0.0"',
+            },
+            {
+                Prefix = 'package.name = "author/my-package"\npackage.version = ',
+                Suffix = '\n[metadata]\nversion = "1.0.0"\n',
+                Token = '"1.0.\\u0030"',
+            },
+            {
+                Prefix = "description = '''\n[package]\nversion = \"1.0.0\"\nname = \"other/package\"\n'''\n[package]\nname = \"author/my-package\"\nversion = ",
+                Suffix = '\n# version = "1.0.0"\n',
+                Token = '"1.0.0"',
+            },
+        }
+        for _, case in cases do
+            env.WriteFile("VERSION", "2.0.0\n")
+            env.WriteFile("wally.toml", `{case.Prefix}{case.Token}{case.Suffix}`)
+            env.WriteFile("README.md", "author/my-package@1.0.0 other/package@1.0.0\n")
+            const result = env.RunScript("SyncVersion")
+            expect(result.ok).to.equal(true)
+            expect(env.ReadFile("wally.toml")).to.equal(`{case.Prefix}"2.0.0"{case.Suffix}`)
+            expect(env.ReadFile("README.md")).to.equal("author/my-package@2.0.0 other/package@1.0.0\n")
+        end
+    end)
+
+    it("should locate the same active version token deterministically", function()
+        const content = '[metadata]\nversion = "1.0.0"\n[package]\nversion = "1.0.0" # Preserve.\n'
+        const expected = '[metadata]\nversion = "1.0.0"\n[package]\nversion = "2.0.0" # Preserve.\n'
+        expect(ReplaceWallyPackageVersion(content, "1.0.0", "2.0.0")).to.equal(expected)
+        expect(ReplaceWallyPackageVersion(content, "1.0.0", "2.0.0")).to.equal(expected)
+        for _, args in { { false, "1.0.0", "2.0.0" }, { content, false, "2.0.0" }, { content, "1.0.0", false } } do
+            expect(pcall(function()
+                ReplaceWallyPackageVersion(args[1] :: any, args[2] :: any, args[3] :: any)
+            end)).to.equal(false)
+        end
+    end)
+
+    it("should reject comment-only package versions without modifying files", function()
+        const manifest = '[package]\nname = "author/my-package"\n# version = "1.0.0"\n'
+        const readme = "author/my-package@1.0.0\n"
+        env.WriteFile("VERSION", "2.0.0\n")
+        env.WriteFile("wally.toml", manifest)
+        env.WriteFile("README.md", readme)
+        expect(env.RunScript("SyncVersion").ok).to.equal(false)
+        expect(env.ReadFile("wally.toml")).to.equal(manifest)
+        expect(env.ReadFile("README.md")).to.equal(readme)
     end)
 
     it("should reject a missing package version before modifying either file", function()

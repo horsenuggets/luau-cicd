@@ -10,7 +10,9 @@ dependency string exists).
 --]]
 
 const GetReadmeVersionReferences = require("./Helpers/GetReadmeVersionReferences.func")
+const ReplaceWallyPackageVersion = require("./Helpers/ReplaceWallyPackageVersion.func")
 const fs = require("@lune/fs")
+const serde = require("@lune/serde")
 
 const SyncVersion = {}
 
@@ -28,20 +30,13 @@ function SyncVersion.exec()
     -- Read wally.toml.
     const wallyContent = fs.readFile("wally.toml")
 
-    -- Extract the package name from wally.toml.
-    const packageName = string.match(wallyContent, `%[package%][^%[]*name%s*=%s*"(.-)"`)
+    const wallyData = serde.decode("toml", wallyContent)
+    const packageData = wallyData.package
+    const packageName = if type(packageData) == "table" then packageData.name else nil
     assert(type(packageName) == "string", 'Could not find the package name in "wally.toml".')
-
-    -- Replace the first version value in the [package] section only.
-    const updatedWallyContent, replacementCount = string.gsub(
-        wallyContent,
-        '(%[package%][^%[]*version%s*=%s*)"(.-)"',
-        function(prefix, _)
-            return `{prefix}"{version}"`
-        end,
-        1
-    )
-    assert(replacementCount == 1, 'Could not find the package version in "wally.toml".')
+    const currentVersion = packageData.version
+    assert(type(currentVersion) == "string", 'Could not find the package version in "wally.toml".')
+    const updatedWallyContent = ReplaceWallyPackageVersion(wallyContent, currentVersion, version)
 
     -- Write the updated content back to wally.toml.
     fs.writeFile("wally.toml", updatedWallyContent)
