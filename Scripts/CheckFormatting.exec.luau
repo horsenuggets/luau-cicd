@@ -16,7 +16,7 @@ function CheckFormatting.exec()
     const result = process.exec("stylua", { "--check", "." })
 
     if result.ok then
-        print("Formatting check passed!")
+        print("Formatting check passed.")
         process.exit(0)
     else
         print("Formatting check failed.")

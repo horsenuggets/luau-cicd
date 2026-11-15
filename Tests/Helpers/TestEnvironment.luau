@@ -2,7 +2,7 @@
 
 TestEnvironment
 
-Helper module for creating isolated test environments with temp directories.
+Creates isolated test environments with temporary directories.
 
 --]]
 
@@ -12,10 +12,12 @@ const process = require("@lune/process")
 const TestEnvironment = {}
 
 const function dedent(str: string): string
-    -- Remove leading newline if present
+    assert(typeof(str) == "string", "Expected a string.")
+
+    -- Remove the leading newline if present.
     const content = string.match(str, "^\n(.*)$") or str
 
-    -- Find minimum indentation (ignoring empty lines)
+    -- Find the minimum indentation, ignoring empty lines.
     local minIndent = math.huge
     for line in string.gmatch(content, "[^\n]+") do
         const indent = string.match(line, "^(%s*)")
@@ -28,9 +30,9 @@ const function dedent(str: string): string
         minIndent = 0
     end
 
-    -- Remove that amount of indentation from each line
+    -- Remove that amount of indentation from each line.
     const lines = {}
-    for line in string.gmatch(content .. "\n", "([^\n]*)\n") do
+    for line in string.gmatch(`{content}\n`, "([^\n]*)\n") do
         if #line > 0 then
             table.insert(lines, string.sub(line, minIndent + 1))
         else
@@ -43,93 +45,96 @@ end
 
 TestEnvironment.dedent = dedent
 
-export type ExecResult = {
-    ok: boolean,
-    code: number,
-    stdout: string,
-    stderr: string,
-}
+export type ExecResult = process.ExecResult
 
 export type Environment = {
-    path: string,
-    cleanup: () -> (),
-    writeDir: (relativePath: string) -> (),
-    writeFile: (relativePath: string, content: string) -> (),
-    readFile: (relativePath: string) -> string,
-    fileExists: (relativePath: string) -> boolean,
-    runScript: (scriptName: string, args: { string }?) -> ExecResult,
-    initGit: () -> (),
-    gitCommit: (message: string) -> (),
-    gitTag: (tag: string) -> (),
+    Cleanup: () -> (),
+    FileExists: (relativePath: string) -> boolean,
+    GitCommit: (message: string) -> (),
+    GitTag: (tag: string) -> (),
+    InitGit: () -> (),
+    Path: string,
+    ReadFile: (relativePath: string) -> string,
+    RunScript: (scriptName: string, args: { string }?) -> ExecResult,
+    WriteDir: (relativePath: string) -> (),
+    WriteFile: (relativePath: string, content: string) -> (),
 }
 
 function TestEnvironment.create(): Environment
-    const timestamp = tostring(os.time()) .. tostring(math.random(10000, 99999))
+    const timestamp = `{os.time()}{math.random(10000, 99999)}`
     const tempDir = `/tmp/luau-cicd-test-{timestamp}`
     fs.writeDir(tempDir)
 
-    -- Get the absolute path to the Scripts directory
-    const scriptsDir = process.cwd .. "/Scripts"
+    -- Get the absolute path to the scripts directory.
+    const scriptsDir = `{process.cwd}/Scripts`
 
-    -- Copy rokit.toml to temp dir so rokit-managed tools work
+    -- Copy "rokit.toml" so Rokit-managed tools work in the temporary directory.
     if fs.isFile("rokit.toml") then
         fs.copy("rokit.toml", `{tempDir}/rokit.toml`)
     end
 
     const env: Environment = {
-        path = tempDir,
-
-        cleanup = function()
+        Cleanup = function()
             if fs.isDir(tempDir) then
                 process.exec("rm", { "-rf", tempDir })
             end
         end,
+        FileExists = function(relativePath: string): boolean
+            assert(typeof(relativePath) == "string", "Expected a relative path string.")
 
-        writeDir = function(relativePath: string)
+            return fs.isFile(`{tempDir}/{relativePath}`)
+        end,
+        GitCommit = function(message: string)
+            assert(typeof(message) == "string", "Expected a commit message string.")
+
+            process.exec("git", { "add", "-A" }, { cwd = tempDir })
+            process.exec("git", { "commit", "-m", message, "--allow-empty" }, { cwd = tempDir })
+        end,
+        GitTag = function(tag: string)
+            assert(typeof(tag) == "string", "Expected a tag string.")
+
+            process.exec("git", { "tag", tag }, { cwd = tempDir })
+        end,
+        InitGit = function()
+            process.exec("git", { "init" }, { cwd = tempDir })
+            process.exec("git", { "config", "user.email", "test@example.com" }, { cwd = tempDir })
+            process.exec("git", { "config", "user.name", "Test User" }, { cwd = tempDir })
+        end,
+        Path = tempDir,
+        ReadFile = function(relativePath: string): string
+            assert(typeof(relativePath) == "string", "Expected a relative path string.")
+
+            return fs.readFile(`{tempDir}/{relativePath}`)
+        end,
+        RunScript = function(scriptName: string, args: { string }?): ExecResult
+            assert(typeof(scriptName) == "string", "Expected a script name string.")
+            assert(args == nil or typeof(args) == "table", "Expected an optional argument array.")
+
+            const scriptPath = `{scriptsDir}/{scriptName}.exec.luau`
+            const luneArgs = { "run", scriptPath }
+            if args then
+                for _, arg in args do
+                    assert(typeof(arg) == "string", "Expected string arguments.")
+                    table.insert(luneArgs, arg)
+                end
+            end
+            return process.exec("lune", luneArgs, { cwd = tempDir })
+        end,
+        WriteDir = function(relativePath: string)
+            assert(typeof(relativePath) == "string", "Expected a relative path string.")
+
             fs.writeDir(`{tempDir}/{relativePath}`)
         end,
+        WriteFile = function(relativePath: string, content: string)
+            assert(typeof(relativePath) == "string", "Expected a relative path string.")
+            assert(typeof(content) == "string", "Expected file content as a string.")
 
-        writeFile = function(relativePath: string, content: string)
             const fullPath = `{tempDir}/{relativePath}`
             const dir = string.match(fullPath, "(.+)/[^/]+$")
             if dir and not fs.isDir(dir) then
                 fs.writeDir(dir)
             end
             fs.writeFile(fullPath, content)
-        end,
-
-        readFile = function(relativePath: string): string
-            return fs.readFile(`{tempDir}/{relativePath}`)
-        end,
-
-        fileExists = function(relativePath: string): boolean
-            return fs.isFile(`{tempDir}/{relativePath}`)
-        end,
-
-        runScript = function(scriptName: string, args: { string }?): ExecResult
-            const scriptPath = `{scriptsDir}/{scriptName}.exec.luau`
-            const luneArgs = { "run", scriptPath }
-            if args then
-                for _, arg in args do
-                    table.insert(luneArgs, arg)
-                end
-            end
-            return process.exec("lune", luneArgs, { cwd = tempDir })
-        end,
-
-        initGit = function()
-            process.exec("git", { "init" }, { cwd = tempDir })
-            process.exec("git", { "config", "user.email", "test@test.com" }, { cwd = tempDir })
-            process.exec("git", { "config", "user.name", "Test User" }, { cwd = tempDir })
-        end,
-
-        gitCommit = function(message: string)
-            process.exec("git", { "add", "-A" }, { cwd = tempDir })
-            process.exec("git", { "commit", "-m", message, "--allow-empty" }, { cwd = tempDir })
-        end,
-
-        gitTag = function(tag: string)
-            process.exec("git", { "tag", tag }, { cwd = tempDir })
         end,
     }
 

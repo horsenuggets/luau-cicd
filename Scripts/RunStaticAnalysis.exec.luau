@@ -4,9 +4,9 @@
 
 RunStaticAnalysis.exec
 
-Runs luau-lsp static analysis. Accepts an optional platform argument
-(defaults to "standard"). The horsenuggets/luau-lsp fork handles
-shebangs natively, so no stripping is needed.
+Runs luau-lsp static analysis. Accepts an optional platform argument that defaults to
+"standard". The configured luau-lsp fork handles shebangs natively, so no stripping is
+needed.
 
 [Usage] ./Scripts/RunStaticAnalysis.exec.luau [platform]
 
@@ -34,8 +34,8 @@ function RunStaticAnalysis.exec()
         ".",
     })
 
-    -- Check for any issues in output (warnings or errors)
-    -- luau-lsp outputs issues in the format: file(line,col): Type: message
+    -- Check for warnings or errors in the output.
+    -- luau-lsp reports diagnostics using file(line,col): Type: message.
     local hasIssues = false
     const issuePattern = "%):%s+%w+:"
 
@@ -49,11 +49,11 @@ function RunStaticAnalysis.exec()
         print(result.stderr)
         process.exit(1)
     elseif hasIssues then
-        print("Static analysis found warnings:")
+        print("Static analysis found warnings...")
         print(result.stdout)
         process.exit(1)
     else
-        print("Static analysis passed!")
+        print("Static analysis passed.")
         process.exit(0)
     end
 end

@@ -15,11 +15,11 @@ jobs:
         env:
           TITLE: ${{ github.event.pull_request.title }}
         run: |
-          echo "Checking PR title: $TITLE"
+          echo "Checking PR title \"$TITLE\"."
 
-          # Must be exactly "Release X.Y.Z"
+          # Require exactly "Release X.Y.Z".
           if [[ ! "$TITLE" =~ ^Release\ [0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "::error::PR title must be exactly 'Release X.Y.Z' (e.g., 'Release 1.2.3')"
+            echo "::error::PR title must be exactly \"Release X.Y.Z\" (e.g., \"Release 1.2.3\")."
             exit 1
           fi
 
@@ -38,12 +38,12 @@ jobs:
         run: |
           git fetch origin main
 
-          # Get the diff between the PR branch and main
+          # Get the diff between the PR branch and main.
           DIFF=$(git diff origin/main..HEAD)
 
           if [ -n "$DIFF" ]; then
             echo "::error::PR branch has changes that differ from main. The release branch must contain exactly what is in main."
-            echo "Diff:"
+            echo "The diff follows."
             echo "$DIFF"
             exit 1
           fi
@@ -143,25 +143,25 @@ jobs:
         env:
           WALLY_AUTH: ${{ secrets.WALLY_AUTH }}
         run: |
-          # Skip if no wally.toml exists
+          # Skip if "wally.toml" does not exist.
           if [ ! -f "wally.toml" ]; then
-            echo "No wally.toml found, skipping WALLY_AUTH check."
+            echo "No \"wally.toml\" was found. Skipping the \"WALLY_AUTH\" check."
             exit 0
           fi
 
-          # Skip if this is a private package (won't be published to Wally)
+          # Skip private packages, which will not be published to Wally.
           if grep -q '^private = true' wally.toml; then
-            echo "Private package detected, skipping WALLY_AUTH check."
+            echo "A private package was detected. Skipping the \"WALLY_AUTH\" check."
             exit 0
           fi
 
           if [ -z "$WALLY_AUTH" ]; then
-            echo "::error::WALLY_AUTH secret is not configured. This is required for publishing to Wally."
-            echo "::error::Add the secret using: gh secret set WALLY_AUTH < ~/.wally/auth.toml"
+            echo "::error::The \"WALLY_AUTH\" secret is not configured. It is required for publishing to Wally."
+            echo "::error::Add the secret using \"gh secret set WALLY_AUTH < ~/.wally/auth.toml\"."
             exit 1
           fi
 
-          echo "WALLY_AUTH secret is configured."
+          echo "The \"WALLY_AUTH\" secret is configured."
 
   validate-version:
     name: validate-version
@@ -195,8 +195,8 @@ jobs:
           EXPECTED_TITLE="Release $VERSION"
 
           if [ "$EXPECTED_TITLE" != "$ACTUAL_TITLE" ]; then
-            echo "::error::PR title '$ACTUAL_TITLE' does not match VERSION file. Expected '$EXPECTED_TITLE'"
+            echo "::error::PR title \"$ACTUAL_TITLE\" does not match the \"VERSION\" file. Expected \"$EXPECTED_TITLE\"."
             exit 1
           fi
 
-          echo "PR title matches VERSION file."
+          echo "PR title matches the \"VERSION\" file."

@@ -4,13 +4,13 @@
 
 CheckLuaurcFormat.exec
 
-Validates that .luaurc follows the project format guidelines. Checks that:
-- "@self" is never added as an alias since it is already built-in
-- If lune is in rokit.toml, the lune alias version must match
+Validates that .luaurc follows the project format guidelines. Checks the following...
+> "@self" is never added as an alias because it is already built in.
+> The lune alias version matches the version in rokit.toml when lune is defined there.
 
 [Usage] ./Scripts/CheckLuaurcFormat.exec.luau [luaurc-file] [rokit-file]
-> luaurc-file - Optional path to the .luaurc file. Defaults to ".luaurc".
-> rokit-file - Optional path to the rokit.toml file. Defaults to "rokit.toml".
+> luaurc-file → Optional path to the .luaurc file. Defaults to ".luaurc".
+> rokit-file → Optional path to the rokit.toml file. Defaults to "rokit.toml".
 
 --]]
 
@@ -19,13 +19,15 @@ const process = require("@lune/process")
 const serde = require("@lune/serde")
 
 const function getLuneVersionFromRokit(rokitPath: string): string?
+    assert(type(rokitPath) == "string", "Expected a string for the Rokit file path.")
+
     if not fs.isFile(rokitPath) then
         return nil
     end
 
     const content = fs.readFile(rokitPath)
 
-    -- Find lune = "owner/repo@version" pattern
+    -- Find the lune = "owner/repo@version" pattern.
     const version = string.match(content, 'lune%s*=%s*"[^@]+@([^"]+)"')
     return version
 end
@@ -36,28 +38,28 @@ function CheckLuaurcFormat.exec()
     const luaurcPath = process.args[1] or ".luaurc"
     const rokitPath = process.args[2] or "rokit.toml"
 
-    print(`Checking {luaurcPath} format...`)
+    print(`Checking "{luaurcPath}" format...`)
 
-    -- Check file exists
+    -- Check that the file exists.
     if not fs.isFile(luaurcPath) then
-        print(`{luaurcPath} not found.`)
+        print(`"{luaurcPath}" was not found.`)
         process.exit(1)
     end
 
     const content = fs.readFile(luaurcPath)
     const errors: { string } = {}
 
-    -- Parse JSON
+    -- Parse the JSON content.
     const ok, data = pcall(function()
         return serde.decode("json", content)
     end)
 
     if not ok then
-        print(`Failed to parse {luaurcPath} as JSON: {data}`)
+        print(`Failed to parse "{luaurcPath}" as JSON. {data}`)
         process.exit(1)
     end
 
-    -- Check for @self alias
+    -- Check for an unsupported @self alias.
     if data.aliases then
         for key, _ in data.aliases do
             const lowerKey = string.lower(tostring(key))
@@ -70,12 +72,12 @@ function CheckLuaurcFormat.exec()
         end
     end
 
-    -- Check lune alias version matches rokit.toml
+    -- Check that the lune alias version matches rokit.toml.
     const rokitLuneVersion = getLuneVersionFromRokit(rokitPath)
     if rokitLuneVersion then
         const luneAlias = data.aliases and data.aliases.lune
         if luneAlias then
-            -- Expected format: ~/.lune/.typedefs/VERSION/
+            -- Require the version-specific typedef directory.
             const expectedPath = `~/.lune/.typedefs/{rokitLuneVersion}/`
             if luneAlias ~= expectedPath then
                 table.insert(
@@ -86,14 +88,14 @@ function CheckLuaurcFormat.exec()
         else
             table.insert(
                 errors,
-                `Lune is defined in rokit.toml (version {rokitLuneVersion}) but no lune alias found in {luaurcPath}. Expected alias: "lune": "~/.lune/.typedefs/{rokitLuneVersion}/".`
+                `Lune is defined in "rokit.toml" with version "{rokitLuneVersion}", but "{luaurcPath}" has no lune alias. Set the "lune" alias to "~/.lune/.typedefs/{rokitLuneVersion}/".`
             )
         end
     end
 
-    -- Report results
+    -- Report the validation results.
     if #errors > 0 then
-        print(`Found {#errors} format error(s) in {luaurcPath}:`)
+        print(`Found {#errors} format {if #errors == 1 then "error" else "errors"} in "{luaurcPath}"...`)
         print("")
         for _, err in errors do
             print(`  - {err}`)
@@ -101,7 +103,7 @@ function CheckLuaurcFormat.exec()
         process.exit(1)
     end
 
-    print(`{luaurcPath} format is valid.`)
+    print(`"{luaurcPath}" format is valid.`)
 end
 
 CheckLuaurcFormat.exec()

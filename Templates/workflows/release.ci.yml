@@ -31,10 +31,10 @@ jobs:
           WALLY_AUTH: ${{ secrets.WALLY_AUTH }}
         run: |
           if [ -z "$WALLY_AUTH" ]; then
-            echo "::error::WALLY_AUTH secret is not configured. Run: gh secret set WALLY_AUTH < ~/.wally/auth.toml"
+            echo "::error::The \"WALLY_AUTH\" secret is not configured. Run \"gh secret set WALLY_AUTH < ~/.wally/auth.toml\"."
             exit 1
           fi
-          echo "WALLY_AUTH is configured."
+          echo "The \"WALLY_AUTH\" secret is configured."
 
   validate-pr-title:
     name: validate-pr-title
@@ -44,11 +44,11 @@ jobs:
         env:
           TITLE: ${{ github.event.pull_request.title }}
         run: |
-          echo "Checking PR title: $TITLE"
+          echo "Checking PR title \"$TITLE\"."
 
-          # Must be exactly "Release X.Y.Z"
+          # Require exactly "Release X.Y.Z".
           if [[ ! "$TITLE" =~ ^Release\ [0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "::error::PR title must be exactly 'Release X.Y.Z' (e.g., 'Release 1.2.3')"
+            echo "::error::PR title must be exactly \"Release X.Y.Z\" (e.g., \"Release 1.2.3\")."
             exit 1
           fi
 
@@ -67,12 +67,12 @@ jobs:
         run: |
           git fetch origin main
 
-          # Get the diff between the PR branch and main
+          # Get the diff between the PR branch and main.
           DIFF=$(git diff origin/main..HEAD)
 
           if [ -n "$DIFF" ]; then
             echo "::error::PR branch has changes that differ from main. The release branch must contain exactly what is in main."
-            echo "Diff:"
+            echo "The diff follows."
             echo "$DIFF"
             exit 1
           fi
@@ -189,8 +189,8 @@ jobs:
           EXPECTED_TITLE="Release $VERSION"
 
           if [ "$EXPECTED_TITLE" != "$ACTUAL_TITLE" ]; then
-            echo "::error::PR title '$ACTUAL_TITLE' does not match VERSION file. Expected '$EXPECTED_TITLE'"
+            echo "::error::PR title \"$ACTUAL_TITLE\" does not match the \"VERSION\" file. Expected \"$EXPECTED_TITLE\"."
             exit 1
           fi
 
-          echo "PR title matches VERSION file."
+          echo "PR title matches the \"VERSION\" file."

@@ -11,99 +11,97 @@ const TestEnvironment = require("./Helpers/TestEnvironment")
 const dedent = TestEnvironment.dedent
 
 return function()
-    describe("CheckRokitFormat", function()
-        local env: TestEnvironment.Environment
+    local env: TestEnvironment.Environment
 
-        beforeEach(function()
-            env = TestEnvironment.create()
-        end)
+    beforeEach(function()
+        env = TestEnvironment.create()
+    end)
 
-        afterEach(function()
-            env.cleanup()
-        end)
+    afterEach(function()
+        env.Cleanup()
+    end)
 
-        it("should pass when all tool values are lowercase", function()
-            env.writeFile(
-                "test-rokit.toml",
-                dedent([[
+    it("should pass when all tool values are lowercase", function()
+        env.WriteFile(
+            "test-rokit.toml",
+            dedent([[
                     [tools]
-                    luau-lsp = "johnnymorganz/luau-lsp@1.60.0"
-                    lune = "horsenuggets/lune@0.10.5"
-                    stylua = "johnnymorganz/stylua@2.3.1"
+                    luau-lsp = "owner/luau-lsp@1.60.0"
+                    lune = "owner/lune@0.10.5"
+                    stylua = "owner/stylua@2.3.1"
                 ]])
-            )
+        )
 
-            const result = env.runScript("CheckRokitFormat", { "test-rokit.toml" })
+        const result = env.RunScript("CheckRokitFormat", { "test-rokit.toml" })
 
-            expect(result.ok).to.equal(true)
-            expect(string.find(result.stdout, "test%-rokit%.toml format is valid")).to.be.ok()
-        end)
+        expect(result.ok).to.equal(true)
+        expect(string.find(result.stdout, '"test-rokit.toml" format is valid.', 1, true)).to.be.ok()
+    end)
 
-        it("should fail when a tool value has uppercase letters", function()
-            env.writeFile(
-                "test-rokit.toml",
-                dedent([[
+    it("should fail when a tool value has uppercase letters", function()
+        env.WriteFile(
+            "test-rokit.toml",
+            dedent([[
                     [tools]
-                    luau-lsp = "JohnnyMorganz/luau-lsp@1.60.0"
+                    luau-lsp = "Owner/luau-lsp@1.60.0"
                 ]])
-            )
+        )
 
-            const result = env.runScript("CheckRokitFormat", { "test-rokit.toml" })
+        const result = env.RunScript("CheckRokitFormat", { "test-rokit.toml" })
 
-            expect(result.ok).to.equal(false)
-            expect(string.find(result.stdout, "non%-lowercase")).to.be.ok()
-            expect(string.find(result.stdout, "JohnnyMorganz")).to.be.ok()
-        end)
+        expect(result.ok).to.equal(false)
+        expect(string.find(result.stdout, "non%-lowercase")).to.be.ok()
+        expect(string.find(result.stdout, "Owner")).to.be.ok()
+    end)
 
-        it("should fail when multiple tool values have uppercase letters", function()
-            env.writeFile(
-                "test-rokit.toml",
-                dedent([[
+    it("should fail when multiple tool values have uppercase letters", function()
+        env.WriteFile(
+            "test-rokit.toml",
+            dedent([[
                     [tools]
-                    luau-lsp = "JohnnyMorganz/luau-lsp@1.60.0"
-                    lune = "HorseNuggets/lune@0.10.5"
+                    luau-lsp = "Owner/luau-lsp@1.60.0"
+                    lune = "Owner/lune@0.10.5"
                 ]])
-            )
+        )
 
-            const result = env.runScript("CheckRokitFormat", { "test-rokit.toml" })
+        const result = env.RunScript("CheckRokitFormat", { "test-rokit.toml" })
 
-            expect(result.ok).to.equal(false)
-            expect(string.find(result.stdout, "2 format error")).to.be.ok()
-        end)
+        expect(result.ok).to.equal(false)
+        expect(string.find(result.stdout, "2 format error")).to.be.ok()
+    end)
 
-        it("should fail when file does not exist", function()
-            const result = env.runScript("CheckRokitFormat", { "nonexistent.toml" })
+    it("should fail when file does not exist", function()
+        const result = env.RunScript("CheckRokitFormat", { "nonexistent.toml" })
 
-            expect(result.ok).to.equal(false)
-            expect(string.find(result.stdout, "nonexistent%.toml not found")).to.be.ok()
-        end)
+        expect(result.ok).to.equal(false)
+        expect(string.find(result.stdout, '"nonexistent.toml" was not found.', 1, true)).to.be.ok()
+    end)
 
-        it("should handle empty tools section", function()
-            env.writeFile(
-                "test-rokit.toml",
-                dedent([[
+    it("should handle empty tools section", function()
+        env.WriteFile(
+            "test-rokit.toml",
+            dedent([[
                     [tools]
                 ]])
-            )
+        )
 
-            const result = env.runScript("CheckRokitFormat", { "test-rokit.toml" })
+        const result = env.RunScript("CheckRokitFormat", { "test-rokit.toml" })
 
-            expect(result.ok).to.equal(true)
-        end)
+        expect(result.ok).to.equal(true)
+    end)
 
-        it("should handle values with version numbers containing uppercase", function()
-            env.writeFile(
-                "test-rokit.toml",
-                dedent([[
+    it("should handle values with version numbers containing uppercase", function()
+        env.WriteFile(
+            "test-rokit.toml",
+            dedent([[
                     [tools]
                     some-tool = "owner/repo@1.0.0-BETA"
                 ]])
-            )
+        )
 
-            const result = env.runScript("CheckRokitFormat", { "test-rokit.toml" })
+        const result = env.RunScript("CheckRokitFormat", { "test-rokit.toml" })
 
-            expect(result.ok).to.equal(false)
-            expect(string.find(result.stdout, "non%-lowercase")).to.be.ok()
-        end)
+        expect(result.ok).to.equal(false)
+        expect(string.find(result.stdout, "non%-lowercase")).to.be.ok()
     end)
 end

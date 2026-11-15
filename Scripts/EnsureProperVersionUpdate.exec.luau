@@ -10,24 +10,23 @@ bumped correctly since the last release tag. Compares against the most recent Gi
 
 --]]
 
+const ParseVersion = require("./Helpers/ParseVersion.func")
 const fs = require("@lune/fs")
 const process = require("@lune/process")
-
-const parseVersion = require("./Helpers/parseVersion")
 
 const EnsureProperVersionUpdate = {}
 
 function EnsureProperVersionUpdate.exec()
-    assert(fs.isFile("VERSION"), "VERSION file does not exist.")
+    assert(fs.isFile("VERSION"), 'The "VERSION" file does not exist.')
 
-    -- Read current VERSION file
+    -- Read the current VERSION file.
     const currentVersionString = fs.readFile("VERSION")
-    const currentMajor, currentMinor, currentPatch = parseVersion(currentVersionString)
+    const currentMajor, currentMinor, currentPatch = ParseVersion(currentVersionString)
 
-    -- Validate current version format
+    -- Validate the current version format.
     if not currentMajor then
         print(
-            `VERSION file is not in MAJOR.MINOR.PATCH format, current content is "{string.match(
+            `The "VERSION" file is not in MAJOR.MINOR.PATCH format. Its current content is "{string.match(
                 currentVersionString,
                 "^%s*(.-)%s*$"
             )}".`
@@ -37,7 +36,7 @@ function EnsureProperVersionUpdate.exec()
 
     print(`Current version is "{currentMajor}.{currentMinor}.{currentPatch}".`)
 
-    -- Get the latest tag (excluding v0.0.0)
+    -- Get the latest tag, excluding 0.0.0.
     const tagResult = process.exec("git", { "tag", "--sort=-version:refname" })
 
     if not tagResult.ok then
@@ -46,7 +45,7 @@ function EnsureProperVersionUpdate.exec()
         return
     end
 
-    -- Find the first tag that isn't 0.0.0
+    -- Find the first tag that is not 0.0.0.
     local latestTag = nil
     for tag in string.gmatch(tagResult.stdout, "[^\n]+") do
         if tag ~= "0.0.0" then
@@ -63,37 +62,33 @@ function EnsureProperVersionUpdate.exec()
 
     print(`Latest release tag is "{latestTag}".`)
 
-    -- Get VERSION from the tag
+    -- Read VERSION from the tag.
     const versionAtTagResult = process.exec("git", { "show", `{latestTag}:VERSION` })
 
     if not versionAtTagResult.ok then
-        print(`Could not read VERSION at tag "{latestTag}".`)
+        print(`Could not read "VERSION" at tag "{latestTag}".`)
         print("Version format is valid.")
         return
     end
 
     const previousVersionString = versionAtTagResult.stdout
-    const previousMajor, previousMinor, previousPatch = parseVersion(previousVersionString)
+    const previousMajor, previousMinor, previousPatch = ParseVersion(previousVersionString)
 
     if not previousMajor then
-        print(`VERSION at tag "{latestTag}" was not in proper format, skipping comparison.`)
+        print(`"VERSION" at tag "{latestTag}" was not in the proper format. Skipping the comparison.`)
         print("Current version format is valid.")
         return
     end
 
     print(`Version at last release was "{previousMajor}.{previousMinor}.{previousPatch}".`)
 
-    -- Check if versions are identical
+    -- Check whether the versions are identical.
     if currentMajor == previousMajor and currentMinor == previousMinor and currentPatch == previousPatch then
         print("Version has not been updated since last release.")
         process.exit(1)
     end
 
-    -- Validate proper semantic version bump
-    -- Only one of these should be true:
-    -- 1. Major bump: major+1, minor=0, patch=0
-    -- 2. Minor bump: major same, minor+1, patch=0
-    -- 3. Patch bump: major same, minor same, patch+1
+    -- Validate a single semantic version increment with subordinate components reset.
 
     const isMajorBump = currentMajor == previousMajor + 1 and currentMinor == 0 and currentPatch == 0
     const isMinorBump = currentMajor == previousMajor and currentMinor == previousMinor + 1 and currentPatch == 0
@@ -109,11 +104,13 @@ function EnsureProperVersionUpdate.exec()
         print("Valid patch version bump.")
     else
         print("Invalid version bump, must follow semantic versioning.")
-        print("Valid bumps are")
-        print(`  Major: {previousMajor}.{previousMinor}.{previousPatch} -> {previousMajor + 1}.0.0`)
-        print(`  Minor: {previousMajor}.{previousMinor}.{previousPatch} -> {previousMajor}.{previousMinor + 1}.0`)
+        print("Valid bumps are...")
+        print(`  A major bump changes "{previousMajor}.{previousMinor}.{previousPatch}" to "{previousMajor + 1}.0.0".`)
         print(
-            `  Patch: {previousMajor}.{previousMinor}.{previousPatch} -> {previousMajor}.{previousMinor}.{previousPatch + 1}`
+            `  A minor bump changes "{previousMajor}.{previousMinor}.{previousPatch}" to "{previousMajor}.{previousMinor + 1}.0".`
+        )
+        print(
+            `  A patch bump changes "{previousMajor}.{previousMinor}.{previousPatch}" to "{previousMajor}.{previousMinor}.{previousPatch + 1}".`
         )
         process.exit(1)
     end

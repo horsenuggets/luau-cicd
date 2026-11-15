@@ -9,21 +9,25 @@ Ensures consistent 4-space indentation as specified in .editorconfig.
 
 --]]
 
+const IsExcludedPath = require("./Helpers/IsExcludedPath.func")
 const fs = require("@lune/fs")
-const isExcluded = require("./Helpers/isExcludedPath")
 const process = require("@lune/process")
 
 const function findJsonFiles(dir: string): { string }
+    assert(type(dir) == "string", "Expected a string for the directory.")
+
     const files: { string } = {}
 
     const function traverse(currentDir: string)
+        assert(type(currentDir) == "string", "Expected a string for the directory.")
+
         const entries = fs.readDir(currentDir)
 
         for _, entry in entries do
             const path = `{currentDir}/{entry}`
 
-            -- This check always scans the repo root, so root-only folders are skipped too
-            if isExcluded(path, true) then
+            -- Skip root-only folders because this check always scans the repository root.
+            if IsExcludedPath(path, true) then
                 continue
             end
 
@@ -51,7 +55,7 @@ function CheckJsonFormat.exec()
     print("Checking JSON formatting...")
 
     if not checkPrettierInstalled() then
-        print("Prettier is not installed. Install it with 'npm install -g prettier'.")
+        print('Prettier is not installed. Install it with "npm install -g prettier".')
         process.exit(1)
     end
 
@@ -62,9 +66,9 @@ function CheckJsonFormat.exec()
         return
     end
 
-    print(`Found {#jsonFiles} JSON file(s) to check.`)
+    print(`Found {#jsonFiles} JSON {if #jsonFiles == 1 then "file" else "files"} to check.`)
 
-    -- Build prettier arguments: --check --tab-width 4 <files>
+    -- Build Prettier arguments with the required indentation width.
     const args = { "--check", "--tab-width", "4" }
     for _, file in jsonFiles do
         table.insert(args, file)
@@ -73,7 +77,7 @@ function CheckJsonFormat.exec()
     const result = process.exec("prettier", args)
 
     if result.ok then
-        print("JSON formatting check passed!")
+        print("JSON formatting check passed.")
         process.exit(0)
     else
         print("JSON formatting check failed.")
@@ -85,7 +89,7 @@ function CheckJsonFormat.exec()
             print(result.stderr)
         end
         print("")
-        print("Run 'prettier --write --tab-width 4 <file>' to fix formatting.")
+        print('Run "prettier --write --tab-width 4 <file>" to fix formatting.')
         process.exit(1)
     end
 end

@@ -1,6 +1,6 @@
 --[[
 
-isExcludedPath
+IsExcludedPath.func
 
 Decides whether a path should be skipped by the checks that scan files. The path is
 relative to the folder being scanned. Dependency and submodule folders are skipped at any
@@ -14,7 +14,7 @@ like MyPackages isn't mistaken for Packages.
 const EXCLUDED_FOLDERS = { "DevPackages", "node_modules", "Packages", "ServerPackages", "Submodules" }
 const EXCLUDED_ROOT_FOLDERS = { ".worktrees", ".wt", "Build" }
 
-const function isExcludedPath(relativePath: string, scanningRepoRoot: boolean): boolean
+const function IsExcludedPath(relativePath: string, scanningRepoRoot: boolean): boolean
     assert(typeof(relativePath) == "string", "Expected a string.")
     assert(typeof(scanningRepoRoot) == "boolean", "Expected a boolean.")
 
@@ -32,4 +32,4 @@ const function isExcludedPath(relativePath: string, scanningRepoRoot: boolean): 
     return false
 end
 
-return isExcludedPath
+return IsExcludedPath

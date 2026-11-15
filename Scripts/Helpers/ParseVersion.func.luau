@@ -1,6 +1,6 @@
 --[[
 
-parseVersion
+ParseVersion.func
 
 Parses a semantic version string in MAJOR.MINOR.PATCH format and returns the three
 components as numbers. Returns nil for all three values if the string is not valid.
@@ -10,13 +10,13 @@ Version numbers must be between 0 and 99999.
 
 const MAX_VERSION_NUMBER = 99999
 
-const function parseVersion(inputVersionString: string): (number?, number?, number?)
+const function ParseVersion(inputVersionString: string): (number?, number?, number?)
     assert(typeof(inputVersionString) == "string", "Expected a string.")
 
-    -- Trim whitespace
+    -- Trim whitespace.
     const versionString: string = string.match(inputVersionString, "^%s*(.-)%s*$") or ""
 
-    -- Parse MAJOR.MINOR.PATCH format
+    -- Parse the MAJOR.MINOR.PATCH format.
     const major, minor, patch = string.match(versionString, "^(%d+)%.(%d+)%.(%d+)$")
 
     if not major or not minor or not patch then
@@ -25,7 +25,7 @@ const function parseVersion(inputVersionString: string): (number?, number?, numb
 
     const majorNum, minorNum, patchNum = tonumber(major), tonumber(minor), tonumber(patch)
 
-    -- Validate version numbers are within reasonable bounds
+    -- Validate that version numbers are within the allowed bounds.
     if majorNum > MAX_VERSION_NUMBER or minorNum > MAX_VERSION_NUMBER or patchNum > MAX_VERSION_NUMBER then
         print(`Version number exceeds maximum allowed value of {MAX_VERSION_NUMBER}.`)
         return nil, nil, nil
@@ -34,4 +34,4 @@ const function parseVersion(inputVersionString: string): (number?, number?, numb
     return majorNum, minorNum, patchNum
 end
 
-return parseVersion
+return ParseVersion

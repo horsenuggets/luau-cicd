@@ -1,12 +1,6 @@
-[submodule "Submodules/agents-md-core"]
-	path = Submodules/agents-md-core
-	url = git@github.com:horsenuggets/agents-md-core.git
 [submodule "Submodules/agents-md-luau"]
-	path = Submodules/agents-md-luau
-	url = git@github.com:horsenuggets/agents-md-luau.git
-[submodule "Submodules/agents-md-shared"]
-	path = Submodules/agents-md-shared
-	url = git@github.com:horsenuggets/agents-md-shared.git
+    path = Submodules/agents-md-luau
+    url = git@github.com:horsenuggets/agents-md-luau.git
 [submodule "Submodules/hcl4fmt"]
-	path = Submodules/hcl4fmt
-	url = git@github.com:horsenuggets/hcl4fmt.git
+    path = Submodules/hcl4fmt
+    url = git@github.com:horsenuggets/hcl4fmt.git

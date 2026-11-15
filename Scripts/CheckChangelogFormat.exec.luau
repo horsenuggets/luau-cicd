@@ -14,115 +14,111 @@ const process = require("@lune/process")
 const CheckChangelogFormat = {}
 
 function CheckChangelogFormat.exec()
-    print("Checking CHANGELOG.md format...")
+    print('Checking "CHANGELOG.md" format...')
 
-    -- Check file exists
+    -- Check that the file exists.
     if not fs.isFile("CHANGELOG.md") then
-        print("CHANGELOG.md not found.")
+        print('"CHANGELOG.md" was not found.')
         process.exit(1)
     end
 
     const content = fs.readFile("CHANGELOG.md")
     const errors: { string } = {}
 
-    -- Check file ends with exactly one newline
+    -- Check that the file ends with exactly one newline.
     if not string.match(content, "\n$") then
         table.insert(errors, "File must end with a newline.")
     elseif string.match(content, "\n\n$") then
         table.insert(errors, "File must end with exactly one newline, not multiple.")
     end
 
-    -- Split into lines for analysis
+    -- Split the content into lines for analysis.
     const lines: { string } = {}
     for line in string.gmatch(content, "([^\n]*)\n?") do
         table.insert(lines, line)
     end
 
-    -- Remove trailing empty string from split if present
+    -- Remove the trailing empty string from the split if present.
     if lines[#lines] == "" then
         table.remove(lines)
     end
 
-    -- Check first line is exactly "# Changelog"
+    -- Check that the first line is exactly "# Changelog".
     if #lines == 0 or lines[1] ~= "# Changelog" then
         table.insert(errors, `First line must be exactly "# Changelog", got "{lines[1] or ""}".`)
     end
 
-    -- Check second line is empty (blank line after title)
+    -- Check for a blank line after the title.
     if #lines < 2 or lines[2] ~= "" then
-        table.insert(errors, "Second line must be blank (after # Changelog header).")
+        table.insert(errors, 'Second line must be blank after the "# Changelog" header.')
     end
 
-    -- Track state for validation
+    -- Track the current section and previous line type for validation.
     local inVersionSection = false
-    local lastLineType = "header" -- header, blank, version, item
+    local lastLineType = "header"
     local hasVersions = false
 
     for i = 3, #lines do
         const line = lines[i]
         const prevLine = lines[i - 1]
 
-        -- Check for version header (## X.Y.Z or ## X.Y.Z-suffix)
+        -- Check for a version header in the "## X.Y.Z" or "## X.Y.Z-suffix" format.
         const version = string.match(line, "^## (%d+%.%d+%.%d+[%w%.%-]*)$")
         if version then
             hasVersions = true
-            -- Version header must be preceded by a blank line (except at start)
+            -- Require a blank line before each version header.
             if prevLine ~= "" and lastLineType ~= "blank" then
-                table.insert(errors, `Line {i}: Version header "## {version}" must be preceded by a blank line.`)
+                table.insert(errors, `Line {i} has a version header "## {version}" without a preceding blank line.`)
             end
             inVersionSection = true
             lastLineType = "version"
 
-        -- Check for list item (- text)
+        -- Check for a list item beginning with "- ".
         elseif string.match(line, "^%- ") then
             if not inVersionSection then
-                table.insert(errors, `Line {i}: List item must be inside a version section.`)
+                table.insert(errors, `Line {i} has a list item outside a version section.`)
             end
 
-            -- Check item has content after "- "
+            -- Check that the item has content after "- ".
             const itemContent = string.match(line, "^%- (.+)$")
             if not itemContent then
-                table.insert(errors, `Line {i}: List item must have content after "- ".`)
+                table.insert(errors, `Line {i} has a list item without content after "- ".`)
             end
 
             lastLineType = "item"
 
-        -- Check for blank line
+        -- Allow blank lines between items and sections.
         elseif line == "" then
             lastLineType = "blank"
 
-        -- Any other line is invalid
+        -- Report unsupported content and common formatting mistakes.
         else
-            -- Check for common mistakes
             if string.match(line, "^#[^#]") then
-                table.insert(errors, `Line {i}: Invalid header format. Use "# Changelog" only at the top.`)
+                table.insert(errors, `Line {i} has an invalid header. Use "# Changelog" only at the top.`)
             elseif string.match(line, "^## ") then
                 table.insert(
                     errors,
-                    `Line {i}: Version header must be "## X.Y.Z" or "## X.Y.Z-suffix" format (e.g., "## 1.0.0").`
+                    `Line {i} must use a version header in the "## X.Y.Z" or "## X.Y.Z-suffix" format.`
                 )
             elseif string.match(line, "^### ") then
-                table.insert(
-                    errors,
-                    `Line {i}: Subsection headers (###) are not allowed. List items go directly under version.`
-                )
+                table.insert(errors, `Line {i} has a subsection header. List items must go directly under the version.`)
             elseif string.match(line, "^%-[^ ]") then
-                table.insert(errors, `Line {i}: List items must have a space after the dash ("- item" not "-item").`)
+                table.insert(errors, `Line {i} must use a space after the dash, such as "- item" rather than "-item".`)
             elseif string.match(line, "^%s+%-") then
-                table.insert(errors, `Line {i}: List items must not be indented.`)
+                table.insert(errors, `Line {i} has an indented list item.`)
             else
-                table.insert(errors, `Line {i}: Unexpected content "{line}".`)
+                table.insert(errors, `Line {i} has unexpected content "{line}".`)
             end
         end
     end
 
     if not hasVersions then
-        table.insert(errors, "CHANGELOG.md must contain at least one version section.")
+        table.insert(errors, '"CHANGELOG.md" must contain at least one version section.')
     end
 
-    -- Report results
+    -- Report the validation results.
     if #errors > 0 then
-        print(`Found {#errors} format error(s) in CHANGELOG.md:`)
+        print(`Found {#errors} format {if #errors == 1 then "error" else "errors"} in "CHANGELOG.md"...`)
         print("")
         for _, err in errors do
             print(`  - {err}`)
@@ -130,7 +126,7 @@ function CheckChangelogFormat.exec()
         process.exit(1)
     end
 
-    print("CHANGELOG.md format is valid.")
+    print('"CHANGELOG.md" format is valid.')
 end
 
 CheckChangelogFormat.exec()
