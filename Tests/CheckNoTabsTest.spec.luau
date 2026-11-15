@@ -6,7 +6,9 @@ Tests for the CheckNoTabs script.
 
 --]]
 
+const ResolveScanDirectory = require("../Scripts/Helpers/ResolveScanDirectory.func")
 const TestEnvironment = require("./Helpers/TestEnvironment")
+const process = require("@lune/process")
 
 -- Helper to create content with tabs (using \t escape in regular strings).
 const TAB = "\t"
@@ -109,6 +111,53 @@ return {}
         const result = env.RunScript("CheckNoTabs", { env.Path })
 
         expect(result.ok).to.equal(true)
+    end)
+
+    it("should preserve root exclusions for equivalent directory arguments", function()
+        for _, folder in { "Build", ".wt/feature/example", ".worktrees/example" } do
+            env.WriteFile(`{folder}/Invalid.luau`, `{TAB}return \{\}\n`)
+        end
+
+        const cwdResult = process.exec("lune", { "run", "-" }, {
+            cwd = env.Path,
+            stdio = { stdin = 'print(require("@lune/process").cwd)' },
+        })
+        expect(cwdResult.ok).to.equal(true)
+        const root = string.match(cwdResult.stdout, "^%s*(.-)%s*$") :: string
+        for _, directory in { ".", "./", "././", "Build/../", root, `{root}/`, `{root}/./` } do
+            const result = env.RunScript("CheckNoTabs", { directory })
+            expect(result.ok).to.equal(true)
+            expect(string.find(result.stdout, "0 files", 1, true)).to.be.ok()
+        end
+    end)
+
+    it("should still validate generated-looking directories below a scanned subfolder", function()
+        for _, folder in { "Build", ".wt", ".worktrees" } do
+            env.WriteFile(`Source/{folder}/Invalid.luau`, `{TAB}return \{\}\n`)
+        end
+
+        for _, directory in { "Source", "./Source/", `{env.Path}/Source/` } do
+            const result = env.RunScript("CheckNoTabs", { directory })
+            expect(result.ok).to.equal(false)
+            expect(string.find(result.stdout, "3 files with tabs", 1, true)).to.be.ok()
+        end
+    end)
+
+    it("should normalize scan paths portably without mistaking subfolders for roots", function()
+        for _, case in
+            {
+                { Base = "/repo/project/", Path = "./Build/../", Root = true, Value = "/repo/project" },
+                { Base = "/repo/project", Path = "Source/Build/", Root = false, Value = "/repo/project/Source/Build" },
+                { Base = "C:\\Repo\\Project\\", Path = ".\\Build\\..\\", Root = true, Value = "C:/Repo/Project" },
+                { Base = "C:/Repo/Project", Path = "c:/repo/project/", Root = true, Value = "c:/repo/project" },
+                { Base = "//server/share/Project/", Path = "./", Root = true, Value = "//server/share/Project" },
+                { Base = "/", Path = "./", Root = true, Value = "/" },
+            }
+        do
+            const directory, scanningRepoRoot = ResolveScanDirectory(case.Path, case.Base)
+            expect(directory).to.equal(case.Value)
+            expect(scanningRepoRoot).to.equal(case.Root)
+        end
     end)
 
     it("should detect tabs anywhere in a line", function()
