@@ -9,22 +9,21 @@ Tests for the CheckFileHeaders script.
 const TestEnvironment = require("./Helpers/TestEnvironment")
 
 return function()
-    describe("CheckFileHeaders", function()
-        local env: TestEnvironment.Environment
+    local env: TestEnvironment.Environment
 
-        beforeEach(function()
-            env = TestEnvironment.create()
-        end)
+    beforeEach(function()
+        env = TestEnvironment.create()
+    end)
 
-        afterEach(function()
-            env.cleanup()
-        end)
+    afterEach(function()
+        env.Cleanup()
+    end)
 
-        describe("valid headers", function()
-            it("should pass for a file with a valid header", function()
-                env.writeFile(
-                    "MyModule.luau",
-                    [=[--[[
+    describe("valid headers", function()
+        it("should pass for a file with a valid header", function()
+            env.WriteFile(
+                "MyModule.luau",
+                [=[--[[
 
 MyModule
 
@@ -34,18 +33,18 @@ This is a description of the module.
 
 return {}
 ]=]
-                )
+            )
 
-                const result = env.runScript("CheckFileHeaders", { env.path })
+            const result = env.RunScript("CheckFileHeaders", { env.Path })
 
-                expect(result.ok).to.equal(true)
-                expect(string.find(result.stdout, "1 file")).to.be.ok()
-            end)
+            expect(result.ok).to.equal(true)
+            expect(string.find(result.stdout, "1 file")).to.be.ok()
+        end)
 
-            it("should pass for a file with directives at the top", function()
-                env.writeFile(
-                    "StrictModule.luau",
-                    [=[--!strict
+        it("should pass for a file with directives at the top", function()
+            env.WriteFile(
+                "StrictModule.luau",
+                [=[--!strict
 
 --[[
 
@@ -57,17 +56,17 @@ This is a module with strict mode enabled.
 
 return {}
 ]=]
-                )
+            )
 
-                const result = env.runScript("CheckFileHeaders", { env.path })
+            const result = env.RunScript("CheckFileHeaders", { env.Path })
 
-                expect(result.ok).to.equal(true)
-            end)
+            expect(result.ok).to.equal(true)
+        end)
 
-            it("should pass for a file with multiple directives", function()
-                env.writeFile(
-                    "OptimizedModule.luau",
-                    [=[--!strict
+        it("should pass for a file with multiple directives", function()
+            env.WriteFile(
+                "OptimizedModule.luau",
+                [=[--!strict
 --!native
 --!optimize 2
 
@@ -81,17 +80,17 @@ This module has multiple directives.
 
 return {}
 ]=]
-                )
+            )
 
-                const result = env.runScript("CheckFileHeaders", { env.path })
+            const result = env.RunScript("CheckFileHeaders", { env.Path })
 
-                expect(result.ok).to.equal(true)
-            end)
+            expect(result.ok).to.equal(true)
+        end)
 
-            it("should pass for a file with a shebang", function()
-                env.writeFile(
-                    "Script.luau",
-                    [=[#!/usr/bin/env lune
+        it("should pass for a file with a shebang", function()
+            env.WriteFile(
+                "Script.luau",
+                [=[#!/usr/bin/env lune
 
 --[[
 
@@ -103,41 +102,41 @@ This is an executable script.
 
 print("Hello")
 ]=]
-                )
+            )
 
-                const result = env.runScript("CheckFileHeaders", { env.path })
+            const result = env.RunScript("CheckFileHeaders", { env.Path })
 
-                expect(result.ok).to.equal(true)
-            end)
+            expect(result.ok).to.equal(true)
+        end)
 
-            it("should pass for a file with multi-paragraph description", function()
-                env.writeFile(
-                    "ComplexModule.luau",
-                    [=[--[[
+        it("should pass for a file with multi-paragraph description", function()
+            env.WriteFile(
+                "ComplexModule.luau",
+                [=[--[[
 
 ComplexModule
 
 This is the first paragraph of the description.
 
-Usage: lune run ComplexModule [args]
-  args: Optional arguments to pass.
+This is the second paragraph of the description.
+> Arguments are optional.
 
 --]]
 
 return {}
 ]=]
-                )
+            )
 
-                const result = env.runScript("CheckFileHeaders", { env.path })
+            const result = env.RunScript("CheckFileHeaders", { env.Path })
 
-                expect(result.ok).to.equal(true)
-            end)
+            expect(result.ok).to.equal(true)
+        end)
 
-            it("should use parent folder name for init.luau", function()
-                env.writeDir("MyFolder")
-                env.writeFile(
-                    "MyFolder/init.luau",
-                    [=[--[[
+        it("should use parent folder name for init.luau", function()
+            env.WriteDir("MyFolder")
+            env.WriteFile(
+                "MyFolder/init.luau",
+                [=[--[[
 
 MyFolder
 
@@ -147,17 +146,17 @@ This is the init file for MyFolder.
 
 return {}
 ]=]
-                )
+            )
 
-                const result = env.runScript("CheckFileHeaders", { env.path })
+            const result = env.RunScript("CheckFileHeaders", { env.Path })
 
-                expect(result.ok).to.equal(true)
-            end)
+            expect(result.ok).to.equal(true)
+        end)
 
-            it("should keep sub-extension for spec files", function()
-                env.writeFile(
-                    "MyTest.spec.luau",
-                    [=[--[[
+        it("should keep sub-extension for spec files", function()
+            env.WriteFile(
+                "MyTest.spec.luau",
+                [=[--[[
 
 MyTest.spec
 
@@ -167,19 +166,19 @@ Tests for MyTest.
 
 return function() end
 ]=]
-                )
+            )
 
-                const result = env.runScript("CheckFileHeaders", { env.path })
+            const result = env.RunScript("CheckFileHeaders", { env.Path })
 
-                expect(result.ok).to.equal(true)
-            end)
+            expect(result.ok).to.equal(true)
         end)
+    end)
 
-        describe("invalid headers", function()
-            it("should fail when missing blank line after directives", function()
-                env.writeFile(
-                    "BadDirective.luau",
-                    [=[--!strict
+    describe("invalid headers", function()
+        it("should fail when missing blank line after directives", function()
+            env.WriteFile(
+                "BadDirective.luau",
+                [=[--!strict
 --[[
 
 BadDirective
@@ -190,35 +189,35 @@ Missing blank line after directive.
 
 return {}
 ]=]
-                )
+            )
 
-                const result = env.runScript("CheckFileHeaders", { env.path })
+            const result = env.RunScript("CheckFileHeaders", { env.Path })
 
-                expect(result.ok).to.equal(false)
-                expect(string.find(result.stdout, "blank line after directives")).to.be.ok()
-            end)
+            expect(result.ok).to.equal(false)
+            expect(string.find(result.stdout, "blank line after directives")).to.be.ok()
+        end)
 
-            it("should fail when missing header comment", function()
-                env.writeFile(
-                    "NoHeader.luau",
-                    [=[local function foo()
+        it("should fail when missing header comment", function()
+            env.WriteFile(
+                "NoHeader.luau",
+                [=[local function foo()
     return "bar"
 end
 
 return foo
 ]=]
-                )
+            )
 
-                const result = env.runScript("CheckFileHeaders", { env.path })
+            const result = env.RunScript("CheckFileHeaders", { env.Path })
 
-                expect(result.ok).to.equal(false)
-                expect(string.find(result.stdout, 'Expected "%-%-%[%["')).to.be.ok()
-            end)
+            expect(result.ok).to.equal(false)
+            expect(string.find(result.stdout, 'Expected "%-%-%[%["')).to.be.ok()
+        end)
 
-            it("should fail when module name does not match filename", function()
-                env.writeFile(
-                    "ActualName.luau",
-                    [=[--[[
+        it("should fail when module name does not match filename", function()
+            env.WriteFile(
+                "ActualName.luau",
+                [=[--[[
 
 WrongName
 
@@ -228,18 +227,18 @@ This module has the wrong name.
 
 return {}
 ]=]
-                )
+            )
 
-                const result = env.runScript("CheckFileHeaders", { env.path })
+            const result = env.RunScript("CheckFileHeaders", { env.Path })
 
-                expect(result.ok).to.equal(false)
-                expect(string.find(result.stdout, "does not match expected")).to.be.ok()
-            end)
+            expect(result.ok).to.equal(false)
+            expect(string.find(result.stdout, "does not match expected")).to.be.ok()
+        end)
 
-            it("should fail when missing description", function()
-                env.writeFile(
-                    "NoDescription.luau",
-                    [=[--[[
+        it("should fail when missing description", function()
+            env.WriteFile(
+                "NoDescription.luau",
+                [=[--[[
 
 NoDescription
 
@@ -247,18 +246,18 @@ NoDescription
 
 return {}
 ]=]
-                )
+            )
 
-                const result = env.runScript("CheckFileHeaders", { env.path })
+            const result = env.RunScript("CheckFileHeaders", { env.Path })
 
-                expect(result.ok).to.equal(false)
-                expect(string.find(result.stdout, "Expected description")).to.be.ok()
-            end)
+            expect(result.ok).to.equal(false)
+            expect(string.find(result.stdout, "Expected description")).to.be.ok()
+        end)
 
-            it("should fail when line exceeds 90 characters", function()
-                env.writeFile(
-                    "LongLine.luau",
-                    [=[--[[
+        it("should fail when line exceeds 90 characters", function()
+            env.WriteFile(
+                "LongLine.luau",
+                [=[--[[
 
 LongLine
 
@@ -268,18 +267,18 @@ This is a very long description line that definitely exceeds the ninety characte
 
 return {}
 ]=]
-                )
+            )
 
-                const result = env.runScript("CheckFileHeaders", { env.path })
+            const result = env.RunScript("CheckFileHeaders", { env.Path })
 
-                expect(result.ok).to.equal(false)
-                expect(string.find(result.stdout, "exceeds 90 characters")).to.be.ok()
-            end)
+            expect(result.ok).to.equal(false)
+            expect(string.find(result.stdout, "exceeds 90 characters")).to.be.ok()
+        end)
 
-            it("should fail when missing blank line before closing", function()
-                env.writeFile(
-                    "NoBlankBeforeClose.luau",
-                    [=[--[[
+        it("should fail when missing blank line before closing", function()
+            env.WriteFile(
+                "NoBlankBeforeClose.luau",
+                [=[--[[
 
 NoBlankBeforeClose
 
@@ -288,19 +287,19 @@ This description has no blank line before closing.
 
 return {}
 ]=]
-                )
+            )
 
-                const result = env.runScript("CheckFileHeaders", { env.path })
+            const result = env.RunScript("CheckFileHeaders", { env.Path })
 
-                expect(result.ok).to.equal(false)
-                expect(string.find(result.stdout, 'blank line before "%-%-%]%]"')).to.be.ok()
-            end)
+            expect(result.ok).to.equal(false)
+            expect(string.find(result.stdout, 'blank line before "%-%-%]%]"')).to.be.ok()
+        end)
 
-            it("should fail when init.luau uses wrong name", function()
-                env.writeDir("MyFolder")
-                env.writeFile(
-                    "MyFolder/init.luau",
-                    [=[--[[
+        it("should fail when init.luau uses wrong name", function()
+            env.WriteDir("MyFolder")
+            env.WriteFile(
+                "MyFolder/init.luau",
+                [=[--[[
 
 init
 
@@ -310,56 +309,55 @@ Using init instead of folder name.
 
 return {}
 ]=]
-                )
+            )
 
-                const result = env.runScript("CheckFileHeaders", { env.path })
+            const result = env.RunScript("CheckFileHeaders", { env.Path })
 
-                expect(result.ok).to.equal(false)
-                expect(string.find(result.stdout, "does not match expected")).to.be.ok()
-            end)
+            expect(result.ok).to.equal(false)
+            expect(string.find(result.stdout, "does not match expected")).to.be.ok()
+        end)
+    end)
+
+    describe("exclusions", function()
+        it("should skip root init.luau files", function()
+            env.WriteFile("init.luau", "return {}")
+
+            const result = env.RunScript("CheckFileHeaders", { env.Path })
+
+            expect(result.ok).to.equal(true)
+            expect(string.find(result.stdout, "0 file")).to.be.ok()
         end)
 
-        describe("exclusions", function()
-            it("should skip root init.luau files", function()
-                env.writeFile("init.luau", "return {}")
+        it("should skip files in excluded directories", function()
+            env.WriteDir("DevPackages")
+            env.WriteFile("DevPackages/SomePackage.luau", "return {}")
 
-                const result = env.runScript("CheckFileHeaders", { env.path })
+            const result = env.RunScript("CheckFileHeaders", { env.Path })
 
-                expect(result.ok).to.equal(true)
-                expect(string.find(result.stdout, "0 file")).to.be.ok()
-            end)
+            expect(result.ok).to.equal(true)
+            expect(string.find(result.stdout, "0 file")).to.be.ok()
+        end)
 
-            it("should skip files in excluded directories", function()
-                env.writeDir("DevPackages")
-                env.writeFile("DevPackages/SomePackage.luau", "return {}")
+        it("should skip root build output when scanning the whole repo", function()
+            env.WriteDir("Build")
+            env.WriteFile("Build/fixture.luau", "return {}")
 
-                const result = env.runScript("CheckFileHeaders", { env.path })
+            const result = env.RunScript("CheckFileHeaders")
 
-                expect(result.ok).to.equal(true)
-                expect(string.find(result.stdout, "0 file")).to.be.ok()
-            end)
+            expect(result.ok).to.equal(true)
+            expect(string.find(result.stdout, "0 file")).to.be.ok()
+        end)
 
-            it("should skip root build output when scanning the whole repo", function()
-                env.writeDir("Build")
-                env.writeFile("Build/fixture.luau", "return {}")
+        it("should still check a Build folder when scanning a subfolder", function()
+            env.WriteDir("Commands")
+            env.WriteDir("Commands/Build")
+            env.WriteFile("Commands/Build/init.luau", "return {}")
 
-                const result = env.runScript("CheckFileHeaders")
+            const result = env.RunScript("CheckFileHeaders", { `{env.Path}/Commands` })
 
-                expect(result.ok).to.equal(true)
-                expect(string.find(result.stdout, "0 file")).to.be.ok()
-            end)
-
-            it("should still check a Build folder when scanning a subfolder", function()
-                env.writeDir("Commands")
-                env.writeDir("Commands/Build")
-                env.writeFile("Commands/Build/init.luau", "return {}")
-
-                const result = env.runScript("CheckFileHeaders", { `{env.path}/Commands` })
-
-                expect(result.ok).to.equal(false)
-                -- Paths in the report are relative to the scanned folder
-                expect(string.find(result.stdout, "Build/init.luau", 1, true)).to.be.ok()
-            end)
+            expect(result.ok).to.equal(false)
+            -- Paths in the report are relative to the scanned folder.
+            expect(string.find(result.stdout, "Build/init.luau", 1, true)).to.be.ok()
         end)
     end)
 end

@@ -11,22 +11,21 @@ const TestEnvironment = require("./Helpers/TestEnvironment")
 const dedent = TestEnvironment.dedent
 
 return function()
-    describe("CheckChangelogVersion", function()
-        local env: TestEnvironment.Environment
+    local env: TestEnvironment.Environment
 
-        beforeEach(function()
-            env = TestEnvironment.create()
-        end)
+    beforeEach(function()
+        env = TestEnvironment.create()
+    end)
 
-        afterEach(function()
-            env.cleanup()
-        end)
+    afterEach(function()
+        env.Cleanup()
+    end)
 
-        it("should pass when changelog has entry for current version", function()
-            env.writeFile("VERSION", "1.0.0\n")
-            env.writeFile(
-                "CHANGELOG.md",
-                dedent([[
+    it("should pass when changelog has entry for current version", function()
+        env.WriteFile("VERSION", "1.0.0\n")
+        env.WriteFile(
+            "CHANGELOG.md",
+            dedent([[
                     # Changelog
 
                     ## 1.0.0
@@ -35,18 +34,18 @@ return function()
 
                     - Initial release
                 ]])
-            )
+        )
 
-            const result = env.runScript("CheckChangelogVersion")
+        const result = env.RunScript("CheckChangelogVersion")
 
-            expect(result.ok).to.equal(true)
-            expect(string.find(result.stdout, "contains valid entry")).to.be.ok()
-        end)
+        expect(result.ok).to.equal(true)
+        expect(string.find(result.stdout, '"CHANGELOG.md" contains a valid entry for version "1.0.0".', 1, true)).to.be.ok()
+    end)
 
-        it("should fail when VERSION file is missing", function()
-            env.writeFile(
-                "CHANGELOG.md",
-                dedent([[
+    it("should fail when VERSION file is missing", function()
+        env.WriteFile(
+            "CHANGELOG.md",
+            dedent([[
                     # Changelog
 
                     ## 1.0.0
@@ -55,28 +54,28 @@ return function()
 
                     - Something
                 ]])
-            )
+        )
 
-            const result = env.runScript("CheckChangelogVersion")
+        const result = env.RunScript("CheckChangelogVersion")
 
-            expect(result.ok).to.equal(false)
-            expect(string.find(result.stdout, "VERSION file not found")).to.be.ok()
-        end)
+        expect(result.ok).to.equal(false)
+        expect(string.find(result.stdout, 'The "VERSION" file was not found.', 1, true)).to.be.ok()
+    end)
 
-        it("should fail when CHANGELOG.md is missing", function()
-            env.writeFile("VERSION", "1.0.0\n")
+    it("should fail when CHANGELOG.md is missing", function()
+        env.WriteFile("VERSION", "1.0.0\n")
 
-            const result = env.runScript("CheckChangelogVersion")
+        const result = env.RunScript("CheckChangelogVersion")
 
-            expect(result.ok).to.equal(false)
-            expect(string.find(result.stdout, "CHANGELOG.md not found")).to.be.ok()
-        end)
+        expect(result.ok).to.equal(false)
+        expect(string.find(result.stdout, '"CHANGELOG.md" was not found.', 1, true)).to.be.ok()
+    end)
 
-        it("should fail when version entry is missing from changelog", function()
-            env.writeFile("VERSION", "2.0.0\n")
-            env.writeFile(
-                "CHANGELOG.md",
-                dedent([[
+    it("should fail when version entry is missing from changelog", function()
+        env.WriteFile("VERSION", "2.0.0\n")
+        env.WriteFile(
+            "CHANGELOG.md",
+            dedent([[
                     # Changelog
 
                     ## 1.0.0
@@ -85,19 +84,19 @@ return function()
 
                     - Initial release
                 ]])
-            )
+        )
 
-            const result = env.runScript("CheckChangelogVersion")
+        const result = env.RunScript("CheckChangelogVersion")
 
-            expect(result.ok).to.equal(false)
-            expect(string.find(result.stdout, "does not contain an entry")).to.be.ok()
-        end)
+        expect(result.ok).to.equal(false)
+        expect(string.find(result.stdout, "does not contain an entry")).to.be.ok()
+    end)
 
-        it("should fail when version entry is empty", function()
-            env.writeFile("VERSION", "1.0.0\n")
-            env.writeFile(
-                "CHANGELOG.md",
-                dedent([[
+    it("should fail when version entry is empty", function()
+        env.WriteFile("VERSION", "1.0.0\n")
+        env.WriteFile(
+            "CHANGELOG.md",
+            dedent([[
                     # Changelog
 
                     ## 1.0.0
@@ -108,19 +107,19 @@ return function()
 
                     - Something
                 ]])
-            )
+        )
 
-            const result = env.runScript("CheckChangelogVersion")
+        const result = env.RunScript("CheckChangelogVersion")
 
-            expect(result.ok).to.equal(false)
-            expect(string.find(result.stdout, "is empty")).to.be.ok()
-        end)
+        expect(result.ok).to.equal(false)
+        expect(string.find(result.stdout, "is empty")).to.be.ok()
+    end)
 
-        it("should handle multiple versions in changelog", function()
-            env.writeFile("VERSION", "2.0.0\n")
-            env.writeFile(
-                "CHANGELOG.md",
-                dedent([[
+    it("should handle multiple versions in changelog", function()
+        env.WriteFile("VERSION", "2.0.0\n")
+        env.WriteFile(
+            "CHANGELOG.md",
+            dedent([[
                     # Changelog
 
                     ## 2.0.0
@@ -135,11 +134,10 @@ return function()
 
                     - Initial release
                 ]])
-            )
+        )
 
-            const result = env.runScript("CheckChangelogVersion")
+        const result = env.RunScript("CheckChangelogVersion")
 
-            expect(result.ok).to.equal(true)
-        end)
+        expect(result.ok).to.equal(true)
     end)
 end

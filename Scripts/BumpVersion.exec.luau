@@ -11,10 +11,9 @@ Bumps the version in VERSION file and syncs it to wally.toml. Pass "major", "min
 
 --]]
 
+const ParseVersion = require("./Helpers/ParseVersion.func")
 const fs = require("@lune/fs")
 const process = require("@lune/process")
-
-const parseVersion = require("./Helpers/parseVersion")
 
 const BumpVersion = {}
 
@@ -32,7 +31,7 @@ function BumpVersion.exec()
     end
 
     const currentVersionString = fs.readFile("VERSION")
-    local major, minor, patch = parseVersion(currentVersionString)
+    local major, minor, patch = ParseVersion(currentVersionString)
 
     if not major then
         print(`Could not parse current version "{currentVersionString}".`)
@@ -56,11 +55,11 @@ function BumpVersion.exec()
     const newVersion = `{major}.{minor}.{patch}`
     print(`Bumping to "{newVersion}".`)
 
-    fs.writeFile("VERSION", newVersion .. "\n")
+    fs.writeFile("VERSION", `{newVersion}\n`)
 
-    print("Syncing version to wally.toml.")
+    print('Syncing version to "wally.toml".')
     -- Resolve SyncVersion next to this script, so it's found when this runs from a
-    -- consumer repo through Submodules/luau-cicd/ and not only from luau-cicd itself
+    -- consumer repository through Submodules/luau-cicd/ and not just luau-cicd itself.
     const scriptsDir = string.match(debug.info(1, "s"), "^(.*)[/\\]") or "."
     const syncResult = process.exec("lune", { "run", `{scriptsDir}/SyncVersion.exec` })
     if not syncResult.ok then

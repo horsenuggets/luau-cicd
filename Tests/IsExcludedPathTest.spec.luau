@@ -2,13 +2,27 @@
 
 IsExcludedPathTest.spec
 
-Tests for the isExcludedPath helper that the file scanning checks share.
+Tests for the IsExcludedPath helper that the file scanning checks share.
 
 --]]
 
-const isExcludedPath = require("../Scripts/Helpers/isExcludedPath")
+const IsExcludedPath = require("../Scripts/Helpers/IsExcludedPath.func")
 
 return function()
+    it("should reject a non-string path", function()
+        const ok = pcall(function()
+            IsExcludedPath(123 :: any, true)
+        end)
+        expect(ok).to.equal(false)
+    end)
+
+    it("should reject a non-boolean root flag", function()
+        const ok = pcall(function()
+            IsExcludedPath("Source/Module.luau", "true" :: any)
+        end)
+        expect(ok).to.equal(false)
+    end)
+
     it("should skip dependency and submodule folders at any depth", function()
         const paths = {
             "Packages/Fusion.luau",
@@ -21,40 +35,40 @@ return function()
         }
         for _, path in paths do
             for _, scanningRepoRoot in { true, false } do
-                expect(isExcludedPath(path, scanningRepoRoot)).to.equal(true)
+                expect(IsExcludedPath(path, scanningRepoRoot)).to.equal(true)
             end
         end
     end)
 
     it("should skip build output and worktrees at the root of a repo scan", function()
-        expect(isExcludedPath("Build/TestTemp/a.func.luau", true)).to.equal(true)
-        expect(isExcludedPath(".wt/feature/x/Source/a.luau", true)).to.equal(true)
-        expect(isExcludedPath(".worktrees/x/a.luau", true)).to.equal(true)
+        expect(IsExcludedPath("Build/TestTemp/a.func.luau", true)).to.equal(true)
+        expect(IsExcludedPath(".wt/feature/x/Source/a.luau", true)).to.equal(true)
+        expect(IsExcludedPath(".worktrees/x/a.luau", true)).to.equal(true)
     end)
 
     it("should check root-only folders deeper down or in subfolder scans", function()
-        expect(isExcludedPath("Source/Commands/Build/init.luau", true)).to.equal(false)
-        expect(isExcludedPath("Source/.wt/a.luau", true)).to.equal(false)
-        -- Scanning Source/Commands directly makes its Build folder look like a root one
-        expect(isExcludedPath("Build/init.luau", false)).to.equal(false)
-        expect(isExcludedPath(".wt/a.luau", false)).to.equal(false)
+        expect(IsExcludedPath("Source/Commands/Build/init.luau", true)).to.equal(false)
+        expect(IsExcludedPath("Source/.wt/a.luau", true)).to.equal(false)
+        -- Scanning Source/Commands directly makes its Build folder look like a root one.
+        expect(IsExcludedPath("Build/init.luau", false)).to.equal(false)
+        expect(IsExcludedPath(".wt/a.luau", false)).to.equal(false)
     end)
 
     it("should compare whole path parts", function()
-        expect(isExcludedPath("Source/MyPackages/a.luau", true)).to.equal(false)
-        expect(isExcludedPath("Source/BuildTools/a.luau", true)).to.equal(false)
-        expect(isExcludedPath("Builder/a.luau", true)).to.equal(false)
+        expect(IsExcludedPath("Source/MyPackages/a.luau", true)).to.equal(false)
+        expect(IsExcludedPath("Source/BuildTools/a.luau", true)).to.equal(false)
+        expect(IsExcludedPath("Builder/a.luau", true)).to.equal(false)
     end)
 
     it("should accept leading ./ and Windows separators", function()
-        expect(isExcludedPath("./Build/a.json", true)).to.equal(true)
-        expect(isExcludedPath("Build\\a.luau", true)).to.equal(true)
-        expect(isExcludedPath("./Source/a.json", true)).to.equal(false)
+        expect(IsExcludedPath("./Build/a.json", true)).to.equal(true)
+        expect(IsExcludedPath("Build\\a.luau", true)).to.equal(true)
+        expect(IsExcludedPath("./Source/a.json", true)).to.equal(false)
     end)
 
     it("should keep ordinary source files", function()
         for _, path in { "Source/Module.luau", "Scripts/RunTests.exec.luau", "init.luau", "" } do
-            expect(isExcludedPath(path, true)).to.equal(false)
+            expect(IsExcludedPath(path, true)).to.equal(false)
         end
     end)
 end

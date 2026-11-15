@@ -9,8 +9,7 @@ start with the shebang line "#!/usr/bin/env -S lune run". Helper modules (non-ro
 like Task/init.luau) are excluded from this check.
 
 [Usage] ./Scripts/CheckScriptExecutability.exec.luau [directory]
-> directory - Optional path to the Scripts directory to check. Defaults to
-> "Scripts".
+> directory → Optional path to the Scripts/ directory to check. Defaults to "Scripts/".
 
 --]]
 
@@ -42,12 +41,12 @@ function CheckScriptExecutability.exec()
         const firstLine = contents:match("^([^\n]*)")
 
         if firstLine ~= SHEBANG then
-            table.insert(failures, `{path} is missing shebang "{SHEBANG}"`)
+            table.insert(failures, `"{path}" is missing the shebang "{SHEBANG}".`)
         end
 
         const result = process.exec("test", { "-x", path })
         if not result.ok then
-            table.insert(failures, `{path} is not executable (run: chmod +x {path})`)
+            table.insert(failures, `"{path}" is not executable. Run "chmod +x" with this file path.`)
         end
     end
 
@@ -56,7 +55,7 @@ function CheckScriptExecutability.exec()
         process.exit(0)
     end
 
-    print(`Found {#failures} {if #failures == 1 then "issue" else "issues"}:\n`)
+    print(`Found {#failures} {if #failures == 1 then "issue" else "issues"}...\n`)
     for _, failure in failures do
         print(`  - {failure}`)
     end

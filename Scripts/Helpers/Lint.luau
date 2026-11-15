@@ -2,28 +2,27 @@
 
 Lint
 
-Shared lint module that runs luau-lsp analyze with sensible defaults.
-Downstream repos require this from the luau-cicd submodule instead of
-maintaining their own lint logic.
+Runs luau-lsp analyze for downstream repositories through the luau-cicd submodule instead
+of maintaining separate lint logic in each repository.
 
 By default, analyzes "." with --platform=lune, --no-flags-enabled, and
---enable-new-solver, ignoring DevPackages, Packages, Submodules, and
-dotfolders. Accepts an optional config table to override platforms,
-ignore patterns, and target directories.
+--enable-new-solver, ignoring DevPackages/, Packages/, ServerPackages/, Submodules/, and
+dotfolders. Accepts an optional config table to override platforms, ignore patterns, and
+target directories.
 
 --]]
 
 const process = require("@lune/process")
 
-const Lint = {}
-
 const DEFAULT_IGNORE_PATTERNS = {
+    ".*/**",
     "DevPackages/**",
     "Packages/**",
     "ServerPackages/**",
     "Submodules/**",
-    ".*/**",
 }
+
+const Lint = {}
 
 const function getProjectName(): string
     const cwd = process.cwd
@@ -32,6 +31,8 @@ const function getProjectName(): string
 end
 
 const function formatTarget(target: string): string
+    assert(type(target) == "string", "Expected a string for the target.")
+
     if target == "." or target == "/" then
         return getProjectName()
     end
@@ -44,6 +45,8 @@ const function formatTarget(target: string): string
 end
 
 const function normalizeTarget(target: string): string
+    assert(type(target) == "string", "Expected a string for the target.")
+
     if target == "/" then
         return "."
     end
@@ -51,6 +54,8 @@ const function normalizeTarget(target: string): string
 end
 
 const function formatLabel(targets: { string }): string
+    assert(type(targets) == "table", "Expected an array of targets.")
+
     const parts = {}
     for _, target in targets do
         table.insert(parts, formatTarget(target))
@@ -59,6 +64,10 @@ const function formatLabel(targets: { string }): string
 end
 
 const function printOutput(result: process.ExecResult)
+    assert(type(result) == "table", "Expected a process result.")
+    assert(type(result.stdout) == "string", "Expected a string for standard output.")
+    assert(type(result.stderr) == "string", "Expected a string for standard error.")
+
     if result.stdout ~= "" then
         print(result.stdout)
     end
@@ -68,6 +77,9 @@ const function printOutput(result: process.ExecResult)
 end
 
 const function generateSourcemap(rojoProject: string, outputFile: string)
+    assert(type(rojoProject) == "string", "Expected a string for the Rojo project.")
+    assert(type(outputFile) == "string", "Expected a string for the output file.")
+
     const result = process.exec("rojo", {
         "sourcemap",
         rojoProject,
@@ -83,6 +95,8 @@ const function generateSourcemap(rojoProject: string, outputFile: string)
 end
 
 const function buildIgnoreArgs(extraPatterns: { string }?): { string }
+    assert(extraPatterns == nil or type(extraPatterns) == "table", "Expected an optional array of ignore patterns.")
+
     const args = {}
 
     for _, pattern in DEFAULT_IGNORE_PATTERNS do
@@ -91,6 +105,7 @@ const function buildIgnoreArgs(extraPatterns: { string }?): { string }
 
     if extraPatterns then
         for _, pattern in extraPatterns do
+            assert(type(pattern) == "string", "Expected a string for each ignore pattern.")
             table.insert(args, `--ignore={pattern}`)
         end
     end
@@ -105,7 +120,13 @@ const function analyze(
     sourcemap: string?,
     ignoreArgs: { string }
 ): boolean
-    print(`Analyzing {label}...`)
+    assert(type(label) == "string", "Expected a string for the label.")
+    assert(type(platform) == "string", "Expected a string for the platform.")
+    assert(type(targets) == "table", "Expected an array of targets.")
+    assert(sourcemap == nil or type(sourcemap) == "string", "Expected an optional string for the sourcemap.")
+    assert(type(ignoreArgs) == "table", "Expected an array of ignore arguments.")
+
+    print(`Analyzing "{label}"...`)
 
     const args = {
         "analyze",
@@ -137,19 +158,60 @@ const function analyze(
 end
 
 export type Platform = {
-    Platform: string,
-    Targets: { string },
-    Sourcemap: string?,
-    RojoProject: string?,
     IgnorePatterns: { string }?,
+    Platform: string,
+    RojoProject: string?,
+    Sourcemap: string?,
+    Targets: { string },
 }
 
 export type LintConfig = {
-    Platforms: { Platform }?,
     IgnorePatterns: { string }?,
+    Platforms: { Platform }?,
 }
 
 function Lint.run(config: LintConfig?)
+    assert(config == nil or type(config) == "table", "Expected an optional lint configuration table.")
+    if config then
+        assert(
+            config.IgnorePatterns == nil or type(config.IgnorePatterns) == "table",
+            "Expected an optional array of ignore patterns."
+        )
+        assert(config.Platforms == nil or type(config.Platforms) == "table", "Expected an optional array of platforms.")
+        if config.IgnorePatterns then
+            for _, pattern in config.IgnorePatterns do
+                assert(type(pattern) == "string", "Expected a string for each ignore pattern.")
+            end
+        end
+        if config.Platforms then
+            for _, entry in config.Platforms do
+                assert(type(entry) == "table", "Expected a configuration table for each platform.")
+                assert(type(entry.Platform) == "string", "Expected a string for the platform.")
+                assert(type(entry.Targets) == "table", "Expected an array of targets.")
+                assert(
+                    entry.IgnorePatterns == nil or type(entry.IgnorePatterns) == "table",
+                    "Expected an optional array of ignore patterns."
+                )
+                assert(
+                    entry.RojoProject == nil or type(entry.RojoProject) == "string",
+                    "Expected an optional string for the Rojo project."
+                )
+                assert(
+                    entry.Sourcemap == nil or type(entry.Sourcemap) == "string",
+                    "Expected an optional string for the sourcemap."
+                )
+                for _, target in entry.Targets do
+                    assert(type(target) == "string", "Expected a string for each target.")
+                end
+                if entry.IgnorePatterns then
+                    for _, pattern in entry.IgnorePatterns do
+                        assert(type(pattern) == "string", "Expected a string for each ignore pattern.")
+                    end
+                end
+            end
+        end
+    end
+
     const cfg = config or {}
     const ignoreArgs = buildIgnoreArgs(cfg.IgnorePatterns)
 
