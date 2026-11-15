@@ -1,9 +1,9 @@
 #
 # Main.tf
 #
-# Manages this repository's GitHub settings, including merge options and the ruleset that
-# protects main with the required CI checks. Run plans and applies from this folder with
-# GITHUB_TOKEN set, for example "GITHUB_TOKEN=$(gh auth token) terraform plan".
+# Manages this repository's GitHub settings, including merge options and the rulesets that
+# protect main and release with required CI checks. Run plans and applies from this folder
+# with GITHUB_TOKEN set, for example "GITHUB_TOKEN=$(gh auth token) terraform plan".
 #
 
 terraform {
@@ -48,6 +48,19 @@ locals {
         "static-analysis",
         "validate-branch-name"
     ]
+
+    # Must match every job in .github/workflows/release.ci.yml.
+    release_checks = [
+        "check-formatting",
+        "check-json-format",
+        "check-script-executability",
+        "run-tests",
+        "static-analysis",
+        "validate-pr-title",
+        "validate-version",
+        "verify-diff-matches-main",
+        "verify-wally-auth"
+    ]
 }
 
 # Adopt the existing repository instead of trying to create it. The id must be a literal
@@ -79,6 +92,43 @@ resource "github_repository" "repo" {
 
         # Managed in the GitHub UI, so applies don't overwrite them.
         ignore_changes = [allow_auto_merge, description, homepage_url, topics, visibility]
+    }
+}
+
+resource "github_repository_ruleset" "release" {
+    name = "release"
+    repository = github_repository.repo.name
+    target = "branch"
+    enforcement = "active"
+
+    conditions {
+        ref_name {
+            include = ["refs/heads/release"]
+            exclude = []
+        }
+    }
+
+    rules {
+        non_fast_forward = true
+        deletion = true
+
+        pull_request {
+            required_approving_review_count = 0
+            dismiss_stale_reviews_on_push = true
+        }
+
+        required_status_checks {
+            strict_required_status_checks_policy = true
+
+            dynamic "required_check" {
+                for_each = local.release_checks
+                content {
+                    context = required_check.value
+                    # Only GitHub Actions can satisfy this required check.
+                    integration_id = 15368
+                }
+            }
+        }
     }
 }
 

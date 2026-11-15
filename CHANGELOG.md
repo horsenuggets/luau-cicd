@@ -6,6 +6,9 @@
 - Added runtime argument validation and regression tests for shared helpers.
 - Aligned script output, tests, documentation, and configuration with current guidelines.
 - Removed the obsolete core and shared guideline submodules.
+- Fixed version validation, README synchronization, and explicit scan-root exclusions.
+- Enforced static-analysis diagnostics from both output streams.
+- Managed release protection with current check names and fixed CI workflow setup.
 
 ## 0.1.0
 

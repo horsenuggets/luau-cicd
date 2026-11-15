@@ -7,6 +7,7 @@ Tests for the CheckFileHeaders script.
 --]]
 
 const TestEnvironment = require("./Helpers/TestEnvironment")
+const process = require("@lune/process")
 
 return function()
     local env: TestEnvironment.Environment
@@ -346,6 +347,36 @@ return {}
 
             expect(result.ok).to.equal(true)
             expect(string.find(result.stdout, "0 file")).to.be.ok()
+        end)
+
+        it("should preserve root exclusions for equivalent directory arguments", function()
+            for _, folder in { "Build", ".wt/feature/example", ".worktrees/example" } do
+                env.WriteFile(`{folder}/Invalid.luau`, "return {}\n")
+            end
+
+            const cwdResult = process.exec("lune", { "run", "-" }, {
+                cwd = env.Path,
+                stdio = { stdin = 'print(require("@lune/process").cwd)' },
+            })
+            expect(cwdResult.ok).to.equal(true)
+            const root = string.match(cwdResult.stdout, "^%s*(.-)%s*$") :: string
+            for _, directory in { ".", "./", "././", "Build/../", root, `{root}/`, `{root}/./` } do
+                const result = env.RunScript("CheckFileHeaders", { directory })
+                expect(result.ok).to.equal(true)
+                expect(string.find(result.stdout, "0 files", 1, true)).to.be.ok()
+            end
+        end)
+
+        it("should still validate generated-looking directories below a scanned subfolder", function()
+            for _, folder in { "Build", ".wt", ".worktrees" } do
+                env.WriteFile(`Source/{folder}/Invalid.luau`, "return {}\n")
+            end
+
+            for _, directory in { "Source", "./Source/", `{env.Path}/Source/` } do
+                const result = env.RunScript("CheckFileHeaders", { directory })
+                expect(result.ok).to.equal(false)
+                expect(string.find(result.stdout, "3 files with invalid headers", 1, true)).to.be.ok()
+            end
         end)
 
         it("should still check a Build folder when scanning a subfolder", function()

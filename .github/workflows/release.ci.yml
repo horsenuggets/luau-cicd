@@ -96,7 +96,7 @@ jobs:
         run: lune setup
 
       - name: Run static analysis
-        run: ./Scripts/RunStaticAnalysis.exec.luau
+        run: ./Scripts/RunStaticAnalysis.exec.luau lune
 
   check-json-format:
     name: check-json-format

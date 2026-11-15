@@ -12,6 +12,7 @@ Validates that no Luau files contain tab characters. All indentation must use sp
 --]]
 
 const IsExcludedPath = require("./Helpers/IsExcludedPath.func")
+const ResolveScanDirectory = require("./Helpers/ResolveScanDirectory.func")
 const fs = require("@lune/fs")
 const process = require("@lune/process")
 
@@ -66,7 +67,7 @@ end
 const CheckNoTabs = {}
 
 function CheckNoTabs.exec()
-    const directory = process.args[1] or process.cwd
+    const directory, scanningRepoRoot = ResolveScanDirectory(process.args[1] or process.cwd, process.cwd)
 
     print(`Checking for tabs in "{directory}"...`)
 
@@ -76,7 +77,6 @@ function CheckNoTabs.exec()
     end
 
     -- Skip root-only folders such as Build/ only when scanning the whole repository.
-    const scanningRepoRoot = process.args[1] == nil or process.args[1] == "."
     const files = findLuauFiles(directory, scanningRepoRoot)
     const errors: { { File: string, Lines: { number } } } = {}
 

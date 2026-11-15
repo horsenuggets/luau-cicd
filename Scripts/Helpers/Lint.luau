@@ -12,6 +12,7 @@ target directories.
 
 --]]
 
+const HasAnalysisIssues = require("./HasAnalysisIssues.func")
 const process = require("@lune/process")
 
 const DEFAULT_IGNORE_PATTERNS = {
@@ -150,11 +151,12 @@ const function analyze(
     const result = process.exec("luau-lsp", args)
     printOutput(result)
 
-    if result.ok then
+    const passed = not HasAnalysisIssues(result.ok, result.stdout, result.stderr)
+    if passed then
         print(`No errors found in {label}.`)
     end
 
-    return result.ok
+    return passed
 end
 
 export type Platform = {
