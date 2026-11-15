@@ -182,6 +182,18 @@ return {}
     end)
 
     if process.os ~= "windows" then
+        it("should scan POSIX source folder names containing backslashes", function()
+            for _, folder in { "Build\\Source", "Source\\Packages" } do
+                env.WriteFile(`{folder}/Invalid.luau`, "\treturn {}\n")
+            end
+            for _, scriptName in { "CheckFileHeaders", "CheckNoTabs" } do
+                const result = env.RunScript(scriptName)
+                expect(result.ok).to.equal(false)
+                expect(string.find(result.stdout, "Build\\Source/Invalid.luau", 1, true)).to.be.ok()
+                expect(string.find(result.stdout, "Source\\Packages/Invalid.luau", 1, true)).to.be.ok()
+            end
+        end)
+
         it("should preserve special characters in POSIX checkout paths", function()
             env.WriteFile("Repo/Invalid.luau", "\treturn {}\n")
             for _, folder in { "Repo\\name", "Repo\n", "Repo\r", "Repo\r\n", "Repo\n\n" } do
