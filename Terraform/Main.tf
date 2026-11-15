@@ -35,18 +35,18 @@ locals {
 
     # Must match the job `name:` fields in .github/workflows/ci.yml.
     main_checks = [
-        "Check .luaurc format",
-        "Check changelog format",
-        "Check file headers",
-        "Check for tabs",
-        "Check formatting",
-        "Check JSON format",
-        "Check rokit.toml format",
-        "Check script executability",
-        "Check wally.toml format",
-        "Run tests",
-        "Static analysis",
-        "Validate branch name"
+        "check-changelog-format",
+        "check-file-headers",
+        "check-for-tabs",
+        "check-formatting",
+        "check-json-format",
+        "check-luaurc-format",
+        "check-rokit-format",
+        "check-script-executability",
+        "check-wally-format",
+        "run-tests",
+        "static-analysis",
+        "validate-branch-name"
     ]
 }
 
