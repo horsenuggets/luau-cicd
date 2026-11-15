@@ -284,6 +284,43 @@ return function()
         end
     end)
 
+    it("should validate active TOML fields instead of commented assignments", function()
+        env.WriteFile("VERSION", "2.0.0\n")
+        env.WriteFile("README.md", "author/my-package@2.0.0\nother/package@1.0.0\n")
+        for _, manifest in
+            {
+                '[package]\nname = "author/my-package"\nversion = "1.0.0"\n# version = "2.0.0"\n',
+                '[package]\nname = "author/my-package"\n# version = "2.0.0"\n',
+            }
+        do
+            env.WriteFile("wally.toml", manifest)
+            expect(env.RunScript("CheckVersionMatch").ok).to.equal(false)
+        end
+        env.WriteFile(
+            "wally.toml",
+            '[package]\nname = "author/my-package"\nversion = "2.0.0"\n# name = "other/package"\n'
+        )
+        expect(env.RunScript("CheckVersionMatch").ok).to.equal(true)
+        env.WriteFile("README.md", "author/my-package@1.0.0\nother/package@2.0.0\n")
+        expect(env.RunScript("CheckVersionMatch").ok).to.equal(false)
+    end)
+
+    it("should accept quoted TOML keys and literal package values", function()
+        env.WriteFile("VERSION", "2.0.0\n")
+        env.WriteFile("README.md", "author/my-package@2.0.0\n")
+        for _, manifest in
+            {
+                "[\"package\"]\n\"name\" = 'author/my-package'\n'version' = '2.0.0'\n",
+                'package = { name = "author/my-package", version = "2.0.0" }\n',
+                'package.name = "author/my-package"\npackage.version = "2.0.0"\n',
+                'description = \'\'\'\n[package]\nversion = "9.0.0"\nname = "other/package"\n\'\'\'\n[package]\nname = "author/my-package"\nversion = "2.0.0"\n',
+            }
+        do
+            env.WriteFile("wally.toml", manifest)
+            expect(env.RunScript("CheckVersionMatch").ok).to.equal(true)
+        end
+    end)
+
     it("should compare README build metadata as part of the version", function()
         env.WriteFile("VERSION", "2.0.0+build.2\n")
         env.WriteFile("wally.toml", '[package]\nname = "author/my-package"\nversion = "2.0.0+build.2"\n')

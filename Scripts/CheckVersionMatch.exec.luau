@@ -12,6 +12,7 @@ Ensures that the version in VERSION file matches the version in wally.toml and R
 const GetReadmeVersionReferences = require("./Helpers/GetReadmeVersionReferences.func")
 const fs = require("@lune/fs")
 const process = require("@lune/process")
+const serde = require("@lune/serde")
 
 const CheckVersionMatch = {}
 
@@ -19,10 +20,11 @@ function CheckVersionMatch.exec()
     const versionFileContent = fs.readFile("VERSION")
     const version = string.match(versionFileContent, "^%s*(.-)%s*$")
 
-    const wallyContent = fs.readFile("wally.toml")
-    const wallyVersion = string.match(wallyContent, '%[package%][^%[]*version%s*=%s*"(.-)"')
+    const wallyData = serde.decode("toml", fs.readFile("wally.toml"))
+    const packageData = wallyData.package
+    const wallyVersion = if type(packageData) == "table" then packageData.version else nil
 
-    if not wallyVersion then
+    if type(wallyVersion) ~= "string" then
         print('Could not find the version in "wally.toml".')
         process.exit(1)
     end
@@ -33,7 +35,11 @@ function CheckVersionMatch.exec()
     end
 
     -- Check README.md if it exists and has a Wally dependency string.
-    const packageName = string.match(wallyContent, '%[package%][^%[]*name%s*=%s*"(.-)"')
+    const packageName = packageData.name
+    assert(
+        packageName == nil or type(packageName) == "string",
+        'Expected the package name in "wally.toml" to be a string.'
+    )
 
     if packageName and fs.isFile("README.md") then
         const readmeContent = fs.readFile("README.md")
