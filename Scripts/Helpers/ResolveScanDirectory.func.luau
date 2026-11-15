@@ -41,7 +41,7 @@ const function resolve(path: string): string
     const args = if WINDOWS then { "/d", "/c", "cd" } else { "-P" }
     const result = process.exec(command, args, { cwd = path })
     assert(result.ok, `Could not resolve scan directory "{path}". {result.stderr}`)
-    return normalize((string.gsub(result.stdout, "[\r\n]+$", "")))
+    return normalize((string.gsub(result.stdout, if WINDOWS then "\r\n$" else "\n$", "")))
 end
 
 const function ResolveScanDirectory(directory: string, workingDirectory: string): (string, boolean)
