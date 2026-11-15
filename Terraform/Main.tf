@@ -78,7 +78,7 @@ resource "github_repository" "repo" {
         prevent_destroy = true
 
         # Managed in the GitHub UI, so applies don't overwrite them.
-        ignore_changes = [allow_auto_merge, description, topics, visibility]
+        ignore_changes = [allow_auto_merge, description, homepage_url, topics, visibility]
     }
 }
 
