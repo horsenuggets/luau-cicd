@@ -75,6 +75,40 @@ return function()
         expect(string.find(section :: string, "Feature two")).to.be.ok()
     end)
 
+    it("should extract complete hyphenated version headings literally", function()
+        const changelogPath = `{tempDir}/LiteralVersions.md`
+        for _, version in { "1.0.0-beta.5", "1.0.0-horse.1.2", "1.0.0-beta.5+build.1" } do
+            fs.writeFile(
+                changelogPath,
+                `# Changelog\n\n## {version}\n\n- Exact version.\n\n## 0.9.0\n\n- Older version.\n`
+            )
+            expect(ExtractChangelog(version, changelogPath)).to.equal("- Exact version.")
+        end
+        fs.writeFile(changelogPath, "## 1.0.0-beta.5\n\n- First-line heading.\n")
+        expect(ExtractChangelog("1.0.0-beta.5", changelogPath)).to.equal("- First-line heading.")
+    end)
+
+    it("should preserve CRLF changelog sections when matching complete headings", function()
+        const changelogPath = `{tempDir}/WindowsChangelog.md`
+        for _, version in { "1.0.0", "1.0.0-beta.5", "1.0.0-horse.1.2" } do
+            fs.writeFile(
+                changelogPath,
+                `# Changelog\r\n\r\n## {version}\r\n\r\n- First note.\r\n- Second note.\r\n\r\n## 0.9.0\r\n\r\n- Older note.\r\n`
+            )
+            expect(ExtractChangelog(version, changelogPath)).to.equal("- First note.\r\n- Second note.")
+        end
+        fs.writeFile(changelogPath, "## 1.0.0-beta.50\r\n\r\n- Wrong version.\r\n")
+        expect(ExtractChangelog("1.0.0-beta.5", changelogPath)).to.equal(nil)
+    end)
+
+    it("should not match partial or embedded version headings", function()
+        const changelogPath = `{tempDir}/UnrelatedHeadings.md`
+        for _, heading in { "## 1.0.0-beta.50", "## 1.0.0-beta.5-extra", "Text ## 1.0.0-beta.5", "### 1.0.0-beta.5" } do
+            fs.writeFile(changelogPath, `# Changelog\n\n{heading}\n\n- Unrelated content.\n`)
+            expect(ExtractChangelog("1.0.0-beta.5", changelogPath)).to.equal(nil)
+        end
+    end)
+
     it("should return nil for non-existent version", function()
         const changelogPath = `{tempDir}/CHANGELOG2.md`
         fs.writeFile(

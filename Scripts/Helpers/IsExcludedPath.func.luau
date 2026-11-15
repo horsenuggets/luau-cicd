@@ -11,6 +11,7 @@ like MyPackages isn't mistaken for Packages.
 
 --]]
 
+const process = require("@lune/process")
 const EXCLUDED_FOLDERS = { "DevPackages", "node_modules", "Packages", "ServerPackages", "Submodules" }
 const EXCLUDED_ROOT_FOLDERS = { ".worktrees", ".wt", "Build" }
 
@@ -18,7 +19,8 @@ const function IsExcludedPath(relativePath: string, scanningRepoRoot: boolean): 
     assert(typeof(relativePath) == "string", "Expected a string.")
     assert(typeof(scanningRepoRoot) == "boolean", "Expected a boolean.")
 
-    const path = string.gsub(string.gsub(relativePath, "\\", "/"), "^%./", "")
+    const normalized = if process.os == "windows" then string.gsub(relativePath, "\\", "/") else relativePath
+    const path = string.gsub(normalized, "^%./", "")
     local index = 0
     for part in string.gmatch(path, "[^/]+") do
         index += 1

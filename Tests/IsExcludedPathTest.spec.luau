@@ -7,6 +7,7 @@ Tests for the IsExcludedPath helper that the file scanning checks share.
 --]]
 
 const IsExcludedPath = require("../Scripts/Helpers/IsExcludedPath.func")
+const process = require("@lune/process")
 
 return function()
     it("should reject a non-string path", function()
@@ -60,10 +61,12 @@ return function()
         expect(IsExcludedPath("Builder/a.luau", true)).to.equal(false)
     end)
 
-    it("should accept leading ./ and Windows separators", function()
+    it("should accept leading ./ and native separators", function()
         expect(IsExcludedPath("./Build/a.json", true)).to.equal(true)
-        expect(IsExcludedPath("Build\\a.luau", true)).to.equal(true)
         expect(IsExcludedPath("./Source/a.json", true)).to.equal(false)
+        for _, path in { "Build\\Source/a.luau", "Source\\Packages/a.luau" } do
+            expect(IsExcludedPath(path, true)).to.equal(process.os == "windows")
+        end
     end)
 
     it("should keep ordinary source files", function()

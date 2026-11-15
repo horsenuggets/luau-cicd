@@ -33,9 +33,15 @@ function SyncVersion.exec()
     assert(type(packageName) == "string", 'Could not find the package name in "wally.toml".')
 
     -- Replace the first version value in the [package] section only.
-    const updatedWallyContent = string.gsub(wallyContent, '(%[package%][^%[]*version%s*=%s*)"(.-)"', function(prefix, _)
-        return `{prefix}"{version}"`
-    end, 1)
+    const updatedWallyContent, replacementCount = string.gsub(
+        wallyContent,
+        '(%[package%][^%[]*version%s*=%s*)"(.-)"',
+        function(prefix, _)
+            return `{prefix}"{version}"`
+        end,
+        1
+    )
+    assert(replacementCount == 1, 'Could not find the package version in "wally.toml".')
 
     -- Write the updated content back to wally.toml.
     fs.writeFile("wally.toml", updatedWallyContent)

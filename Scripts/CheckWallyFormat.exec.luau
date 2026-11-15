@@ -54,7 +54,11 @@ function CheckWallyFormat.exec()
             end
 
             -- Check dependencies in owner/repo@version format.
-            if currentSection == "dependencies" or currentSection == "dev-dependencies" then
+            if
+                currentSection == "dependencies"
+                or currentSection == "dev-dependencies"
+                or currentSection == "server-dependencies"
+            then
                 shouldCheckLowercase = true
                 fieldDescription = `Dependency "{key}"`
             end

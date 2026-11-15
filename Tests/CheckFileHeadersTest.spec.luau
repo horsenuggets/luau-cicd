@@ -329,6 +329,19 @@ return {}
             expect(string.find(result.stdout, "0 file")).to.be.ok()
         end)
 
+        it("should validate module init headers in targeted subfolder scans", function()
+            env.WriteFile("Source/MyModule/init.luau", "return {}\n")
+            for _, directory in { "Source/MyModule", `{env.Path}/Source/MyModule` } do
+                const result = env.RunScript("CheckFileHeaders", { directory })
+                expect(result.ok).to.equal(false)
+                expect(string.find(result.stdout, "init.luau", 1, true)).to.be.ok()
+            end
+            env.WriteFile("Source/MyModule/init.luau", "--[[\n\nMyModule\n\nValid module.\n\n--]]\n\nreturn {}\n")
+            const result = env.RunScript("CheckFileHeaders", { "Source/MyModule" })
+            expect(result.ok).to.equal(true)
+            expect(string.find(result.stdout, "1 file", 1, true)).to.be.ok()
+        end)
+
         it("should skip files in excluded directories", function()
             env.WriteDir("DevPackages")
             env.WriteFile("DevPackages/SomePackage.luau", "return {}")

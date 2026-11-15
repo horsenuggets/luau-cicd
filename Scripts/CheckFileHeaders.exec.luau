@@ -186,7 +186,10 @@ const function findLuauFiles(directory: string, scanningRepoRoot: boolean): { st
                     scanDir(fullPath)
                 end
             elseif fs.isFile(fullPath) and string.match(entry, "%.luau$") then
-                if not IsExcludedPath(relativePath, scanningRepoRoot) and not isExcludedFile(entry, relativePath) then
+                if
+                    not IsExcludedPath(relativePath, scanningRepoRoot)
+                    and not (scanningRepoRoot and isExcludedFile(entry, relativePath))
+                then
                     table.insert(files, fullPath)
                 end
             end

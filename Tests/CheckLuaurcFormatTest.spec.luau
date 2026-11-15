@@ -182,6 +182,54 @@ stylua = "owner/stylua@2.3.1"
             expect(result.ok).to.equal(true)
         end)
 
+        it("should ignore comments, similarly named tools, and lune outside tools", function()
+            env.WriteFile("test.luaurc", "{}\n")
+            for _, rokit in
+                {
+                    '# lune = "owner/lune@0.10.5"\n[tools]\nstylua = "owner/stylua@2.3.1"\n',
+                    '[tools]\nother-lune = "owner/lune@0.10.5"\n',
+                    'lune = "owner/lune@0.10.5"\n',
+                    '[metadata]\nlune = "owner/lune@0.10.5"\n',
+                    "",
+                }
+            do
+                env.WriteFile("test-rokit.toml", rokit)
+                const result = env.RunScript("CheckLuaurcFormat", { "test.luaurc", "test-rokit.toml" })
+                expect(result.ok).to.equal(true)
+            end
+        end)
+
+        it("should read the actual lune tool rather than commented coordinates", function()
+            env.WriteFile("test.luaurc", '{"aliases":{"lune":"~/.lune/.typedefs/0.10.5/"}}\n')
+            env.WriteFile("test-rokit.toml", '# lune = "owner/lune@0.9.0"\n[tools]\n"lune" = \'owner/lune@0.10.5\'\n')
+
+            const result = env.RunScript("CheckLuaurcFormat", { "test.luaurc", "test-rokit.toml" })
+
+            expect(result.ok).to.equal(true)
+        end)
+
+        it("should reject invalid Rokit tools and lune value types clearly", function()
+            env.WriteFile("test.luaurc", "{}\n")
+            for _, case in
+                {
+                    { Content = 'tools = "invalid"\n', Message = 'Expected "tools" to be a table' },
+                    { Content = "[tools]\nlune = true\n", Message = 'Expected "tools.lune" to be a string' },
+                    { Content = "[tools]\nlune = 123\n", Message = 'Expected "tools.lune" to be a string' },
+                    { Content = "[tools.lune]\n", Message = 'Expected "tools.lune" to be a string' },
+                    {
+                        Content = '[tools]\nlune = "owner/lune"\n',
+                        Message = 'Expected "tools.lune" to include a version',
+                    },
+                    { Content = "[tools\n", Message = 'Failed to parse "test-rokit.toml" as TOML' },
+                }
+            do
+                env.WriteFile("test-rokit.toml", case.Content)
+                const result = env.RunScript("CheckLuaurcFormat", { "test.luaurc", "test-rokit.toml" })
+                expect(result.ok).to.equal(false)
+                expect(string.find(result.stderr, case.Message, 1, true)).to.be.ok()
+            end
+        end)
+
         it("should pass when rokit.toml does not exist", function()
             env.WriteFile(
                 "test.luaurc",
