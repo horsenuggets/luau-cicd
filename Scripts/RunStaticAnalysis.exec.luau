@@ -12,6 +12,7 @@ needed.
 
 --]]
 
+const HasAnalysisIssues = require("./Helpers/HasAnalysisIssues.func")
 const process = require("@lune/process")
 
 const RunStaticAnalysis = {}
@@ -34,14 +35,7 @@ function RunStaticAnalysis.exec()
         ".",
     })
 
-    -- Check for warnings or errors in the output.
-    -- luau-lsp reports diagnostics using file(line,col): Type: message.
-    local hasIssues = false
-    const issuePattern = "%):%s+%w+:"
-
-    if string.find(result.stdout, issuePattern) then
-        hasIssues = true
-    end
+    const hasIssues = HasAnalysisIssues(result.ok, result.stdout, result.stderr)
 
     if not result.ok then
         print("Static analysis failed.")
@@ -51,6 +45,7 @@ function RunStaticAnalysis.exec()
     elseif hasIssues then
         print("Static analysis found warnings...")
         print(result.stdout)
+        print(result.stderr)
         process.exit(1)
     else
         print("Static analysis passed.")
