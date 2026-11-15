@@ -88,6 +88,19 @@ return function()
         expect(ExtractChangelog("1.0.0-beta.5", changelogPath)).to.equal("- First-line heading.")
     end)
 
+    it("should preserve CRLF changelog sections when matching complete headings", function()
+        const changelogPath = `{tempDir}/WindowsChangelog.md`
+        for _, version in { "1.0.0", "1.0.0-beta.5", "1.0.0-horse.1.2" } do
+            fs.writeFile(
+                changelogPath,
+                `# Changelog\r\n\r\n## {version}\r\n\r\n- First note.\r\n- Second note.\r\n\r\n## 0.9.0\r\n\r\n- Older note.\r\n`
+            )
+            expect(ExtractChangelog(version, changelogPath)).to.equal("- First note.\r\n- Second note.")
+        end
+        fs.writeFile(changelogPath, "## 1.0.0-beta.50\r\n\r\n- Wrong version.\r\n")
+        expect(ExtractChangelog("1.0.0-beta.5", changelogPath)).to.equal(nil)
+    end)
+
     it("should not match partial or embedded version headings", function()
         const changelogPath = `{tempDir}/UnrelatedHeadings.md`
         for _, heading in { "## 1.0.0-beta.50", "## 1.0.0-beta.5-extra", "Text ## 1.0.0-beta.5", "### 1.0.0-beta.5" } do
