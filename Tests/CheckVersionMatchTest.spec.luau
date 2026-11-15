@@ -284,6 +284,32 @@ return function()
         end
     end)
 
+    it("should reject incomplete numeric README versions", function()
+        env.WriteFile("VERSION", "2.0.0\n")
+        env.WriteFile("wally.toml", '[package]\nname = "author/my-package"\nversion = "2.0.0"\n')
+        for _, version in { "1", "1.0" } do
+            env.WriteFile("README.md", `Install author/my-package@{version}.\n`)
+            const result = env.RunScript("CheckVersionMatch")
+            expect(result.ok).to.equal(false)
+            expect(string.find(result.stdout, "Version mismatch", 1, true)).to.be.ok()
+        end
+    end)
+
+    it("should ignore coordinate substrings and version-agnostic references", function()
+        for _, prefix in { "other-", "other_", "other.", "other/", "other", "9" } do
+            const content = `{prefix}author/my-package@1.0.0 author/my-package@latest`
+            expect(#GetReadmeVersionReferences(content, "author/my-package")).to.equal(0)
+        end
+        for _, prefix in { "", " ", "`", '"', "(" } do
+            const content = `{prefix}author/my-package@1.0...`
+            const references = GetReadmeVersionReferences(content, "author/my-package")
+            expect(#references).to.equal(1)
+            expect(references[1].Version).to.equal("1.0")
+            expect(string.sub(content, references[1].Start, references[1].End)).to.equal("1.0")
+            expect(string.sub(content, references[1].End + 1)).to.equal("...")
+        end
+    end)
+
     it("should return exact reference bounds without matching another package", function()
         const content = "Use other/package@1.0.0, author/my-package@2.0.0-beta.5..."
         const references = GetReadmeVersionReferences(content, "author/my-package")

@@ -241,6 +241,19 @@ return function()
         end
     end)
 
+    it("should repair incomplete versions without modifying another coordinate", function()
+        env.WriteFile("VERSION", "2.0.0\n")
+        env.WriteFile("wally.toml", '[package]\nname = "author/my-package"\nversion = "1.0.0"\n')
+        env.WriteFile("README.md", "author/my-package@1.0. other-author/my-package@1.0.0 author/my-package@latest\n")
+
+        const result = env.RunScript("SyncVersion")
+
+        expect(result.ok).to.equal(true)
+        expect(env.ReadFile("README.md")).to.equal(
+            "author/my-package@2.0.0. other-author/my-package@1.0.0 author/my-package@latest\n"
+        )
+    end)
+
     it("should reject empty versions before modifying the manifest or README", function()
         const originalManifest = '[package]\nname = "author/my-package"\nversion = "1.0.0"\n'
         const originalReadme = "Install author/my-package@1.0.0.\n"
