@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.2
+
+- Added a shared release asset suffix helper that standardizes x64 and arm64 filenames.
+- Added regression tests covering platform aliases and invalid release targets.
+
 ## 0.1.1
 
 - Renamed standalone helpers to PascalCase files with the `.func.luau` suffix.
