@@ -100,6 +100,23 @@ return function()
         expect(string.find(result.stdout, "non%-lowercase")).to.be.ok()
     end)
 
+    it("should validate lowercase coordinates in server dependencies", function()
+        for _, coordinate in { "owner/package@1.0.0", "Owner/Package@1.0.0" } do
+            env.WriteFile(
+                "test-wally.toml",
+                `[package]\nname = "owner/package"\nversion = "1.0.0"\n\n[server-dependencies]\nService = "{coordinate}"\n`
+            )
+
+            const result = env.RunScript("CheckWallyFormat", { "test-wally.toml" })
+
+            expect(result.ok).to.equal(coordinate == string.lower(coordinate))
+            if not result.ok then
+                expect(string.find(result.stdout, 'Dependency "Service"', 1, true)).to.be.ok()
+                expect(string.find(result.stdout, "non-lowercase", 1, true)).to.be.ok()
+            end
+        end
+    end)
+
     it("should fail when multiple values have uppercase letters", function()
         env.WriteFile(
             "test-wally.toml",

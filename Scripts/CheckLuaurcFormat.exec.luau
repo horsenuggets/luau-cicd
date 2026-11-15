@@ -25,10 +25,22 @@ const function getLuneVersionFromRokit(rokitPath: string): string?
         return nil
     end
 
-    const content = fs.readFile(rokitPath)
+    const ok, data = pcall(function()
+        return serde.decode("toml", fs.readFile(rokitPath))
+    end)
+    assert(ok, `Failed to parse "{rokitPath}" as TOML. {data}`)
+    if data.tools == nil then
+        return nil
+    end
+    assert(type(data.tools) == "table", `Expected "tools" to be a table in "{rokitPath}".`)
 
-    -- Find the lune = "owner/repo@version" pattern.
-    const version = string.match(content, 'lune%s*=%s*"[^@]+@([^"]+)"')
+    const lune = data.tools.lune
+    if lune == nil then
+        return nil
+    end
+    assert(type(lune) == "string", `Expected "tools.lune" to be a string in "{rokitPath}".`)
+    const version = string.match(lune, "^[^@]+@(.+)$")
+    assert(version ~= nil, `Expected "tools.lune" to include a version after "@" in "{rokitPath}".`)
     return version
 end
 
