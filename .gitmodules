@@ -1,3 +1,6 @@
-[submodule "Submodules/claude-md-luau"]
-	path = Submodules/claude-md-luau
-	url = git@github.com:horsenuggets/claude-md-luau.git
+[submodule "Submodules/agents-md-luau"]
+    path = Submodules/agents-md-luau
+    url = git@github.com:horsenuggets/agents-md-luau.git
+[submodule "Submodules/hcl4fmt"]
+    path = Submodules/hcl4fmt
+    url = git@github.com:horsenuggets/hcl4fmt.git

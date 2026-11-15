@@ -1,18 +1,19 @@
 # luau-cicd
 
-A collection of Luau scripts for CI/CD tasks. Designed to be used as a git submodule across Luau projects.
+A collection of Luau scripts for CI/CD tasks. Designed to be used as a Git submodule
+across Luau projects.
 
 ## Usage
 
-Add this repository as a git submodule:
+Add this repository as a Git submodule...
 
 ```bash
 git submodule add git@github.com:horsenuggets/luau-cicd.git Submodules/luau-cicd
 ```
 
-Then run scripts using Lune:
+Then run scripts directly...
 
 ```bash
-lune run Submodules/luau-cicd/Scripts/CheckFormatting
-lune run Submodules/luau-cicd/Scripts/BumpVersion patch
+./Submodules/luau-cicd/Scripts/CheckFormatting.exec.luau
+./Submodules/luau-cicd/Scripts/BumpVersion.exec.luau patch
 ```

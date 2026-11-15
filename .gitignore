@@ -1,16 +1,44 @@
-.DS_Store
-.env
-.local
-.vscode
-*.bak
-*.gen.*
-*.lock
+# Build artifacts
 *.rbxl
 *.rbxlx
 *.rbxm
 *.rbxmx
-Build
-DevPackages
-Packages
-sourcemap.json
-Tools
+/Build/
+
+# Dependencies
+/DevPackages/
+/Packages/
+/ServerPackages/
+
+# Editor & environment
+.claude/
+.DS_Store
+.env
+.local/
+.mcp.json
+/.vscode/*
+!/.vscode/extensions.json
+!/.vscode/settings.json
+
+# Generated files
+*.bak
+*.gen.*
+*.lock
+!.assetfile.lock
+/*sourcemap.json
+
+# Legacy
+aftman.toml
+
+# Project
+/CONTEXT.md
+/TODO.md
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+
+# Worktrees
+/.worktrees/
+/.wt/
