@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.1
+
+- Renamed standalone helpers to PascalCase files with the `.func.luau` suffix.
+- Added runtime argument validation and regression tests for shared helpers.
+- Aligned script output, tests, documentation, and configuration with current guidelines.
+- Removed the obsolete core and shared guideline submodules.
+
 ## 0.1.0
 
 - Added the `CheckFileHeaders` script for validating Luau file header comments.
