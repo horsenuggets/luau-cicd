@@ -25,8 +25,8 @@ const function ExtractChangelog(version: string, changelogPath: string?): string
     const content = fs.readFile(filePath)
 
     -- Find the start of the version section.
-    const versionHeader = `## {version:gsub("%.", "%%.")}`
-    const startPos = string.find(content, versionHeader)
+    const versionHeader = `\n## {version}\n`
+    const startPos = string.find(`\n{content}`, versionHeader, 1, true)
 
     if not startPos then
         return nil

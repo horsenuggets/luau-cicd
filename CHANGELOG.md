@@ -7,6 +7,7 @@
 - Aligned script output, tests, documentation, and configuration with current guidelines.
 - Removed the obsolete core and shared guideline submodules.
 - Fixed version validation, README synchronization, and explicit scan-root exclusions.
+- Corrected targeted module headers, native path exclusions, and dependency validation.
 - Enforced static-analysis diagnostics from both output streams.
 - Managed release protection with current check names and fixed CI workflow setup.
 

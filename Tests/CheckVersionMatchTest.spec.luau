@@ -254,7 +254,7 @@ return function()
     end)
 
     it("should accept every matching README reference and ignore surrounding punctuation", function()
-        for _, version in { "2.0.0", "2.0.0-beta.5", "2.0.0-horse.1.2" } do
+        for _, version in { "2.0.0", "2.0.0-beta.5", "2.0.0-horse.1.2", "2.0.0+build.1", "2.0.0-beta.5+build.1" } do
             env.WriteFile("VERSION", `{version}\n`)
             env.WriteFile("wally.toml", `[package]\nname = "author/my-package"\nversion = "{version}"\n`)
             env.WriteFile(
@@ -282,6 +282,23 @@ return function()
             expect(result.ok).to.equal(false)
             expect(string.find(result.stdout, "author/my-package@1.0.0", 1, true)).to.be.ok()
         end
+    end)
+
+    it("should compare README build metadata as part of the version", function()
+        env.WriteFile("VERSION", "2.0.0+build.2\n")
+        env.WriteFile("wally.toml", '[package]\nname = "author/my-package"\nversion = "2.0.0+build.2"\n')
+        env.WriteFile("README.md", "Install author/my-package@2.0.0+build.1.\n")
+
+        const result = env.RunScript("CheckVersionMatch")
+
+        expect(result.ok).to.equal(false)
+        expect(string.find(result.stdout, "author/my-package@2.0.0+build.1", 1, true)).to.be.ok()
+        const content = "Use author/my-package@2.0.0-beta.5+build.1..."
+        const references = GetReadmeVersionReferences(content, "author/my-package")
+        expect(#references).to.equal(1)
+        expect(references[1].Version).to.equal("2.0.0-beta.5+build.1")
+        expect(string.sub(content, references[1].Start, references[1].End)).to.equal("2.0.0-beta.5+build.1")
+        expect(string.sub(content, references[1].End + 1)).to.equal("...")
     end)
 
     it("should reject incomplete numeric README versions", function()

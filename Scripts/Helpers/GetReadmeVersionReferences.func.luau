@@ -18,7 +18,7 @@ const function GetReadmeVersionReferences(content: string, packageName: string):
     assert(type(packageName) == "string", "Expected a package name string.")
 
     const escapedPackageName = string.gsub(packageName, "([%-%.%+%[%]%(%)%$%^%%%?%*])", "%%%1")
-    const pattern = `%f[%w_./%-]{escapedPackageName}@()(%d[%w%.%-]*)()`
+    const pattern = `%f[%w_./%-]{escapedPackageName}@()(%d[%w%.%+%-]*)()`
     const references: { Reference } = {}
 
     for startIndex, candidate, endIndex in string.gmatch(content, pattern) do

@@ -254,6 +254,38 @@ return function()
         )
     end)
 
+    it("should replace complete README build metadata without retaining old suffixes", function()
+        for _, version in { "2.0.0", "2.0.0+build.2", "2.0.0-beta.6+build.2" } do
+            env.WriteFile("VERSION", `{version}\n`)
+            env.WriteFile("wally.toml", '[package]\nname = "author/my-package"\nversion = "1.0.0+build.1"\n')
+            env.WriteFile("README.md", "Install author/my-package@1.0.0+build.1.\n")
+
+            const result = env.RunScript("SyncVersion")
+
+            expect(result.ok).to.equal(true)
+            expect(env.ReadFile("README.md")).to.equal(`Install author/my-package@{version}.\n`)
+            expect(env.ReadFile("wally.toml")).to.equal(
+                `[package]\nname = "author/my-package"\nversion = "{version}"\n`
+            )
+        end
+    end)
+
+    it("should reject a missing package version before modifying either file", function()
+        const originalManifest =
+            '[package]\nname = "author/my-package"\n\n[dependencies]\nversion = "other/package@1.0.0"\n'
+        const originalReadme = "Install author/my-package@1.0.0.\n"
+        env.WriteFile("VERSION", "2.0.0\n")
+        env.WriteFile("wally.toml", originalManifest)
+        env.WriteFile("README.md", originalReadme)
+
+        const result = env.RunScript("SyncVersion")
+
+        expect(result.ok).to.equal(false)
+        expect(string.find(result.stderr, 'Could not find the package version in "wally.toml".', 1, true)).to.be.ok()
+        expect(env.ReadFile("wally.toml")).to.equal(originalManifest)
+        expect(env.ReadFile("README.md")).to.equal(originalReadme)
+    end)
+
     it("should reject empty versions before modifying the manifest or README", function()
         const originalManifest = '[package]\nname = "author/my-package"\nversion = "1.0.0"\n'
         const originalReadme = "Install author/my-package@1.0.0.\n"
