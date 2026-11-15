@@ -146,9 +146,9 @@ return {}
     it("should normalize scan paths portably without mistaking subfolders for roots", function()
         for _, case in
             {
-                { Base = "/repo/project/", Path = "./Build/../", Root = true, Value = "/repo/project" },
+                { Base = "/repo/project/", Path = "./", Root = true, Value = "/repo/project" },
                 { Base = "/repo/project", Path = "Source/Build/", Root = false, Value = "/repo/project/Source/Build" },
-                { Base = "C:\\Repo\\Project\\", Path = ".\\Build\\..\\", Root = true, Value = "C:/Repo/Project" },
+                { Base = "C:\\Repo\\Project\\", Path = ".\\", Root = true, Value = "C:/Repo/Project" },
                 { Base = "C:/Repo/Project", Path = "c:/repo/project/", Root = true, Value = "c:/repo/project" },
                 { Base = "//server/share/Project/", Path = "./", Root = true, Value = "//server/share/Project" },
                 { Base = "/", Path = "./", Root = true, Value = "/" },
@@ -157,6 +157,34 @@ return {}
             const directory, scanningRepoRoot = ResolveScanDirectory(case.Path, case.Base)
             expect(directory).to.equal(case.Value)
             expect(scanningRepoRoot).to.equal(case.Root)
+        end
+    end)
+
+    it("should resolve parent directories through symbolic links before scanning", function()
+        env.WriteDir("Repository")
+        env.WriteDir("External/Child")
+        env.WriteFile("External/Build/Bad.luau", "\treturn {}\n")
+
+        const repository = `{env.Path}/Repository`
+        const target = `{env.Path}/External/Child`
+        const link = `{repository}/Linked`
+        const windows = process.os == "windows"
+        const command = if windows then "cmd" else "ln"
+        const args = if windows then { "/d", "/c", "mklink", "/J", link, target } else { "-s", target, link }
+        const linked = process.exec(command, args)
+        expect(linked.ok).to.equal(true)
+
+        const _, scanningRepoRoot = ResolveScanDirectory("Linked/..", repository)
+        expect(scanningRepoRoot).to.equal(false)
+
+        for _, scriptName in { "CheckFileHeaders", "CheckNoTabs" } do
+            const result = process.exec("lune", {
+                "run",
+                `{process.cwd}/Scripts/{scriptName}.exec.luau`,
+                "Linked/..",
+            }, { cwd = repository })
+            expect(result.ok).to.equal(false)
+            expect(string.find(result.stdout, "Build/Bad.luau", 1, true)).to.be.ok()
         end
     end)
 
