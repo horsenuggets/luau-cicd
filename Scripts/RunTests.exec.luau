@@ -24,6 +24,7 @@ const TESTS = {
     { Func = require("../Tests/CheckWallyFormatTest.spec"), Name = "CheckWallyFormatTest" },
     { Func = require("../Tests/EnsureProperVersionUpdateTest.spec"), Name = "EnsureProperVersionUpdateTest" },
     { Func = require("../Tests/ExtractChangelogTest.spec"), Name = "ExtractChangelogTest" },
+    { Func = require("../Tests/GetReleaseAssetSuffixTest.spec"), Name = "GetReleaseAssetSuffixTest" },
     { Func = require("../Tests/IsExcludedPathTest.spec"), Name = "IsExcludedPathTest" },
     { Func = require("../Tests/LintTest.spec"), Name = "LintTest" },
     { Func = require("../Tests/ParseVersionTest.spec"), Name = "ParseVersionTest" },
