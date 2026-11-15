@@ -33,7 +33,7 @@ const function getExpectedName(filepath: string): string
     assert(type(filepath) == "string", "Expected a string for the file path.")
 
     const filename = string.match(filepath, "([^/]+)%.luau$")
-    if filename == "init" or string.match(filename or "", "^init%.") then
+    if filename == "init" or filename == "init.server" or filename == "init.client" or filename == "init.plugin" then
         -- Use the parent folder name for init.luau and Rojo variants such as
         -- init.server.luau, init.client.luau, and init.plugin.luau.
         const parentFolder = string.match(filepath, "([^/]+)/init[^/]*%.luau$")

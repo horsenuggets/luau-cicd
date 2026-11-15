@@ -8,6 +8,7 @@ Validates that CHANGELOG.md contains an entry for the current VERSION.
 
 --]]
 
+const ExtractChangelog = require("./Helpers/ExtractChangelog.func")
 const fs = require("@lune/fs")
 const process = require("@lune/process")
 
@@ -34,24 +35,17 @@ function CheckChangelogVersion.exec()
     const changelog = fs.readFile("CHANGELOG.md")
 
     -- Check whether the version header exists.
-    const pattern = `## {version:gsub("%.", "%%."):gsub("%-", "%%-")}`
-    if not string.find(changelog, pattern) then
+    const normalizedChangelog = string.gsub(changelog, "\r\n", "\n")
+    if not string.find(`\n{normalizedChangelog}\n`, `\n## {version}\n`, 1, true) then
         print(`"CHANGELOG.md" does not contain an entry for version "{version}".`)
         print("Please add a changelog section before releasing.")
         process.exit(1)
     end
 
     -- Check that the version section has content.
-    local sectionPattern = `## {version:gsub("%.", "%%."):gsub("%-", "%%-")}\n(.-)\n## `
-    local section = string.match(changelog, sectionPattern)
+    const section = ExtractChangelog(version)
 
     if not section then
-        -- Try matching through the end of the file.
-        sectionPattern = `## {version:gsub("%.", "%%."):gsub("%-", "%%-")}\n(.-)$`
-        section = string.match(changelog, sectionPattern)
-    end
-
-    if not section or string.match(section, "^%s*$") then
         print(`"CHANGELOG.md" entry for version "{version}" is empty.`)
         print("Please add changelog content before releasing.")
         process.exit(1)

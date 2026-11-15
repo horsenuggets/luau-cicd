@@ -319,6 +319,23 @@ return {}
         end)
     end)
 
+    it("should preserve init subextensions except actual Rojo entrypoints", function()
+        for _, stem in { "init.spec", "init.func", "init.story", "init.legacy", "init.exec" } do
+            env.WriteFile(`Modules/{stem}.luau`, `--[[\n\n{stem}\n\nValid module.\n\n--]]\n\nreturn \{\}\n`)
+        end
+        for _, stem in { "init", "init.server", "init.client", "init.plugin" } do
+            env.WriteFile(`Modules/{stem}.luau`, "--[[\n\nModules\n\nValid entrypoint.\n\n--]]\n\nreturn {}\n")
+        end
+        const result = env.RunScript("CheckFileHeaders")
+        expect(result.ok).to.equal(true)
+        expect(string.find(result.stdout, "9 files", 1, true)).to.be.ok()
+
+        env.WriteFile("Modules/init.spec.luau", "--[[\n\nModules\n\nWrong header.\n\n--]]\n\nreturn {}\n")
+        const invalidResult = env.RunScript("CheckFileHeaders")
+        expect(invalidResult.ok).to.equal(false)
+        expect(string.find(invalidResult.stdout, "init.spec", 1, true)).to.be.ok()
+    end)
+
     describe("exclusions", function()
         it("should skip root init.luau files", function()
             env.WriteFile("init.luau", "return {}")
