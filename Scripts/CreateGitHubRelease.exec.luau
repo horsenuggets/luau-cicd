@@ -8,7 +8,7 @@ Publishes a GitHub release for an existing tag with the given notes file and any
 of assets. Every asset must exist and be nonempty, and ZIP assets must pass an integrity
 check, before anything is published.
 
-[Usage] ./Submodules/luau-cicd/Scripts/CreateGitHubRelease.exec.luau <tag> <notes> [assets...]
+[Usage] ./Submodules/luau-cicd/Scripts/CreateGitHubRelease.exec.luau <tag> <notes> [...]
 
 --]]
 
