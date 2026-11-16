@@ -27,6 +27,7 @@ const TESTS = {
     { Func = require("../Tests/CheckVersionMatchTest.spec"), Name = "CheckVersionMatchTest" },
     { Func = require("../Tests/CheckWallyAuthTest.spec"), Name = "CheckWallyAuthTest" },
     { Func = require("../Tests/CheckWallyFormatTest.spec"), Name = "CheckWallyFormatTest" },
+    { Func = require("../Tests/CompareReleaseVersionsTest.spec"), Name = "CompareReleaseVersionsTest" },
     { Func = require("../Tests/CreateGitHubReleaseTest.spec"), Name = "CreateGitHubReleaseTest" },
     { Func = require("../Tests/CreateGitTagTest.spec"), Name = "CreateGitTagTest" },
     { Func = require("../Tests/EnsureProperVersionUpdateTest.spec"), Name = "EnsureProperVersionUpdateTest" },
