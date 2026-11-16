@@ -33,10 +33,7 @@ jobs:
       - name: Publish to Wally
         env:
           WALLY_AUTH: ${{ secrets.WALLY_AUTH }}
-        run: |
-          mkdir -p ~/.wally
-          echo "$WALLY_AUTH" > ~/.wally/auth.toml
-          wally publish
+        run: ./Submodules/luau-cicd/Scripts/PublishToWally.exec.luau
 
       - name: Create GitHub release
         env:

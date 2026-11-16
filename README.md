@@ -43,6 +43,8 @@ Every script reports failures as `::error::` annotations on stderr and exits wit
 - `GetReleaseInfo` → Writes `version`, `tag`, and `notes_file` to `GITHUB_OUTPUT`, with
   the notes taken from the matching `CHANGELOG.md` section.
 - `CreateGitTag <tag>` → Creates the release tag and pushes it to `origin`.
+- `PublishToWally` → Writes `WALLY_AUTH` to `~/.wally/auth.toml` and runs `wally publish`,
+  skipping in the same cases as `CheckWallyAuth`.
 - `CreateGitHubRelease <tag> <notes> [assets...]` → Publishes the release with `gh`, after
   checking that every asset is nonempty and every ZIP asset is intact.
 - `PackageBinary <name> <target>` → Zips `Build/<name>` (or `Build/<name>.exe`) into
