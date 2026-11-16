@@ -39,6 +39,13 @@ return function()
         end
     end)
 
+    it("should compare numeric identifiers beyond double precision exactly", function()
+        expect(CompareReleaseVersions("1.0.0-beta.9007199254740992", "1.0.0-beta.9007199254740993")).to.equal(-1)
+        expect(CompareReleaseVersions("1.0.0-beta.99999999999999999999", "1.0.0-beta.100000000000000000000")).to.equal(
+            -1
+        )
+    end)
+
     it("should return the same result for the same input", function()
         expect(CompareReleaseVersions("1.0.0-beta.2", "1.0.0-beta.11")).to.equal(
             CompareReleaseVersions("1.0.0-beta.2", "1.0.0-beta.11")

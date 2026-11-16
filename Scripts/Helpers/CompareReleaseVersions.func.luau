@@ -28,19 +28,27 @@ const function splitVersion(version: string): ({ number }, { string }?)
     return core, identifiers
 end
 
-const function compareIdentifiers(a: string, b: string): number
-    const aNumber = if string.match(a, "^%d+$") then tonumber(a) else nil
-    const bNumber = if string.match(b, "^%d+$") then tonumber(b) else nil
+const function compareText(a: string, b: string): number
+    return if a < b then -1 elseif a > b then 1 else 0
+end
 
-    -- Numeric identifiers always have lower precedence than alphanumeric ones.
-    if aNumber and bNumber then
-        return compareNumbers(aNumber, bNumber)
-    elseif aNumber then
+const function compareIdentifiers(a: string, b: string): number
+    const aIsNumeric = string.match(a, "^%d+$") ~= nil
+    const bIsNumeric = string.match(b, "^%d+$") ~= nil
+
+    -- Numeric identifiers always have lower precedence than alphanumeric ones. They have no
+    -- leading zeros, so comparing length and then text avoids losing precision to numbers.
+    if aIsNumeric and bIsNumeric then
+        if #a ~= #b then
+            return compareNumbers(#a, #b)
+        end
+        return compareText(a, b)
+    elseif aIsNumeric then
         return -1
-    elseif bNumber then
+    elseif bIsNumeric then
         return 1
     end
-    return if a < b then -1 elseif a > b then 1 else 0
+    return compareText(a, b)
 end
 
 const function CompareReleaseVersions(a: string, b: string): number
