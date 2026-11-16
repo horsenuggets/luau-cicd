@@ -45,6 +45,25 @@ end
 
 TestEnvironment.dedent = dedent
 
+-- Quotes a string for a test name, escaping control characters so names stay on one line.
+function TestEnvironment.quote(str: string): string
+    assert(typeof(str) == "string", "Expected a string.")
+
+    const escaped = string.gsub(str, '[%c\\"]', function(char: string): string
+        if char == "\n" then
+            return "\\n"
+        elseif char == "\r" then
+            return "\\r"
+        elseif char == "\t" then
+            return "\\t"
+        elseif char == "\\" or char == '"' then
+            return `\\{char}`
+        end
+        return string.format("\\x%02X", string.byte(char))
+    end)
+    return `"{escaped}"`
+end
+
 export type ExecResult = process.ExecResult
 
 export type Environment = {
@@ -55,7 +74,7 @@ export type Environment = {
     InitGit: () -> (),
     Path: string,
     ReadFile: (relativePath: string) -> string,
-    RunScript: (scriptName: string, args: { string }?) -> ExecResult,
+    RunScript: (scriptName: string, args: { string }?, extraEnv: { [string]: string }?) -> ExecResult,
     WriteDir: (relativePath: string) -> (),
     WriteFile: (relativePath: string, content: string) -> (),
 }
@@ -106,9 +125,10 @@ function TestEnvironment.create(): Environment
 
             return fs.readFile(`{tempDir}/{relativePath}`)
         end,
-        RunScript = function(scriptName: string, args: { string }?): ExecResult
+        RunScript = function(scriptName: string, args: { string }?, extraEnv: { [string]: string }?): ExecResult
             assert(typeof(scriptName) == "string", "Expected a script name string.")
             assert(args == nil or typeof(args) == "table", "Expected an optional argument array.")
+            assert(extraEnv == nil or typeof(extraEnv) == "table", "Expected an optional environment table.")
 
             const scriptPath = `{scriptsDir}/{scriptName}.exec.luau`
             const luneArgs = { "run", scriptPath }
@@ -118,7 +138,7 @@ function TestEnvironment.create(): Environment
                     table.insert(luneArgs, arg)
                 end
             end
-            return process.exec("lune", luneArgs, { cwd = tempDir })
+            return process.exec("lune", luneArgs, { cwd = tempDir, env = extraEnv })
         end,
         WriteDir = function(relativePath: string)
             assert(typeof(relativePath) == "string", "Expected a relative path string.")

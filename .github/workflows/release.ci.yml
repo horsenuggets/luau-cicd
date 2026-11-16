@@ -11,19 +11,16 @@ jobs:
     name: validate-pr-title
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Rokit
+        uses: CompeyDev/setup-rokit@v0.1.2
+
       - name: Check PR title format
         env:
           TITLE: ${{ github.event.pull_request.title }}
-        run: |
-          echo "Checking PR title \"$TITLE\"."
-
-          # Require exactly "Release X.Y.Z".
-          if [[ ! "$TITLE" =~ ^Release\ [0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "::error::PR title must be exactly \"Release X.Y.Z\" (e.g., \"Release 1.2.3\")."
-            exit 1
-          fi
-
-          echo "PR title is valid."
+        run: ./Scripts/CheckReleaseTitle.exec.luau "$TITLE"
 
   verify-diff-matches-main:
     name: verify-diff-matches-main
@@ -34,21 +31,11 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup Rokit
+        uses: CompeyDev/setup-rokit@v0.1.2
+
       - name: Check diff with main
-        run: |
-          git fetch origin main
-
-          # Get the diff between the PR branch and main.
-          DIFF=$(git diff origin/main..HEAD)
-
-          if [ -n "$DIFF" ]; then
-            echo "::error::PR branch has changes that differ from main. The release branch must contain exactly what is in main."
-            echo "The diff follows."
-            echo "$DIFF"
-            exit 1
-          fi
-
-          echo "PR branch matches main exactly."
+        run: ./Scripts/CheckDiffWithMain.exec.luau
 
   check-formatting:
     name: check-formatting
@@ -139,29 +126,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Setup Rokit
+        uses: CompeyDev/setup-rokit@v0.1.2
+
       - name: Check WALLY_AUTH secret
         env:
           WALLY_AUTH: ${{ secrets.WALLY_AUTH }}
-        run: |
-          # Skip if "wally.toml" does not exist.
-          if [ ! -f "wally.toml" ]; then
-            echo "No \"wally.toml\" was found. Skipping the \"WALLY_AUTH\" check."
-            exit 0
-          fi
-
-          # Skip private packages, which will not be published to Wally.
-          if grep -q '^private = true' wally.toml; then
-            echo "A private package was detected. Skipping the \"WALLY_AUTH\" check."
-            exit 0
-          fi
-
-          if [ -z "$WALLY_AUTH" ]; then
-            echo "::error::The \"WALLY_AUTH\" secret is not configured. It is required for publishing to Wally."
-            echo "::error::Add the secret using \"gh secret set WALLY_AUTH < ~/.wally/auth.toml\"."
-            exit 1
-          fi
-
-          echo "The \"WALLY_AUTH\" secret is configured."
+        run: ./Scripts/CheckWallyAuth.exec.luau
 
   validate-version:
     name: validate-version
@@ -189,14 +160,5 @@ jobs:
 
       - name: Verify PR title matches VERSION
         env:
-          ACTUAL_TITLE: ${{ github.event.pull_request.title }}
-        run: |
-          VERSION=$(cat VERSION | tr -d '[:space:]')
-          EXPECTED_TITLE="Release $VERSION"
-
-          if [ "$EXPECTED_TITLE" != "$ACTUAL_TITLE" ]; then
-            echo "::error::PR title \"$ACTUAL_TITLE\" does not match the \"VERSION\" file. Expected \"$EXPECTED_TITLE\"."
-            exit 1
-          fi
-
-          echo "PR title matches the \"VERSION\" file."
+          TITLE: ${{ github.event.pull_request.title }}
+        run: ./Scripts/CheckReleaseTitleVersion.exec.luau "$TITLE"
