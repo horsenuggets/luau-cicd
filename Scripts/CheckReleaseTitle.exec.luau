@@ -28,7 +28,9 @@ function CheckReleaseTitle.exec()
 
     const version = string.match(title, "^Release (.*)$")
     if not version or not IsReleaseVersion(version) then
-        Fail(`PR title must be exactly "Release X.Y.Z" or "Release X.Y.Z-suffix" (e.g., "Release 1.2.3").`)
+        Fail(
+            `PR title must be exactly "Release X.Y.Z" or "Release X.Y.Z-prerelease" (e.g., "Release 1.2.3" or "Release 2.0.0-beta.6").`
+        )
     end
 
     print("PR title is valid.")

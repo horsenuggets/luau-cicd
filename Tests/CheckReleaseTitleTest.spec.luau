@@ -51,7 +51,7 @@ return function()
             expect(
                 string.find(
                     result.stderr,
-                    '::error::PR title must be exactly "Release X.Y.Z" or "Release X.Y.Z-suffix"',
+                    '::error::PR title must be exactly "Release X.Y.Z" or "Release X.Y.Z-prerelease"',
                     1,
                     true
                 )

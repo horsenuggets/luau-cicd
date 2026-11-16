@@ -3,8 +3,9 @@
 IsReleaseVersion.func
 
 Checks whether a string is exactly a MAJOR.MINOR.PATCH release version, optionally with a
-SemVer prerelease suffix like "-beta.6" or "-horse.0.5", and nothing else. Rejecting
-everything else keeps tags, titles, and workflow outputs free of flags and newlines.
+SemVer prerelease suffix like "-beta.6" or "-horse.0.5", and nothing else. SemVer build
+metadata like "+build" is deliberately rejected too. Rejecting everything else keeps
+tags, titles, and workflow outputs free of flags and newlines.
 
 --]]
 
