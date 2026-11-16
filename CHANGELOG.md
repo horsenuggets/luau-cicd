@@ -3,6 +3,7 @@
 ## 0.2.1
 
 - Accepted SemVer prerelease suffixes like `-beta.6` and `-horse.0.5` in release scripts.
+- Let `EnsureProperVersionUpdate` accept suffixed versions that move forward by SemVer.
 
 ## 0.2.0
 
