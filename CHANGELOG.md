@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0
+
+- Added Luau workflow scripts for branch, title, diff, and Wally auth checks.
+- Added Luau workflow scripts for release info, Git tags, GitHub releases, and packaging.
+- Replaced inline workflow shell in this repository and the templates with those scripts.
+- Rewrote `GetReleaseAssetSuffix.sh` in Luau as `GetReleaseAssetSuffix.exec.luau`.
+- Added an `extraEnv` parameter to the test environment's `RunScript` helper.
+
 ## 0.1.2
 
 - Added a shared release asset suffix helper that standardizes x64 and arm64 filenames.
