@@ -38,6 +38,12 @@ return function()
         expect(remoteTags()).to.equal("1.2.3\n")
     end)
 
+    it("should create and push a tag with a prerelease suffix", function()
+        const result = env.RunScript("CreateGitTag", { "2.0.0-beta.6" })
+        expect(result.ok).to.equal(true)
+        expect(remoteTags()).to.equal("2.0.0-beta.6\n")
+    end)
+
     it("should fail when the tag already exists", function()
         env.GitTag("1.2.3")
         const result = env.RunScript("CreateGitTag", { "1.2.3" })

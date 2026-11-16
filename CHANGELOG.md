@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1
+
+- Accepted SemVer prerelease suffixes like `-beta.6` and `-horse.0.5` in release scripts.
+
 ## 0.2.0
 
 - Added Luau workflow scripts for branch, title, diff, and Wally auth checks.
