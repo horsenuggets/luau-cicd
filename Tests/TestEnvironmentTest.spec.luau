@@ -24,6 +24,13 @@ return function()
         expect(TestEnvironment.dedent("")).to.equal("")
     end)
 
+    it("should quote strings on a single line with escaped control characters", function()
+        expect(TestEnvironment.quote("plain")).to.equal('"plain"')
+        expect(TestEnvironment.quote("a\nb\rc\td")).to.equal('"a\\nb\\rc\\td"')
+        expect(TestEnvironment.quote('say "hi" \\')).to.equal('"say \\"hi\\" \\\\"')
+        expect(TestEnvironment.quote("\0")).to.equal('"\\x00"')
+    end)
+
     it("should create and read files through the environment API", function()
         env.WriteDir("Source")
         env.WriteFile("Source/Module.luau", "return {}\n")

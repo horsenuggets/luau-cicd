@@ -2,22 +2,38 @@
 
 GetReleaseAssetSuffixTest.spec
 
-Tests the shared shell release asset suffix contract for every supported platform.
+Tests the release asset suffix contract for every supported platform, both through the
+helper function and through the executable script's stdout and stderr.
 
 --]]
 
-const process = require("@lune/process")
+const GetReleaseAssetSuffix = require("../Scripts/Helpers/GetReleaseAssetSuffix.func")
+const TestEnvironment = require("./Helpers/TestEnvironment")
 
-const SCRIPT_PATH = `{process.cwd}/Scripts/GetReleaseAssetSuffix.sh`
+const INVALID_ARCHITECTURES = {
+    "linux",
+    "linux-",
+    "linux--x64",
+    "linux-amd64",
+    "linux-x86",
+    "linux-x86_64-unknown-linux-gnu",
+    "macos-ARM64",
+    "macos-arm64 ",
+    "windows-arm",
+    "windows-x64-extra",
+    "windows-x64\n",
+}
+const INVALID_OPERATING_SYSTEMS = {
+    "",
+    "-x64",
+    "darwin-x64",
+    "freebsd-arm64",
+    "Linux-x64",
+    "ubuntu-x86_64",
+    "x86_64-unknown-linux-gnu",
+}
 
 return function()
-    it("should run directly as an executable Bash script", function()
-        const result = process.exec(SCRIPT_PATH, { "linux-x86_64" })
-        expect(result.ok).to.equal(true)
-        expect(result.stdout).to.equal("linux-x64\n")
-        expect(result.stderr).to.equal("")
-    end)
-
     for _, osName in { "linux", "macos", "windows" } do
         for _, case in
             {
@@ -28,64 +44,66 @@ return function()
             }
         do
             const platform = `{osName}-{case.Alias}`
-            it(`should normalize "{platform}" without extra output`, function()
-                const result = process.exec("bash", { SCRIPT_PATH, platform })
-                expect(result.ok).to.equal(true)
-                expect(result.stdout).to.equal(`{osName}-{case.Canonical}\n`)
-                expect(result.stderr).to.equal("")
+            it(`should normalize "{platform}"`, function()
+                const suffix, suffixError = GetReleaseAssetSuffix(platform)
+                expect(suffix).to.equal(`{osName}-{case.Canonical}`)
+                expect(suffixError).to.equal(nil)
             end)
         end
     end
 
-    for _, args in { {}, { "linux-x64", "macos-arm64" }, { "linux-x64", "", "" } } do
-        it(`should reject {#args} arguments with usage on stderr`, function()
-            const result = process.exec("bash", { SCRIPT_PATH, table.unpack(args) })
-            expect(result.ok).to.equal(false)
-            expect(result.stdout).to.equal("")
-            expect(string.find(result.stderr, "Expected exactly one release platform argument.", 1, true)).to.be.ok()
-            expect(string.find(result.stderr, "[Usage]", 1, true)).to.be.ok()
+    for _, platform in INVALID_OPERATING_SYSTEMS do
+        it(`should reject the operating system in {TestEnvironment.quote(platform)}`, function()
+            const suffix, suffixError = GetReleaseAssetSuffix(platform)
+            expect(suffix).to.equal(nil)
+            expect(string.find(suffixError :: string, "Unsupported release operating system", 1, true)).to.be.ok()
         end)
     end
 
-    for _, platform in
-        {
-            "",
-            "-x64",
-            "darwin-x64",
-            "freebsd-arm64",
-            "Linux-x64",
-            "ubuntu-x86_64",
-            "x86_64-unknown-linux-gnu",
-        }
-    do
-        it(`should reject the operating system in "{platform}"`, function()
-            const result = process.exec("bash", { SCRIPT_PATH, platform })
+    for _, platform in INVALID_ARCHITECTURES do
+        it(`should reject the architecture in {TestEnvironment.quote(platform)}`, function()
+            const suffix, suffixError = GetReleaseAssetSuffix(platform)
+            expect(suffix).to.equal(nil)
+            expect(string.find(suffixError :: string, "Unsupported release architecture", 1, true)).to.be.ok()
+        end)
+    end
+
+    it("should return the same result for the same input", function()
+        expect(GetReleaseAssetSuffix("linux-x86_64")).to.equal(GetReleaseAssetSuffix("linux-x86_64"))
+    end)
+
+    describe("the executable script", function()
+        local env: TestEnvironment.Environment
+
+        beforeEach(function()
+            env = TestEnvironment.create()
+        end)
+
+        afterEach(function()
+            env.Cleanup()
+        end)
+
+        it("should print exactly the suffix on success", function()
+            const result = env.RunScript("GetReleaseAssetSuffix", { "linux-x86_64" })
+            expect(result.ok).to.equal(true)
+            expect(result.stdout).to.equal("linux-x64\n")
+            expect(result.stderr).to.equal("")
+        end)
+
+        it("should leave stdout empty on failure", function()
+            const result = env.RunScript("GetReleaseAssetSuffix", { "darwin-x64" })
             expect(result.ok).to.equal(false)
             expect(result.stdout).to.equal("")
             expect(string.find(result.stderr, "Unsupported release operating system", 1, true)).to.be.ok()
         end)
-    end
 
-    for _, platform in
-        {
-            "linux",
-            "linux-",
-            "linux--x64",
-            "linux-amd64",
-            "linux-x86",
-            "linux-x86_64-unknown-linux-gnu",
-            "macos-ARM64",
-            "macos-arm64 ",
-            "windows-arm",
-            "windows-x64-extra",
-            "windows-x64\n",
-        }
-    do
-        it(`should reject the architecture in "{platform}"`, function()
-            const result = process.exec("bash", { SCRIPT_PATH, platform })
-            expect(result.ok).to.equal(false)
-            expect(result.stdout).to.equal("")
-            expect(string.find(result.stderr, "Unsupported release architecture", 1, true)).to.be.ok()
-        end)
-    end
+        for _, args in { {}, { "linux-x64", "macos-arm64" } } do
+            it(`should print usage for {#args} arguments`, function()
+                const result = env.RunScript("GetReleaseAssetSuffix", args)
+                expect(result.ok).to.equal(false)
+                expect(result.stdout).to.equal("")
+                expect(string.find(result.stderr, "[Usage]", 1, true)).to.be.ok()
+            end)
+        end
+    end)
 end
