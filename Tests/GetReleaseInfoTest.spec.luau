@@ -64,6 +64,24 @@ return function()
         expect(string.sub(env.ReadFile("github-output"), 1, 14)).to.equal("earlier=value\n")
     end)
 
+    it("should support versions with a prerelease suffix", function()
+        env.WriteFile("VERSION", "3.1.1-horse.0.5\n")
+        env.WriteFile("CHANGELOG.md", "# Changelog\n\n## 3.1.1-horse.0.5\n\n- Fork notes.\n\n## 3.1.1\n\n- Old.\n")
+
+        expect(run().ok).to.equal(true)
+        expect(env.ReadFile("runner-temp/changelog.txt")).to.equal("- Fork notes.\n")
+        expect(env.ReadFile("github-output")).to.equal(
+            `notes_file={env.Path}/runner-temp/changelog.txt\ntag=3.1.1-horse.0.5\nversion=3.1.1-horse.0.5\n`
+        )
+    end)
+
+    it("should not match a prerelease section for the plain version", function()
+        env.WriteFile("VERSION", "3.1.1\n")
+        env.WriteFile("CHANGELOG.md", "# Changelog\n\n## 3.1.1-horse.0.5\n\n- Fork notes.\n")
+
+        expect(run().ok).to.equal(false)
+    end)
+
     it("should fail when the version has no changelog section", function()
         env.WriteFile("VERSION", "3.2.1\n")
         env.WriteFile("CHANGELOG.md", CHANGELOG)
