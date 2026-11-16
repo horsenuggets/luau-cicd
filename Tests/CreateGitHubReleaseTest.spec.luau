@@ -10,6 +10,8 @@ the exact release command is checked without contacting GitHub.
 const TestEnvironment = require("./Helpers/TestEnvironment")
 const process = require("@lune/process")
 
+const BASE_CALL = "release\ncreate\n1.2.3\n--verify-tag\n--title\n1.2.3\n--notes-file\nnotes.txt\n--\n"
+
 return function()
     local env: TestEnvironment.Environment
     local stubEnv: { [string]: string }
@@ -35,16 +37,24 @@ return function()
         if dir then
             env.WriteDir(dir)
         end
-        process.exec("zip", { "-q", relativePath, "payload.txt" }, { cwd = env.Path })
+        process.exec("zip", { "-q", `./{relativePath}`, "payload.txt" }, { cwd = env.Path })
     end
 
     it("should create a release without assets", function()
         const result = env.RunScript("CreateGitHubRelease", { "1.2.3", "notes.txt" }, stubEnv)
         expect(result.ok).to.equal(true)
-        expect(env.ReadFile("calls.txt")).to.equal(
-            "release\ncreate\n1.2.3\n--verify-tag\n--title\n1.2.3\n--notes-file\nnotes.txt\n"
-        )
+        expect(env.ReadFile("calls.txt")).to.equal(BASE_CALL)
         expect(string.find(result.stdout, "with 0 assets", 1, true)).to.be.ok()
+    end)
+
+    it("should pass assets named like flags as assets", function()
+        writeZip("--draft.zip")
+        env.WriteFile("--prerelease", "text\n")
+
+        const result =
+            env.RunScript("CreateGitHubRelease", { "1.2.3", "notes.txt", "--draft.zip", "--prerelease" }, stubEnv)
+        expect(result.ok).to.equal(true)
+        expect(env.ReadFile("calls.txt")).to.equal(`{BASE_CALL}--draft.zip\n--prerelease\n`)
     end)
 
     it("should pass every asset to gh in order", function()
@@ -61,9 +71,7 @@ return function()
         }, stubEnv)
         expect(result.ok).to.equal(true)
         const assetLines = "artifacts/tool-linux-x64.zip\nartifacts/tool-macos-arm64.zip\nartifacts/checksums.txt\n"
-        expect(env.ReadFile("calls.txt")).to.equal(
-            `release\ncreate\n1.2.3\n--verify-tag\n--title\n1.2.3\n--notes-file\nnotes.txt\n{assetLines}`
-        )
+        expect(env.ReadFile("calls.txt")).to.equal(`{BASE_CALL}{assetLines}`)
         expect(string.find(result.stdout, "with 3 assets", 1, true)).to.be.ok()
     end)
 

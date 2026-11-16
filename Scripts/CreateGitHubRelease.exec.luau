@@ -44,12 +44,15 @@ function CreateGitHubRelease.exec()
         if not isNonemptyFile(asset) then
             Fail(`Missing or empty release asset "{asset}".`)
         end
-        if string.lower(string.sub(asset, -4)) == ".zip" and not process.exec("unzip", { "-tq", asset }).ok then
+        -- Prefix relative paths so unzip never reads a leading hyphen as an option.
+        const unzipPath = if string.sub(asset, 1, 1) == "/" then asset else `./{asset}`
+        if string.lower(string.sub(asset, -4)) == ".zip" and not process.exec("unzip", { "-tq", unzipPath }).ok then
             Fail(`The release asset "{asset}" is not a valid ZIP archive.`)
         end
     end
 
-    const ghArgs = { "release", "create", tag, "--verify-tag", "--title", tag, "--notes-file", notesPath }
+    -- End option parsing so an asset named like a flag is uploaded instead of interpreted.
+    const ghArgs = { "release", "create", tag, "--verify-tag", "--title", tag, "--notes-file", notesPath, "--" }
     for _, asset in assets do
         table.insert(ghArgs, asset)
     end
