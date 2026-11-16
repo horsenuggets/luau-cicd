@@ -35,7 +35,8 @@ Every script reports failures as `::error::` annotations on stderr and exits wit
 `1`. Here's what each one does...
 
 - `CheckBranchName <branch>` → Requires `<prefix>/<name>` in lowercase kebab-case.
-- `CheckReleaseTitle <title>` → Requires exactly `Release X.Y.Z`.
+- `CheckReleaseTitle <title>` → Requires exactly `Release X.Y.Z`, optionally with a SemVer
+  prerelease suffix like `-beta.6`.
 - `CheckReleaseTitleVersion <title>` → Requires the title to match the `VERSION` file.
 - `CheckDiffWithMain` → Fetches `main` and requires `HEAD` to have an identical tree.
 - `CheckWallyAuth` → Requires `WALLY_AUTH` unless there is no `wally.toml` or the package

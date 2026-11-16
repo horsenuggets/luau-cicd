@@ -5,8 +5,8 @@
 CreateGitTag.exec
 
 Creates a release tag at "HEAD" and pushes it to "origin". Rejects anything other than a
-MAJOR.MINOR.PATCH version before touching Git, so a malformed tag can never reach the
-remote.
+release version (MAJOR.MINOR.PATCH with an optional prerelease suffix) before touching
+Git, so a malformed tag can never reach the remote.
 
 [Usage] ./Submodules/luau-cicd/Scripts/CreateGitTag.exec.luau "$VERSION_TAG"
 
