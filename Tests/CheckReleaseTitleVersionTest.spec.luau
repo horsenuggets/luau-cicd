@@ -6,6 +6,9 @@ Tests for the CheckReleaseTitleVersion script, which compares a PR title with "V
 
 --]]
 
+const Testable = require("@devpackages/Testable")
+const afterEach, beforeEach, expect, it = Testable.afterEach, Testable.beforeEach, Testable.expect, Testable.it
+
 const TestEnvironment = require("./Helpers/TestEnvironment")
 
 return function()

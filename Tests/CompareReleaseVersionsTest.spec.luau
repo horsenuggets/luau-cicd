@@ -7,6 +7,9 @@ every pair in an ordered chain so the ordering is consistent in both directions.
 
 --]]
 
+const Testable = require("@devpackages/Testable")
+const expect, it = Testable.expect, Testable.it
+
 const CompareReleaseVersions = require("../Scripts/Helpers/CompareReleaseVersions.func")
 
 -- Ordered from lowest to highest precedence, including the example from the SemVer spec.

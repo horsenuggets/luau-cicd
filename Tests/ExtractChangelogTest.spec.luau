@@ -6,6 +6,9 @@ Tests for the ExtractChangelog helper function.
 
 --]]
 
+const Testable = require("@devpackages/Testable")
+const afterAll, beforeAll, expect, it = Testable.afterAll, Testable.beforeAll, Testable.expect, Testable.it
+
 const fs = require("@lune/fs")
 
 const ExtractChangelog = require("../Scripts/Helpers/ExtractChangelog.func")

@@ -6,6 +6,9 @@ Tests for the ParseVersion helper function.
 
 --]]
 
+const Testable = require("@devpackages/Testable")
+const expect, it = Testable.expect, Testable.it
+
 const ParseVersion = require("../Scripts/Helpers/ParseVersion.func")
 
 return function()

@@ -6,6 +6,9 @@ Tests for the IsExcludedPath helper that the file scanning checks share.
 
 --]]
 
+const Testable = require("@devpackages/Testable")
+const expect, it = Testable.expect, Testable.it
+
 const IsExcludedPath = require("../Scripts/Helpers/IsExcludedPath.func")
 const process = require("@lune/process")
 

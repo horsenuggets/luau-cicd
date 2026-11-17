@@ -6,6 +6,9 @@ Tests for the CheckVersionMatch script.
 
 --]]
 
+const Testable = require("@devpackages/Testable")
+const afterEach, beforeEach, expect, it = Testable.afterEach, Testable.beforeEach, Testable.expect, Testable.it
+
 const GetReadmeVersionReferences = require("../Scripts/Helpers/GetReadmeVersionReferences.func")
 const TestEnvironment = require("./Helpers/TestEnvironment")
 

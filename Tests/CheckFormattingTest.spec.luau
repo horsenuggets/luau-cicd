@@ -6,6 +6,9 @@ Tests for the CheckFormatting script.
 
 --]]
 
+const Testable = require("@devpackages/Testable")
+const afterEach, beforeEach, expect, it = Testable.afterEach, Testable.beforeEach, Testable.expect, Testable.it
+
 const TestEnvironment = require("./Helpers/TestEnvironment")
 
 const dedent = TestEnvironment.dedent

@@ -7,6 +7,9 @@ external analysis tools.
 
 --]]
 
+const Testable = require("@devpackages/Testable")
+const expect, it = Testable.expect, Testable.it
+
 const HasAnalysisIssues = require("../Scripts/Helpers/HasAnalysisIssues.func")
 const Lint = require("../Scripts/Helpers/Lint")
 

@@ -6,6 +6,10 @@ Tests for the CheckFileHeaders script.
 
 --]]
 
+const Testable = require("@devpackages/Testable")
+const afterEach, beforeEach, describe, expect, it =
+    Testable.afterEach, Testable.beforeEach, Testable.describe, Testable.expect, Testable.it
+
 const TestEnvironment = require("./Helpers/TestEnvironment")
 const process = require("@lune/process")
 

@@ -7,6 +7,9 @@ of names and values that could inject extra outputs.
 
 --]]
 
+const Testable = require("@devpackages/Testable")
+const afterEach, beforeEach, expect, it = Testable.afterEach, Testable.beforeEach, Testable.expect, Testable.it
+
 const TestEnvironment = require("./Helpers/TestEnvironment")
 const WriteGitHubOutputs = require("../Scripts/Helpers/WriteGitHubOutputs.func")
 

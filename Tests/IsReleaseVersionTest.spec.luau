@@ -7,6 +7,9 @@ or extra lines into tags, titles, and workflow outputs.
 
 --]]
 
+const Testable = require("@devpackages/Testable")
+const expect, it = Testable.expect, Testable.it
+
 const IsReleaseVersion = require("../Scripts/Helpers/IsReleaseVersion.func")
 const TestEnvironment = require("./Helpers/TestEnvironment")
 
