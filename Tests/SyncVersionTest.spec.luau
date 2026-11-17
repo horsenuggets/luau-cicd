@@ -6,6 +6,9 @@ Tests for the SyncVersion script.
 
 --]]
 
+const Testable = require("@devpackages/Testable")
+const afterEach, beforeEach, expect, it = Testable.afterEach, Testable.beforeEach, Testable.expect, Testable.it
+
 const ReplaceWallyPackageVersion = require("../Scripts/Helpers/ReplaceWallyPackageVersion.func")
 const TestEnvironment = require("./Helpers/TestEnvironment")
 

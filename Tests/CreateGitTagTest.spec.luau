@@ -7,6 +7,9 @@ tags reach the remote and malformed ones never touch Git.
 
 --]]
 
+const Testable = require("@devpackages/Testable")
+const afterEach, beforeEach, expect, it = Testable.afterEach, Testable.beforeEach, Testable.expect, Testable.it
+
 const TestEnvironment = require("./Helpers/TestEnvironment")
 const process = require("@lune/process")
 

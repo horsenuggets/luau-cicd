@@ -50,6 +50,7 @@ const RunTests = {}
 function RunTests.exec()
     -- Disable parallel execution for integration tests that manage file system state.
     Testable.configure({
+        InjectGlobals = false,
         Parallel = false,
     })
 

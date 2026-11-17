@@ -6,6 +6,9 @@ Tests for the CheckBranchName script, covering valid names, malformed names, and
 
 --]]
 
+const Testable = require("@devpackages/Testable")
+const afterEach, beforeEach, expect, it = Testable.afterEach, Testable.beforeEach, Testable.expect, Testable.it
+
 const TestEnvironment = require("./Helpers/TestEnvironment")
 
 return function()

@@ -7,6 +7,10 @@ helper function and through the executable script's stdout and stderr.
 
 --]]
 
+const Testable = require("@devpackages/Testable")
+const afterEach, beforeEach, describe, expect, it =
+    Testable.afterEach, Testable.beforeEach, Testable.describe, Testable.expect, Testable.it
+
 const GetReleaseAssetSuffix = require("../Scripts/Helpers/GetReleaseAssetSuffix.func")
 const TestEnvironment = require("./Helpers/TestEnvironment")
 

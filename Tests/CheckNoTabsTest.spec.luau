@@ -6,6 +6,9 @@ Tests for the CheckNoTabs script.
 
 --]]
 
+const Testable = require("@devpackages/Testable")
+const afterEach, beforeEach, expect, it = Testable.afterEach, Testable.beforeEach, Testable.expect, Testable.it
+
 const ResolveScanDirectory = require("../Scripts/Helpers/ResolveScanDirectory.func")
 const TestEnvironment = require("./Helpers/TestEnvironment")
 const process = require("@lune/process")
