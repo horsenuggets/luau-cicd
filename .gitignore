@@ -26,6 +26,7 @@
 *.lock
 !.assetfile.lock
 /*sourcemap.json
+/wally.install.json
 
 # Legacy
 aftman.toml
