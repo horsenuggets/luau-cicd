@@ -5,7 +5,7 @@
 CheckWallyFormat.exec
 
 Validates that wally.toml follows the project format guidelines. Specifically checks that
-all repository strings (package name and dependency values) are lowercase.
+registry package names and dependency references are lowercase, preserving local paths.
 
 [Usage] ./Scripts/CheckWallyFormat.exec.luau [filename]
 > filename → Optional path to the file to check. Defaults to "wally.toml".
@@ -62,7 +62,11 @@ function CheckWallyFormat.exec()
             end
             table.sort(keys)
             for _, key in keys do
-                checkLowercase(dependencies[key], `Dependency "{key}"`)
+                const value = dependencies[key]
+                assert(type(value) == "string", `Expected Dependency "{key}" to be a string in "{filename}".`)
+                if string.sub(value, 1, 1) ~= "^" then
+                    checkLowercase(value, `Dependency "{key}"`)
+                end
             end
         end
     end

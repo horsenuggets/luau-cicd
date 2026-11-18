@@ -177,6 +177,39 @@ return function()
         end
     end)
 
+    it("should preserve mixed-case local paths in every dependency table", function()
+        for _, section in { "dependencies", "dev-dependencies", "server-dependencies" } do
+            env.WriteFile(
+                "test-wally.toml",
+                `[{section}]\nFusion = "^Source/ForkedPackages/fusion"\nRegistry = "owner/package@1.0.0"\n`
+            )
+
+            const result = env.RunScript("CheckWallyFormat", { "test-wally.toml" })
+
+            expect(result.ok).to.equal(true)
+            expect(string.find(result.stdout, '"test-wally.toml" format is valid.', 1, true)).to.be.ok()
+            expect(env.ReadFile("test-wally.toml")).to.equal(
+                `[{section}]\nFusion = "^Source/ForkedPackages/fusion"\nRegistry = "owner/package@1.0.0"\n`
+            )
+        end
+    end)
+
+    it("should reject uppercase registry references alongside local paths in every dependency table", function()
+        for _, section in { "dependencies", "dev-dependencies", "server-dependencies" } do
+            env.WriteFile(
+                "test-wally.toml",
+                `[{section}]\nFusion = "^Source/ForkedPackages/fusion"\nRegistry = "Owner/Package@1.0.0"\n`
+            )
+
+            const result = env.RunScript("CheckWallyFormat", { "test-wally.toml" })
+
+            expect(result.ok).to.equal(false)
+            expect(string.find(result.stdout, "1 format error", 1, true)).to.be.ok()
+            expect(string.find(result.stdout, 'Dependency "Registry"', 1, true)).to.be.ok()
+            expect(string.find(result.stdout, 'Dependency "Fusion"', 1, true)).to.equal(nil)
+        end
+    end)
+
     it("should ignore commented assignments and unrelated sections", function()
         env.WriteFile(
             "test-wally.toml",
@@ -193,6 +226,10 @@ return function()
                 { Content = 'package = "invalid"\n', Message = 'Expected "package" to be a table' },
                 { Content = "[package]\nname = 123\n", Message = "Expected Package name to be a string" },
                 { Content = 'dependencies = "invalid"\n', Message = 'Expected "dependencies" to be a table' },
+                {
+                    Content = "[dependencies]\nDependency = 123\n",
+                    Message = 'Expected Dependency "Dependency" to be a string',
+                },
                 {
                     Content = "[dev-dependencies]\nDependency = false\n",
                     Message = 'Expected Dependency "Dependency" to be a string',
