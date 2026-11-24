@@ -18,9 +18,9 @@ return function()
 
     beforeEach(function()
         env = TestEnvironment.create()
-        -- Create a stylua.toml so stylua knows to format.
+        -- Create a styluau.toml so StyLuau knows to format.
         env.WriteFile(
-            "stylua.toml",
+            "styluau.toml",
             dedent([[
                     syntax = "Luau"
                     column_width = 120
@@ -112,6 +112,38 @@ return function()
                     end
                     end
                     return test
+                ]])
+        )
+
+        const result = env.RunScript("CheckFormatting")
+
+        expect(result.ok).to.equal(false)
+    end)
+
+    it("should respect StyLuau ignore directives", function()
+        -- Only StyLuau recognizes the bracketed directive, so StyLua would flag this file.
+        env.WriteFile(
+            "ignored.luau",
+            dedent([[
+                    -- [styluau] ignore
+                    const   matrix   =   { 1,2,3 }
+                    return matrix
+                ]])
+        )
+
+        const result = env.RunScript("CheckFormatting")
+
+        expect(result.ok).to.equal(true)
+    end)
+
+    it("should still flag code after a StyLuau ignore directive", function()
+        env.WriteFile(
+            "partial.luau",
+            dedent([[
+                    -- [styluau] ignore
+                    const   matrix   =   { 1,2,3 }
+                    const   other   =   2
+                    return { matrix, other }
                 ]])
         )
 

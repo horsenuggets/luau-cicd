@@ -43,7 +43,7 @@ return function()
             "feature/-name",
             "feature/name-",
             "feature/my_feature",
-            "feature/name\n",
+            "feature/name\n"
         }
     do
         it(`should reject {TestEnvironment.quote(branch)}`, function()

@@ -19,7 +19,7 @@ const TARGETS = {
     { Target = "macos-x86_64", Suffix = "macos-x64", Binary = "tool" },
     { Target = "macos-aarch64", Suffix = "macos-arm64", Binary = "tool" },
     { Target = "windows-x86_64", Suffix = "windows-x64", Binary = "tool.exe" },
-    { Target = "windows-aarch64", Suffix = "windows-arm64", Binary = "tool.exe" },
+    { Target = "windows-aarch64", Suffix = "windows-arm64", Binary = "tool.exe" }
 }
 
 return function()
@@ -42,7 +42,7 @@ return function()
             env.WriteFile(`Build/{case.Binary}`, "binary\n")
 
             const result = env.RunScript("PackageBinary", { "tool", case.Target }, {
-                GITHUB_OUTPUT = `{env.Path}/github-output`,
+                GITHUB_OUTPUT = `{env.Path}/github-output`
             })
             expect(result.ok).to.equal(true)
 
@@ -75,7 +75,7 @@ return function()
         {
             { Name = "missing", Target = "linux-x86_64", Setup = nil },
             { Name = "empty", Target = "linux-x86_64", Setup = "" },
-            { Name = "missing for Windows", Target = "windows-x86_64", Setup = nil },
+            { Name = "missing for Windows", Target = "windows-x86_64", Setup = nil }
         }
     do
         it(`should fail when the executable is {case.Name}`, function()

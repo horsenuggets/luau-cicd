@@ -32,7 +32,7 @@ function RunStaticAnalysis.exec()
         "Packages/**",
         "--ignore",
         "Submodules/**",
-        ".",
+        "."
     })
 
     const hasIssues = HasAnalysisIssues(result.ok, result.stdout, result.stderr)

@@ -293,7 +293,7 @@ return function()
         for _, manifest in
             {
                 '[package]\nname = "author/my-package"\nversion = "1.0.0"\n# version = "2.0.0"\n',
-                '[package]\nname = "author/my-package"\n# version = "2.0.0"\n',
+                '[package]\nname = "author/my-package"\n# version = "2.0.0"\n'
             }
         do
             env.WriteFile("wally.toml", manifest)
@@ -316,7 +316,7 @@ return function()
                 "[\"package\"]\n\"name\" = 'author/my-package'\n'version' = '2.0.0'\n",
                 'package = { name = "author/my-package", version = "2.0.0" }\n',
                 'package.name = "author/my-package"\npackage.version = "2.0.0"\n',
-                'description = \'\'\'\n[package]\nversion = "9.0.0"\nname = "other/package"\n\'\'\'\n[package]\nname = "author/my-package"\nversion = "2.0.0"\n',
+                'description = \'\'\'\n[package]\nversion = "9.0.0"\nname = "other/package"\n\'\'\'\n[package]\nname = "author/my-package"\nversion = "2.0.0"\n'
             }
         do
             env.WriteFile("wally.toml", manifest)

@@ -57,7 +57,7 @@ function GetReleaseInfo.exec()
     WriteGitHubOutputs(outputPath, {
         notes_file = notesPath,
         tag = version,
-        version = version,
+        version = version
     })
 
     print(`Prepared release "{version}" with notes in "{notesPath}".`)

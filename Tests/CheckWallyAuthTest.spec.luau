@@ -38,7 +38,7 @@ return function()
                     end
 
                     const result = env.RunScript("CheckWallyAuth", nil, {
-                        WALLY_AUTH = if hasSecret then '[tokens]\n"api.wally.run" = "token"\n' else "",
+                        WALLY_AUTH = if hasSecret then '[tokens]\n"api.wally.run" = "token"\n' else ""
                     })
                     expect(result.ok).to.equal(expectedOk)
 

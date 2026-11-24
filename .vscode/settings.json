@@ -8,11 +8,11 @@
         "editor.tabSize": 4
     },
     "[lua]": {
-        "editor.defaultFormatter": "JohnnyMorganz.stylua",
+        "editor.defaultFormatter": "horsenuggets.styluau",
         "editor.formatOnSave": true
     },
     "[luau]": {
-        "editor.defaultFormatter": "JohnnyMorganz.stylua",
+        "editor.defaultFormatter": "horsenuggets.styluau",
         "editor.formatOnSave": true
     },
     "[terraform]": {

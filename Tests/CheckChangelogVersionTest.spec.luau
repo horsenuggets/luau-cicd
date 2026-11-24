@@ -124,7 +124,7 @@ return function()
             {
                 "# Changelog\n\n## 0.9.0\n\n- Example ## 1.0.0\n- Older note.\n",
                 "# Changelog\n\n## 1.0.00\n\n- Different version.\n",
-                "# Changelog\n\n## 1.0.0-beta.1\n\n- Prerelease.\n",
+                "# Changelog\n\n## 1.0.0-beta.1\n\n- Prerelease.\n"
             }
         do
             env.WriteFile("CHANGELOG.md", content)

@@ -190,7 +190,7 @@ return function()
             { From = "1.9.0", To = "2.0.0-beta.1", Ok = true },
             { From = "2.0.0-beta.7", To = "2.0.0-beta.6", Ok = false },
             { From = "2.0.0", To = "2.0.0-beta.9", Ok = false },
-            { From = "1.70.1-horse.1.6", To = "1.70.1-horse.1.6", Ok = false },
+            { From = "1.70.1-horse.1.6", To = "1.70.1-horse.1.6", Ok = false }
         }
     do
         it(`should {if case.Ok then "accept" else "reject"} "{case.From}" to "{case.To}"`, function()

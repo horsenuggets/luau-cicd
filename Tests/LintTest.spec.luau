@@ -40,7 +40,7 @@ return function()
         for _, diagnostic in
             {
                 "Source/Module.luau(2,3): TypeError: Unknown type.",
-                "Source/Module.luau(4,5): DeprecatedApi: Function is deprecated.",
+                "Source/Module.luau(4,5): DeprecatedApi: Function is deprecated."
             }
         do
             expect(HasAnalysisIssues(true, diagnostic, "")).to.equal(true)
@@ -59,7 +59,7 @@ return function()
                 end,
                 function()
                     HasAnalysisIssues(true, "", false :: any)
-                end,
+                end
             }
         do
             const ok = pcall(call)
@@ -72,7 +72,7 @@ return function()
             {
                 { Platforms = {} },
                 { IgnorePatterns = {}, Platforms = {} },
-                { IgnorePatterns = { "Generated/**" }, Platforms = {} },
+                { IgnorePatterns = { "Generated/**" }, Platforms = {} }
             }
         do
             const ok = pcall(function()
@@ -89,7 +89,7 @@ return function()
                 { IgnorePatterns = false, Platforms = {} },
                 { IgnorePatterns = { false }, Platforms = {} },
                 { Platforms = false },
-                { Platforms = { false } },
+                { Platforms = { false } }
             }
         do
             const ok = pcall(function()
@@ -109,7 +109,7 @@ return function()
                 { IgnorePatterns = false, Platform = "lune", Targets = {} },
                 { IgnorePatterns = { false }, Platform = "lune", Targets = {} },
                 { Platform = "lune", RojoProject = false, Targets = {} },
-                { Platform = "lune", Sourcemap = false, Targets = {} },
+                { Platform = "lune", Sourcemap = false, Targets = {} }
             }
         do
             const ok = pcall(function()

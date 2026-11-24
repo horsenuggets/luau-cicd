@@ -31,7 +31,7 @@ return function()
                     [tools]
                     luau-lsp = "owner/luau-lsp@1.60.0"
                     lune = "owner/lune@0.10.5"
-                    stylua = "owner/stylua@2.3.1"
+                    styluau = "owner/styluau@2.6.0"
                 ]])
         )
 
@@ -106,7 +106,7 @@ return function()
                 { Content = 'tools = "invalid"\n', Message = 'Expected "tools" to be a table' },
                 { Content = "[tools]\nlune = 123\n", Message = 'Expected tool "lune" to be a string' },
                 { Content = "[tools]\nlune = true\n", Message = 'Expected tool "lune" to be a string' },
-                { Content = "[tools.lune]\n", Message = 'Expected tool "lune" to be a string' },
+                { Content = "[tools.lune]\n", Message = 'Expected tool "lune" to be a string' }
             }
         do
             env.WriteFile("test-rokit.toml", case.Content)

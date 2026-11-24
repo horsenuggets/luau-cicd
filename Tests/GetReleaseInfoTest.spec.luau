@@ -42,7 +42,7 @@ return function()
     const function run(): TestEnvironment.ExecResult
         return env.RunScript("GetReleaseInfo", nil, {
             GITHUB_OUTPUT = `{env.Path}/github-output`,
-            RUNNER_TEMP = `{env.Path}/runner-temp`,
+            RUNNER_TEMP = `{env.Path}/runner-temp`
         })
     end
 
@@ -125,7 +125,7 @@ return function()
 
             const extraEnv = {
                 GITHUB_OUTPUT = `{env.Path}/github-output`,
-                RUNNER_TEMP = `{env.Path}/runner-temp`,
+                RUNNER_TEMP = `{env.Path}/runner-temp`
             }
             extraEnv[missing] = ""
 

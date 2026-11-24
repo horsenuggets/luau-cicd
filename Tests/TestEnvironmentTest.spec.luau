@@ -69,7 +69,7 @@ return function()
             end,
             function()
                 env.WriteFile("Module.luau", 123 :: any)
-            end,
+            end
         }
 
         for _, call in calls do

@@ -228,16 +228,16 @@ return function()
                 { Content = 'dependencies = "invalid"\n', Message = 'Expected "dependencies" to be a table' },
                 {
                     Content = "[dependencies]\nDependency = 123\n",
-                    Message = 'Expected Dependency "Dependency" to be a string',
+                    Message = 'Expected Dependency "Dependency" to be a string'
                 },
                 {
                     Content = "[dev-dependencies]\nDependency = false\n",
-                    Message = 'Expected Dependency "Dependency" to be a string',
+                    Message = 'Expected Dependency "Dependency" to be a string'
                 },
                 {
                     Content = "[server-dependencies.Dependency]\n",
-                    Message = 'Expected Dependency "Dependency" to be a string',
-                },
+                    Message = 'Expected Dependency "Dependency" to be a string'
+                }
             }
         do
             env.WriteFile("test-wally.toml", case.Content)
