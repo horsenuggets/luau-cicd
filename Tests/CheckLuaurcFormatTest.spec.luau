@@ -107,7 +107,7 @@ return function()
                 [=[
 [tools]
 lune = "owner/lune@0.10.5"
-stylua = "owner/stylua@2.3.1"
+styluau = "owner/styluau@2.6.0"
 ]=]
             )
 
@@ -177,7 +177,7 @@ lune = "owner/lune@0.10.5"
                 "test-rokit.toml",
                 [=[
 [tools]
-stylua = "owner/stylua@2.3.1"
+styluau = "owner/styluau@2.6.0"
 ]=]
             )
 
@@ -190,11 +190,11 @@ stylua = "owner/stylua@2.3.1"
             env.WriteFile("test.luaurc", "{}\n")
             for _, rokit in
                 {
-                    '# lune = "owner/lune@0.10.5"\n[tools]\nstylua = "owner/stylua@2.3.1"\n',
+                    '# lune = "owner/lune@0.10.5"\n[tools]\nstyluau = "owner/styluau@2.6.0"\n',
                     '[tools]\nother-lune = "owner/lune@0.10.5"\n',
                     'lune = "owner/lune@0.10.5"\n',
                     '[metadata]\nlune = "owner/lune@0.10.5"\n',
-                    "",
+                    ""
                 }
             do
                 env.WriteFile("test-rokit.toml", rokit)
@@ -222,9 +222,9 @@ stylua = "owner/stylua@2.3.1"
                     { Content = "[tools.lune]\n", Message = 'Expected "tools.lune" to be a string' },
                     {
                         Content = '[tools]\nlune = "owner/lune"\n',
-                        Message = 'Expected "tools.lune" to include a version',
+                        Message = 'Expected "tools.lune" to include a version'
                     },
-                    { Content = "[tools\n", Message = 'Failed to parse "test-rokit.toml" as TOML' },
+                    { Content = "[tools\n", Message = 'Failed to parse "test-rokit.toml" as TOML' }
                 }
             do
                 env.WriteFile("test-rokit.toml", case.Content)
