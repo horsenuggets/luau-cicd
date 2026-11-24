@@ -20,7 +20,7 @@ const DEFAULT_IGNORE_PATTERNS = {
     "DevPackages/**",
     "Packages/**",
     "ServerPackages/**",
-    "Submodules/**",
+    "Submodules/**"
 }
 
 const Lint = {}
@@ -85,7 +85,7 @@ const function generateSourcemap(rojoProject: string, outputFile: string)
         "sourcemap",
         rojoProject,
         "--output",
-        outputFile,
+        outputFile
     })
 
     if not result.ok then
@@ -133,7 +133,7 @@ const function analyze(
         "analyze",
         `--platform={platform}`,
         "--no-flags-enabled",
-        "--enable-new-solver",
+        "--enable-new-solver"
     }
 
     if sourcemap then
@@ -164,12 +164,12 @@ export type Platform = {
     Platform: string,
     RojoProject: string?,
     Sourcemap: string?,
-    Targets: { string },
+    Targets: { string }
 }
 
 export type LintConfig = {
     IgnorePatterns: { string }?,
-    Platforms: { Platform }?,
+    Platforms: { Platform }?
 }
 
 function Lint.run(config: LintConfig?)
@@ -218,7 +218,7 @@ function Lint.run(config: LintConfig?)
     const ignoreArgs = buildIgnoreArgs(cfg.IgnorePatterns)
 
     const platforms: { Platform } = cfg.Platforms or {
-        { Platform = "lune", Targets = { "." } },
+        { Platform = "lune", Targets = { "." } }
     }
 
     local allPassed = true

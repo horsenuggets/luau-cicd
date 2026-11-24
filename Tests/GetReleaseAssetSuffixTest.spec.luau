@@ -25,7 +25,7 @@ const INVALID_ARCHITECTURES = {
     "macos-arm64 ",
     "windows-arm",
     "windows-x64-extra",
-    "windows-x64\n",
+    "windows-x64\n"
 }
 const INVALID_OPERATING_SYSTEMS = {
     "",
@@ -34,7 +34,7 @@ const INVALID_OPERATING_SYSTEMS = {
     "freebsd-arm64",
     "Linux-x64",
     "ubuntu-x86_64",
-    "x86_64-unknown-linux-gnu",
+    "x86_64-unknown-linux-gnu"
 }
 
 return function()
@@ -44,7 +44,7 @@ return function()
                 { Alias = "x86_64", Canonical = "x64" },
                 { Alias = "x64", Canonical = "x64" },
                 { Alias = "aarch64", Canonical = "arm64" },
-                { Alias = "arm64", Canonical = "arm64" },
+                { Alias = "arm64", Canonical = "arm64" }
             }
         do
             const platform = `{osName}-{case.Alias}`

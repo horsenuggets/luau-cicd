@@ -26,7 +26,7 @@ return function()
         env.WriteFile("notes.txt", "- Notes.\n")
         stubEnv = {
             CALL_LOG = `{env.Path}/calls.txt`,
-            PATH = `{env.Path}/bin:{process.env.PATH}`,
+            PATH = `{env.Path}/bin:{process.env.PATH}`
         }
     end)
 
@@ -70,7 +70,7 @@ return function()
             "notes.txt",
             "artifacts/tool-linux-x64.zip",
             "artifacts/tool-macos-arm64.zip",
-            "artifacts/checksums.txt",
+            "artifacts/checksums.txt"
         }, stubEnv)
         expect(result.ok).to.equal(true)
         const assetLines = "artifacts/tool-linux-x64.zip\nartifacts/tool-macos-arm64.zip\nartifacts/checksums.txt\n"
@@ -93,15 +93,15 @@ return function()
                 Setup = function()
                     env.WriteFile("tool.zip", "")
                 end,
-                Message = "Missing or empty release asset",
+                Message = "Missing or empty release asset"
             },
             {
                 Name = "corrupt",
                 Setup = function()
                     env.WriteFile("tool.zip", "not an archive\n")
                 end,
-                Message = "is not a valid ZIP archive",
-            },
+                Message = "is not a valid ZIP archive"
+            }
         }
     do
         it(`should fail without calling gh when an asset is {case.Name}`, function()

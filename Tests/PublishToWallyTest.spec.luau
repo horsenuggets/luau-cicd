@@ -32,7 +32,7 @@ return function()
             PATH = `{env.Path}/bin:{process.env.PATH}`,
             -- Rokit finds its tools through "HOME" by default, so keep it on the real root.
             ROKIT_ROOT = process.env.ROKIT_ROOT or `{process.env.HOME}/.rokit`,
-            WALLY_AUTH = AUTH,
+            WALLY_AUTH = AUTH
         }
     end)
 
@@ -55,8 +55,8 @@ return function()
             {
                 Name = "the package is private",
                 Manifest = `{PUBLIC_MANIFEST}private = true\n`,
-                Message = "A private package was detected.",
-            },
+                Message = "A private package was detected."
+            }
         }
     do
         it(`should skip publishing when {case.Name}, even without a secret`, function()

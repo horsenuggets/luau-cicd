@@ -12,12 +12,12 @@ const ARCHITECTURES = {
     aarch64 = "arm64",
     arm64 = "arm64",
     x64 = "x64",
-    x86_64 = "x64",
+    x86_64 = "x64"
 }
 const OPERATING_SYSTEMS = {
     linux = true,
     macos = true,
-    windows = true,
+    windows = true
 }
 
 const function GetReleaseAssetSuffix(platform: string): (string?, string?)

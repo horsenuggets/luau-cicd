@@ -279,28 +279,28 @@ return function()
             {
                 Prefix = '# version = "1.0.0"\n[package]\nname = "author/my-package"\nversion = ',
                 Suffix = ' # Keep this.\n# version = "1.0.0"\n# name = "other/package"\n[dependencies]\nOther = "other/package@1.0.0"\n',
-                Token = '"1.0.0"',
+                Token = '"1.0.0"'
             },
             {
                 Prefix = "[\"package\"]\r\n'name' = 'author/my-package'\r\n\"version\" = ",
                 Suffix = '\r\n# version = "1.0.0"\r\n',
-                Token = "'1.0.0'",
+                Token = "'1.0.0'"
             },
             {
                 Prefix = 'package = { name = "author/my-package", version = ',
                 Suffix = ', description = "1.0.0" }\n',
-                Token = '"1.0.0"',
+                Token = '"1.0.0"'
             },
             {
                 Prefix = 'package.name = "author/my-package"\npackage.version = ',
                 Suffix = '\n[metadata]\nversion = "1.0.0"\n',
-                Token = '"1.0.\\u0030"',
+                Token = '"1.0.\\u0030"'
             },
             {
                 Prefix = "description = '''\n[package]\nversion = \"1.0.0\"\nname = \"other/package\"\n'''\n[package]\nname = \"author/my-package\"\nversion = ",
                 Suffix = '\n# version = "1.0.0"\n',
-                Token = '"1.0.0"',
-            },
+                Token = '"1.0.0"'
+            }
         }
         for _, case in cases do
             env.WriteFile("VERSION", "2.0.0\n")

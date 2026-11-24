@@ -76,7 +76,7 @@ export type Environment = {
     ReadFile: (relativePath: string) -> string,
     RunScript: (scriptName: string, args: { string }?, extraEnv: { [string]: string }?) -> ExecResult,
     WriteDir: (relativePath: string) -> (),
-    WriteFile: (relativePath: string, content: string) -> (),
+    WriteFile: (relativePath: string, content: string) -> ()
 }
 
 function TestEnvironment.create(): Environment
@@ -155,7 +155,7 @@ function TestEnvironment.create(): Environment
                 fs.writeDir(dir)
             end
             fs.writeFile(fullPath, content)
-        end,
+        end
     }
 
     return env

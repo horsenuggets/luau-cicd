@@ -27,7 +27,7 @@ return function()
             "1.0.0-rc.1",
             "1.0.0-0",
             "1.0.0-x-y-z.--",
-            "1.0.0-alpha.0a",
+            "1.0.0-alpha.0a"
         }
     do
         it(`should accept "{value}"`, function()
@@ -60,7 +60,7 @@ return function()
             "1.2.3+build",
             "1.2.3-beta+build",
             "100000.0.0-beta",
-            "1.2-beta",
+            "1.2-beta"
         }
     do
         it(`should reject {TestEnvironment.quote(value)}`, function()

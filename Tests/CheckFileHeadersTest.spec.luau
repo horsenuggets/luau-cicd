@@ -390,7 +390,7 @@ return {}
 
             const cwdResult = process.exec("lune", { "run", "-" }, {
                 cwd = env.Path,
-                stdio = { stdin = 'print(require("@lune/process").cwd)' },
+                stdio = { stdin = 'print(require("@lune/process").cwd)' }
             })
             expect(cwdResult.ok).to.equal(true)
             const root = string.match(cwdResult.stdout, "^%s*(.-)%s*$") :: string

@@ -45,7 +45,7 @@ return function()
             "Release  1.2.3",
             "Release 1.2.3-",
             "Release 1.2.3-beta 1",
-            "Release 1.2.3-beta\n",
+            "Release 1.2.3-beta\n"
         }
     do
         it(`should reject {TestEnvironment.quote(title)}`, function()

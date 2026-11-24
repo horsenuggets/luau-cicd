@@ -10,7 +10,7 @@ inclusive bounds, leaving sentence-ending periods outside each reference.
 export type Reference = {
     End: number,
     Start: number,
-    Version: string,
+    Version: string
 }
 
 const function GetReadmeVersionReferences(content: string, packageName: string): { Reference }
@@ -26,7 +26,7 @@ const function GetReadmeVersionReferences(content: string, packageName: string):
         table.insert(references, {
             End = endIndex - 1 - (#candidate - #version),
             Start = startIndex,
-            Version = version,
+            Version = version
         })
     end
 

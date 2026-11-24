@@ -123,7 +123,7 @@ return {}
 
         const cwdResult = process.exec("lune", { "run", "-" }, {
             cwd = env.Path,
-            stdio = { stdin = 'print(require("@lune/process").cwd)' },
+            stdio = { stdin = 'print(require("@lune/process").cwd)' }
         })
         expect(cwdResult.ok).to.equal(true)
         const root = string.match(cwdResult.stdout, "^%s*(.-)%s*$") :: string
@@ -153,7 +153,7 @@ return {}
         const cases = {
             { Path = "./", Root = true, Value = base },
             { Path = "Build/../", Root = true, Value = base },
-            { Path = "Source/Build/", Root = false, Value = `{base}/Source/Build` },
+            { Path = "Source/Build/", Root = false, Value = `{base}/Source/Build` }
         }
         if process.os == "windows" then
             table.insert(cases, { Path = ".\\Build\\..\\", Root = true, Value = base })
@@ -177,7 +177,7 @@ return {}
         for _, scriptName in { "CheckFileHeaders", "CheckNoTabs" } do
             const result = process.exec("lune", {
                 "run",
-                `{process.cwd}/Scripts/{scriptName}.exec.luau`,
+                `{process.cwd}/Scripts/{scriptName}.exec.luau`
             }, { cwd = checkout })
             expect(result.ok).to.equal(true)
             expect(string.find(result.stdout, "1 file", 1, true)).to.be.ok()
@@ -209,7 +209,7 @@ return {}
                 for _, scriptName in { "CheckFileHeaders", "CheckNoTabs" } do
                     const result = process.exec("lune", {
                         "run",
-                        `{process.cwd}/Scripts/{scriptName}.exec.luau`,
+                        `{process.cwd}/Scripts/{scriptName}.exec.luau`
                     }, { cwd = checkout })
                     expect(result.ok).to.equal(true)
                     expect(string.find(result.stdout, "1 file", 1, true)).to.be.ok()
@@ -239,7 +239,7 @@ return {}
             const result = process.exec("lune", {
                 "run",
                 `{process.cwd}/Scripts/{scriptName}.exec.luau`,
-                "Linked/..",
+                "Linked/.."
             }, { cwd = repository })
             expect(result.ok).to.equal(false)
             expect(string.find(result.stdout, "Build/Bad.luau", 1, true)).to.be.ok()

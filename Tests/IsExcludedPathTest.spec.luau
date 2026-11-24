@@ -35,7 +35,7 @@ return function()
             "Submodules/luau-cicd/Scripts/Lint.exec.luau",
             "web/node_modules/a/b.json",
             "Source/Packages/x.luau",
-            "Packages/",
+            "Packages/"
         }
         for _, path in paths do
             for _, scanningRepoRoot in { true, false } do

@@ -43,7 +43,7 @@ const function resolve(path: string): string
             "-NoProfile",
             "-NonInteractive",
             "-Command",
-            "[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false); [Console]::Write((Get-Location).ProviderPath)",
+            "[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false); [Console]::Write((Get-Location).ProviderPath)"
         }
         else { "-P" }
     const result = process.exec(command, args, { cwd = path })

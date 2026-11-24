@@ -42,7 +42,7 @@ const TESTS = {
     { Func = require("../Tests/PublishToWallyTest.spec"), Name = "PublishToWallyTest" },
     { Func = require("../Tests/SyncVersionTest.spec"), Name = "SyncVersionTest" },
     { Func = require("../Tests/TestEnvironmentTest.spec"), Name = "TestEnvironmentTest" },
-    { Func = require("../Tests/WriteGitHubOutputsTest.spec"), Name = "WriteGitHubOutputsTest" },
+    { Func = require("../Tests/WriteGitHubOutputsTest.spec"), Name = "WriteGitHubOutputsTest" }
 }
 
 const RunTests = {}
@@ -51,7 +51,7 @@ function RunTests.exec()
     -- Disable parallel execution for integration tests that manage file system state.
     Testable.configure({
         InjectGlobals = false,
-        Parallel = false,
+        Parallel = false
     })
 
     const _, passed = Testable.run(TESTS)
