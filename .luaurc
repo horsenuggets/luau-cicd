@@ -1,6 +1,6 @@
 {
     "aliases": {
         "devpackages": "./DevPackages/",
-        "lune": "~/.lune/.typedefs/0.11.1-horse.16.7/"
+        "lune": "~/.lune/.typedefs/0.11.1-horse.17.8/"
     }
 }
