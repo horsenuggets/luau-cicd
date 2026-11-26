@@ -40,6 +40,7 @@ const TESTS = {
     { Func = require("../Tests/PackageBinaryTest.spec"), Name = "PackageBinaryTest" },
     { Func = require("../Tests/ParseVersionTest.spec"), Name = "ParseVersionTest" },
     { Func = require("../Tests/PublishToWallyTest.spec"), Name = "PublishToWallyTest" },
+    { Func = require("../Tests/ResolveFormatterBinaryTest.spec"), Name = "ResolveFormatterBinaryTest" },
     { Func = require("../Tests/SyncVersionTest.spec"), Name = "SyncVersionTest" },
     { Func = require("../Tests/TestEnvironmentTest.spec"), Name = "TestEnvironmentTest" },
     { Func = require("../Tests/WriteGitHubOutputsTest.spec"), Name = "WriteGitHubOutputsTest" }
